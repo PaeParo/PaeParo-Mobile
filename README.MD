@@ -45,10 +45,10 @@ PaeParo는 여행 일정을 더 쉽고, 편리하게 구성할 수 있도록 도
 <table width="788">
 <thead>
 <tr>
-<th width="100" align="center">성명</th>
-<th width="200" align="left">담당</th>
-<th width="150" align="center">깃허브</th>
-<th width="225" align="center">이메일</th>
+<th width="100" align="center">Name</th>
+<th width="200" align="center">Role</th>
+<th width="150" align="center">Github</th>
+<th width="225" align="center">Email</th>
 </tr> 
 </thead>
 <tbody>
