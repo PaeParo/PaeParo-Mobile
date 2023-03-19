@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "720394377498",
+    "project_id": "paeparo",
+    "storage_bucket": "paeparo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720394377498:android:e5e0999634a8a3141534a3",
+        "android_client_info": {
+          "package_name": "com.paeparo.paeparo_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "720394377498-vps7bqjbqg4l5hmigrj6loafv7kr84rm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.paeparo.paeparo_mobile",
+            "certificate_hash": "cc81bf53038c01d37c4334debeb3c06efc9b3342"
+          }
+        },
+        {
+          "client_id": "720394377498-llljtgttf1saskkluvh8bovecmqkv3p1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6M97lvVemoKKrJzy39cWyvxzdzZOg208"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "720394377498-llljtgttf1saskkluvh8bovecmqkv3p1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
