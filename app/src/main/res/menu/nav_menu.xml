@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home_fragment"
+        android:title="홈"
+        android:icon="@drawable/ic_nav_home"/>
+
+    <item
+        android:id="@+id/community_fragment"
+        android:title="커뮤니티"
+        android:icon="@drawable/ic_nav_community"/>
+
+    <item
+        android:id="@+id/plan_fragment"
+        android:title="계획"
+        android:icon="@drawable/ic_nav_plan"/>
+        />
+    <item
+        android:id="@+id/schedule_fragment"
+        android:title="일정 진행"
+        android:icon="@drawable/ic_nav_schedule"/>
+    />
+    <item
+        android:id="@+id/mypage_fragment"
+        android:title="내 정보"
+        android:icon="@drawable/ic_nav_mypage"/>
+    />
+</menu>
