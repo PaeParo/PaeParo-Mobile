@@ -1,4 +1,4 @@
-package com.paeparo.paeparo_mobile
+package com.paeparo.paeparo_mobile.activity
 
 import android.os.Bundle
 import android.widget.Toast
@@ -9,7 +9,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.GoogleAuthProvider
-import com.paeparo.paeparo_mobile.firebase.FirebaseManager
+import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.manager.FirebaseManager
 
 class MainActivity : AppCompatActivity() {
     private lateinit var firebaseManager: FirebaseManager

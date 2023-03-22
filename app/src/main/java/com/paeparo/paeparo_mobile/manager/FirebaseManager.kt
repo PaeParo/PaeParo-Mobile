@@ -1,4 +1,4 @@
-package com.paeparo.paeparo_mobile.firebase
+package com.paeparo.paeparo_mobile.manager
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
