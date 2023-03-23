@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="nav_background_color">#FF131216</color>
     <color name="nav_disable_color">#FF999999</color>
+    <color name="charcoal">#FF18171C</color>
+    <color name="indian_red_400">#FFDD4C4C</color>
+    <color name="indian_red_700">#FFC0282C</color>
+    <color name="indian_red_900">#FFA4151A</color>
 </resources>
