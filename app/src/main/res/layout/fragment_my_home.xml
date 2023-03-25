@@ -16,12 +16,15 @@
             android:layout_height="150dp"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/profile"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image_view"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_weight="0"
-                tools:src="@tools:sample/avatars" />
+                android:layout_gravity="left"
+                app:civ_border_overlay="true"
+                app:civ_border_width="5dp"
+                app:civ_border_color="#000000"
+                android:src="@drawable/ic_nav_mypage" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,11 +77,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="설정" />
+
             <TextView
                 android:id="@+id/profile_commant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="댓글 단 글" />
+
             <TextView
                 android:id="@+id/profile_faq"
                 android:layout_width="match_parent"
