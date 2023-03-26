@@ -3,22 +3,20 @@ package com.paeparo.paeparo_mobile.manager
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.paeparo.paeparo_mobile.application.PaeParo
 import com.paeparo.paeparo_mobile.constant.SharedPreferencesKey
 
 class SharedPreferencesManager private constructor(context: Context) {
 
     companion object {
         private const val PAEPARO_PREF = "paeparo_prefs"
+        private var instance: SharedPreferencesManager? = null
 
         fun getInstance(context: Context): SharedPreferencesManager {
-            return PaeParo.sharedPreferencesManager
-                ?: synchronized(this) {
-                    PaeParo.sharedPreferencesManager
-                        ?: SharedPreferencesManager(context).also {
-                            PaeParo.sharedPreferencesManager = it
-                        }
+            return instance ?: synchronized(this) {
+                instance ?: SharedPreferencesManager(context.applicationContext).also {
+                    instance = it
                 }
+            }
         }
     }
 

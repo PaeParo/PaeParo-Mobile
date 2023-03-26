@@ -7,22 +7,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.GoogleAuthProvider
 import com.paeparo.paeparo_mobile.R
-import com.paeparo.paeparo_mobile.manager.FirebaseManager
+import com.paeparo.paeparo_mobile.application.PaeParo
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var firebaseManager: FirebaseManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        FirebaseApp.initializeApp(this)
-
-        // FirebaseManager 생성
-        firebaseManager = FirebaseManager()
 
         // Firebase Auth 로그인 테스트 코드
         // Google 로그인 셋팅
@@ -49,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     // Google 로그인에서 얻은 ID 토큰으로 Firebase 인증 처리
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        firebaseManager.auth.signInWithCredential(credential)
+        PaeParo.firebaseManager.auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // 로그인 성공
