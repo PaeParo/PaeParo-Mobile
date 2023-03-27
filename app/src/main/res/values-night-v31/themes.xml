@@ -13,6 +13,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/charcoal</item>
         <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/pretendard_regular</item>
         <!-- Navigation bar color. -->
         <item name="android:navigationBarColor">@color/charcoal</item>
         <item name="android:windowBackground">@color/charcoal</item>
