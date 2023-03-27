@@ -9,7 +9,7 @@ object SharedPreferencesManager {
     private const val PAEPARO_PREF = "paeparo_prefs"
     private lateinit var prefs: SharedPreferences
 
-    fun init(context: Context) {
+    fun initializeManager(context: Context) {
         prefs = context.getSharedPreferences(PAEPARO_PREF, Context.MODE_PRIVATE)
         initIfFirstLaunch()
     }
