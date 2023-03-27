@@ -5,27 +5,12 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.paeparo.paeparo_mobile.constant.SharedPreferencesKey
 
-class SharedPreferencesManager private constructor(context: Context) {
+object SharedPreferencesManager {
+    private const val PAEPARO_PREF = "paeparo_prefs"
+    private lateinit var prefs: SharedPreferences
 
-    companion object {
-        private const val PAEPARO_PREF = "paeparo_prefs"
-        private var instance: SharedPreferencesManager? = null
-
-        fun getInstance(context: Context): SharedPreferencesManager {
-            return instance ?: synchronized(this) {
-                instance ?: SharedPreferencesManager(context.applicationContext).also {
-                    instance = it
-                }
-            }
-        }
-    }
-
-    private val prefs: SharedPreferences by lazy {
-        context.getSharedPreferences(PAEPARO_PREF, Context.MODE_PRIVATE)
-    }
-
-    // 인스턴스 생성 시 초기화
-    init {
+    fun init(context: Context) {
+        prefs = context.getSharedPreferences(PAEPARO_PREF, Context.MODE_PRIVATE)
         initIfFirstLaunch()
     }
 

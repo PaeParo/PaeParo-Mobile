@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.manager
 
+import android.annotation.SuppressLint
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -7,11 +8,8 @@ import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 
-class FirebaseManager private constructor() {
-
-    companion object {
-        val instance = FirebaseManager()
-    }
+@SuppressLint("StaticFieldLeak")
+object FirebaseManager {
 
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
     val realtimeDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()

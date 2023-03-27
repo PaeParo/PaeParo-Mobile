@@ -9,7 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.paeparo.paeparo_mobile.R
-import com.paeparo.paeparo_mobile.application.PaeParo
+import com.paeparo.paeparo_mobile.manager.FirebaseManager
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     // Google 로그인에서 얻은 ID 토큰으로 Firebase 인증 처리
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        PaeParo.firebaseManager.auth.signInWithCredential(credential)
+        FirebaseManager.auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // 로그인 성공
