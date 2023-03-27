@@ -7,6 +7,32 @@
     android:background="@color/charcoal"
     tools:context=".activity.LoginActivity">
 
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="113dp"
+        android:layout_height="99dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/paeparo_logo"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/app_name"
+        android:text="@string/app_name"
+        android:textColor="#DD4C4C"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btn_google_login"
         android:layout_width="0dp"
@@ -33,7 +59,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="32dp"
-                android:contentDescription="@string/btn_google_login"
+                android:contentDescription="@string/sample_text_btn_google_login"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_google_login"
                 app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +70,7 @@
                 android:id="@+id/tv_google_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_google_login"
+                android:text="@string/sample_text_btn_google_login"
                 android:textColor="#111111"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
