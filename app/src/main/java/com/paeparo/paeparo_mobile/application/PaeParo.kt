@@ -1,6 +1,7 @@
 package com.paeparo.paeparo_mobile.application
 
 import android.app.Application
+import android.content.Context
 import com.google.firebase.FirebaseApp
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.manager.SharedPreferencesManager
@@ -40,4 +41,8 @@ class PaeParo : Application() {
         userId = ""
         nickname = ""
     }
+}
+
+fun Context.getPaeParo(): PaeParo {
+    return applicationContext as PaeParo
 }
