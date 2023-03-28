@@ -15,11 +15,11 @@
         android:title="계획"
         android:icon="@drawable/ic_nav_plan"/>
         />
-    <item
-        android:id="@+id/schedule_fragment"
-        android:title="일정 진행"
-        android:icon="@drawable/ic_nav_schedule"/>
-    />
+<!--    <item-->
+<!--        android:id="@+id/schedule_fragment"-->
+<!--        android:title="일정 진행"-->
+<!--        android:icon="@drawable/ic_nav_schedule"/>-->
+<!--    />-->
     <item
         android:id="@+id/mypage_fragment"
         android:title="내 정보"
