@@ -35,4 +35,9 @@ class PaeParo : Application() {
         SharedPreferencesManager.initializeManager(this)
         FirebaseManager.initializeManager(this)
     }
+
+    fun clearUserInfo() {
+        userId = ""
+        nickname = ""
+    }
 }
