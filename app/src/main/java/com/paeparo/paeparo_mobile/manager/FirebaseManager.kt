@@ -97,11 +97,15 @@ object FirebaseManager {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account = task.getResult(ApiException::class.java)!!
-                firebaseAuthWithGoogle(
-                    account.idToken!!,
-                    onSuccess,
-                    onFailure
-                )
+                // Google 로그인에서 얻은 ID 토큰으로 Firebase 인증 처리
+                val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
+                auth.signInWithCredential(credential).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        onSuccess()
+                    } else {
+                        onFailure()
+                    }
+                }
             } catch (e: ApiException) {
                 onFailure()
             }
@@ -131,28 +135,5 @@ object FirebaseManager {
         auth.signOut() // Firebase 인증 서비스에서 현재 로그인된 사용자를 로그아웃
         GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN)
             .revokeAccess() // Google 계정에서 연결을 해제하여 로그아웃
-    }
-
-    /**
-     * Google 로그인에서 얻은 ID 토큰으로 Firebase 인증 처리
-     *
-     * @param idToken Google 인증을 위한 ID Token
-     * @param onSuccess 로그인 성공 시 실행할 Callback 함수
-     * @param onFailure 로그인 실패 시 실행할 Callback 함수
-     */
-    private fun firebaseAuthWithGoogle(
-        idToken: String,
-        onSuccess: () -> Unit,
-        onFailure: () -> Unit
-    ) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onSuccess()
-                } else {
-                    onFailure()
-                }
-            }
     }
 }
