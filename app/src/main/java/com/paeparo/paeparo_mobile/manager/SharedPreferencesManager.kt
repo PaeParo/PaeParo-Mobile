@@ -15,7 +15,7 @@ object SharedPreferencesManager {
     }
 
     // 앱이 처음 실행일 경우 값 초기화
-    fun initIfFirstLaunch() {
+    private fun initIfFirstLaunch() {
         val isFirstLaunch = get(SharedPreferencesKey.KEY_FIRST_LAUNCH, true) ?: true
         if (isFirstLaunch) {
             // 앱이 처음 실행된 것으로 표시하고, 튜토리얼 완료 여부를 false로 초기화
