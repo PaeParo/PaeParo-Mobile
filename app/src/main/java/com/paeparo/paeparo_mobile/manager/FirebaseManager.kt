@@ -18,7 +18,10 @@ import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.paeparo.paeparo_mobile.R
-import com.paeparo.paeparo_mobile.application.PaeParo
+import com.paeparo.paeparo_mobile.application.getPaeParo
+import com.paeparo.paeparo_mobile.constant.FirebaseConstants
+import kotlinx.coroutines.tasks.await
+import com.paeparo.paeparo_mobile.model.User as PaeParoUser
 
 
 /**
@@ -108,7 +111,7 @@ object FirebaseManager {
                 val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
                 auth.signInWithCredential(credential).addOnCompleteListener { firebaseAuthTask ->
                     if (firebaseAuthTask.isSuccessful) {
-                        PaeParo().userId = auth.currentUser!!.uid
+                        context.getPaeParo().userId = auth.currentUser!!.uid
                         onSuccess()
                     } else {
                         onFailure()
@@ -140,12 +143,50 @@ object FirebaseManager {
      * @param context 해당 로그아웃 함수를 실행할 Activity의 Context
      */
     fun logoutWithGoogle(context: Context) {
+        context.getPaeParo().clearUserInfo()
         auth.signOut() // Firebase 인증 서비스에서 현재 로그인된 사용자를 로그아웃
         GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN)
             .revokeAccess() // Google 계정에서 연결을 해제하여 로그아웃
     }
 
+    /**
+     * 현재 로그인된 사용자를 가져오는 함수
+     *
+     * @return 로그인된 사용자가 존재할 경우 FirebaseUser 객체 반환, 아닐 경우 null 반환
+     */
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
+    }
+
+    /**
+     * 사용자 등록 여부를 확인하여 Firestore에 사용자를 추가하는 함수
+     *
+     * @return 등록 및 세부정보 입력 상태에 대한 확인 결과값
+     */
+    suspend fun checkUserRegistered(context: Context): Result<FirebaseConstants.RegistrationStatus> {
+        try {
+            val documentSnapshot =
+                firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+
+            if (!documentSnapshot.exists()) { // 사용자가 등록 되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
+                val newUser = PaeParoUser()
+                firestoreUsersRef.document(context.getPaeParo().userId)
+                    .set(newUser.toMap())
+                    .await()
+                return Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
+            } else { // 사용자가 등록되어 있을 경우
+                val user = documentSnapshot.toObject(PaeParoUser::class.java)
+
+                return if (user!!.nickname == "") { // 사용자 닉네임이 설정 되어 있지 않을 경우
+                    Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
+                } else if (user.age == 0) { // 사용자 세부정보가 설정 되어 있지 않을 경우
+                    Result.success(FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED)
+                } else { // 사용자 정보가 모두 설정 되어 있을 경우
+                    Result.success(FirebaseConstants.RegistrationStatus.REGISTERED)
+                }
+            }
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 }
