@@ -22,10 +22,10 @@ import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
     private val activityContext: Context = this
-    private lateinit var ivPaeParoLogo: ImageView
-    private lateinit var tvPaeParo: TextView
+    private lateinit var ivLoginPaeParoLogo: ImageView
+    private lateinit var tvLoginPaeParo: TextView
     private lateinit var tvLoginTitle: TextView
-    private lateinit var btnGoogleLogin: ConstraintLayout
+    private lateinit var btnLoginGoogleLogin: ConstraintLayout
     private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
@@ -34,10 +34,10 @@ class LoginActivity : AppCompatActivity() {
         overridePendingTransition(0, 0)
         setContentView(R.layout.activity_login)
 
-        ivPaeParoLogo = findViewById(R.id.iv_paeparo_logo)
-        tvPaeParo = findViewById(R.id.tv_paeparo)
+        ivLoginPaeParoLogo = findViewById(R.id.iv_login_paeparo_logo)
+        tvLoginPaeParo = findViewById(R.id.tv_login_paeparo)
         tvLoginTitle = findViewById(R.id.tv_login_title)
-        btnGoogleLogin = findViewById(R.id.btn_google_login)
+        btnLoginGoogleLogin = findViewById(R.id.btn_login_google_login)
 
         startAnimation()
 
@@ -80,26 +80,27 @@ class LoginActivity : AppCompatActivity() {
         })
 
         // Firebase Auth 로그인 테스트 코드
-        btnGoogleLogin.setOnClickListener {
+        btnLoginGoogleLogin.setOnClickListener {
             // 구글 로그인 처리
             FirebaseManager.loginWithGoogle(this, googleSignInLauncher)
         }
     }
 
     private fun startAnimation() {
-        tvPaeParo.alpha = 0f
-        tvPaeParo.translationY = -dpToPx(16f)
+        tvLoginPaeParo.alpha = 0f
+        tvLoginPaeParo.translationY = -dpToPx(16f)
 
         tvLoginTitle.alpha = 0f
         tvLoginTitle.translationY = dpToPx(16f)
 
-        btnGoogleLogin.alpha = 0f
+        btnLoginGoogleLogin.alpha = 0f
 
-        tvPaeParo.animate().translationY(0f).alpha(1f).setDuration(2000)
+        tvLoginPaeParo.animate().translationY(0f).alpha(1f).setDuration(2000)
             .setInterpolator(DecelerateInterpolator()).start()
         tvLoginTitle.animate().translationY(0f).alpha(1f).setDuration(2000)
             .setInterpolator(DecelerateInterpolator()).start()
-        btnGoogleLogin.animate().alpha(1f).setDuration(2000).setInterpolator(LinearInterpolator())
+        btnLoginGoogleLogin.animate().alpha(1f).setDuration(2000)
+            .setInterpolator(LinearInterpolator())
             .start()
     }
 

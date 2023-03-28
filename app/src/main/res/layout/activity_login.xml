@@ -8,7 +8,7 @@
     tools:context=".activity.LoginActivity">
 
     <ImageView
-        android:id="@+id/iv_paeparo_logo"
+        android:id="@+id/iv_login_paeparo_logo"
         android:layout_width="113dp"
         android:layout_height="99dp"
         android:contentDescription="@string/app_name"
@@ -20,7 +20,7 @@
         app:layout_constraintVertical_bias="0.2" />
 
     <TextView
-        android:id="@+id/tv_paeparo"
+        android:id="@+id/tv_login_paeparo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -31,23 +31,23 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_paeparo_logo" />
+        app:layout_constraintTop_toBottomOf="@id/iv_login_paeparo_logo" />
 
     <TextView
         android:id="@+id/tv_login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:contentDescription="@string/sample_text_login_title"
         android:text="@string/sample_text_login_title"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_paeparo" />
+        app:layout_constraintTop_toBottomOf="@id/tv_login_paeparo" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/btn_google_login"
+        android:id="@+id/btn_login_google_login"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
@@ -68,19 +68,19 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/iv_google_login"
+                android:id="@+id/iv_login_google_login"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="32dp"
                 android:contentDescription="@string/sample_text_btn_google_login"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_google_login"
+                app:layout_constraintEnd_toStartOf="@id/tv_login_google_login"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_google" />
 
             <TextView
-                android:id="@+id/tv_google_login"
+                android:id="@+id/tv_login_google_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sample_text_btn_google_login"
@@ -88,7 +88,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/iv_google_login"
+                app:layout_constraintStart_toEndOf="@id/iv_login_google_login"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
