@@ -10,6 +10,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,6 +18,7 @@ import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.application.PaeParo
 
 
 /**
@@ -30,32 +32,32 @@ object FirebaseManager {
     /**
      * Firebase Authentication Module
      */
-    val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     /**
      * Firebase Realtime Database Module
      */
-    val realtimeDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val realtimeDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
 
     /**
      * Firebase Cloud Firestore Module
      */
-    val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     /**
      * Firebase Storage Module
      */
-    val storage: FirebaseStorage = FirebaseStorage.getInstance()
+    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
     /**
      * Firebase Cloud Functions Module
      */
-    val functions: FirebaseFunctions = FirebaseFunctions.getInstance()
+    private val functions: FirebaseFunctions = FirebaseFunctions.getInstance()
 
     /**
      * Firebase Cloud Messaging Module
      */
-    val messaging: FirebaseMessaging = FirebaseMessaging.getInstance()
+    private val messaging: FirebaseMessaging = FirebaseMessaging.getInstance()
 
     /**
      * Application Context
@@ -66,6 +68,11 @@ object FirebaseManager {
      * Google 로그인 시 사용할 GoogleSignInOptions
      */
     private lateinit var gso: GoogleSignInOptions
+
+    private val firestoreUsersRef = firestore.collection("users")
+    private val firestoreTripsRef = firestore.collection("trips")
+    private val firestoreEventsRef = firestore.collection("events")
+    private val firestorePostsRef = firestore.collection("posts")
 
     /**
      * FirebaseManager 사용 전 객체 내 요소들을 초기화하는 함수
@@ -94,13 +101,14 @@ object FirebaseManager {
         onFailure: () -> Unit
     ): ActivityResultLauncher<Intent> {
         return (context as AppCompatActivity).registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            val googleSignInTask = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
-                val account = task.getResult(ApiException::class.java)!!
+                val account = googleSignInTask.getResult(ApiException::class.java)!!
                 // Google 로그인에서 얻은 ID 토큰으로 Firebase 인증 처리
                 val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
-                auth.signInWithCredential(credential).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
+                auth.signInWithCredential(credential).addOnCompleteListener { firebaseAuthTask ->
+                    if (firebaseAuthTask.isSuccessful) {
+                        PaeParo().userId = auth.currentUser!!.uid
                         onSuccess()
                     } else {
                         onFailure()
@@ -135,5 +143,9 @@ object FirebaseManager {
         auth.signOut() // Firebase 인증 서비스에서 현재 로그인된 사용자를 로그아웃
         GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN)
             .revokeAccess() // Google 계정에서 연결을 해제하여 로그아웃
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return auth.currentUser
     }
 }

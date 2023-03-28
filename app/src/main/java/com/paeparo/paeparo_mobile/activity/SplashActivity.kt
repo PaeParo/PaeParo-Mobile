@@ -36,7 +36,7 @@ class SplashActivity : AppCompatActivity() {
 
         // Google 로그인 결과를 처리하는 launcher를 LoginActivity에서 생성
         Handler(Looper.getMainLooper()).postDelayed({
-            if (FirebaseManager.auth.currentUser == null) {
+            if (FirebaseManager.getCurrentUser() == null) {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
