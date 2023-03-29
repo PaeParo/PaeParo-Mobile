@@ -86,8 +86,7 @@ object FirebaseManager {
         applicationContext = context.applicationContext
         gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(applicationContext.getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
+            .requestEmail().build()
     }
 
     /**
@@ -99,9 +98,7 @@ object FirebaseManager {
      * @return Parameters를 이용하여 생성된 ActivityResultLauncher<Intent>
      */
     fun createGoogleLoginLauncher(
-        context: Context,
-        onSuccess: () -> Unit,
-        onFailure: () -> Unit
+        context: Context, onSuccess: () -> Unit, onFailure: () -> Unit
     ): ActivityResultLauncher<Intent> {
         return (context as AppCompatActivity).registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val googleSignInTask = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -130,8 +127,7 @@ object FirebaseManager {
      * @param googleSignInLauncher 이전에 생성한 ActivityResultLauncher<Intent> (FirebaseManager.createGoogleLoginLauncher()을 이용하여 생성한 객체)
      */
     fun loginWithGoogle(
-        context: Context,
-        googleSignInLauncher: ActivityResultLauncher<Intent>
+        context: Context, googleSignInLauncher: ActivityResultLauncher<Intent>
     ) {
         // Google 로그인 창 표시
         googleSignInLauncher.launch(GoogleSignIn.getClient(context, gso).signInIntent)
@@ -170,9 +166,7 @@ object FirebaseManager {
 
             if (!documentSnapshot.exists()) { // 사용자가 등록 되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
                 val newUser = PaeParoUser()
-                firestoreUsersRef.document(context.getPaeParo().userId)
-                    .set(newUser.toMap())
-                    .await()
+                firestoreUsersRef.document(context.getPaeParo().userId).set(newUser.toMap()).await()
                 return Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
             } else { // 사용자가 등록되어 있을 경우
                 val user = documentSnapshot.toObject(PaeParoUser::class.java)
@@ -208,6 +202,37 @@ object FirebaseManager {
                 val user = documentSnapshot.toObject(PaeParoUser::class.java)
                 Result.success(user!!)
             }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 사용자 세부정보를 업데이트하는 함수
+     *
+     * @param context 함수를 실행할 Activity의 Context
+     * @param age 사용자 나이
+     * @param gender 사용자 성별
+     * @param travelStyle 사용자 여행 취향
+     * @return 성공 여부
+     */
+    suspend fun updateUserInfo(
+        context: Context,
+        age: Int,
+        gender: String,
+        travelStyle: String
+    ): Result<Unit> {
+        return try {
+            FirebaseFirestore.getInstance().collection("users")
+                .document(context.getPaeParo().userId).update(
+                    mapOf(
+                        "age" to age,
+                        "gender" to gender,
+                        "travel_style" to travelStyle
+                    )
+                ).await()
+
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
