@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 class SplashActivity : AppCompatActivity() {
     private val activityContext: Context = this
     private val SPLASH_TIME: Long = 2000
-    private val context: Context = this
     private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
@@ -74,7 +73,7 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else {
-                FirebaseManager.loginWithGoogle(context, googleSignInLauncher)
+                FirebaseManager.loginWithGoogle(activityContext, googleSignInLauncher)
             }
         }, SPLASH_TIME)
     }
