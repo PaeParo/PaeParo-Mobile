@@ -3,18 +3,13 @@ package com.paeparo.paeparo_mobile.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class SplashActivity : AppCompatActivity() {
     private val activityContext: Context = this
@@ -60,22 +55,24 @@ class SplashActivity : AppCompatActivity() {
                 }
             }
         }, onFailure = {
-            Toast.makeText(this, "자동 로그인: 사용자 인증에 실패했습니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activityContext, "자동 로그인: 사용자 인증에 실패했습니다", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         })
 
         // Google 로그인 결과를 처리하는 launcher를 LoginActivity에서 생성
-        Handler(Looper.getMainLooper()).postDelayed({
+        mainScope.launch {
+            delay(SPLASH_TIME)
+
             if (FirebaseManager.getCurrentUser() == null) {
-                val intent = Intent(this, LoginActivity::class.java)
+                val intent = Intent(activityContext, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
                 FirebaseManager.loginWithGoogle(activityContext, googleSignInLauncher)
             }
-        }, SPLASH_TIME)
+        }
     }
 
     override fun onDestroy() {
