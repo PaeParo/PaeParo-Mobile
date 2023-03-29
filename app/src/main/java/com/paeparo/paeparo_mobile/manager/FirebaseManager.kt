@@ -182,11 +182,34 @@ object FirebaseManager {
                 } else if (user.age == 0) { // 사용자 세부정보가 설정 되어 있지 않을 경우
                     Result.success(FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED)
                 } else { // 사용자 정보가 모두 설정 되어 있을 경우
+                    context.getPaeParo().nickname = user.nickname
                     Result.success(FirebaseConstants.RegistrationStatus.REGISTERED)
                 }
             }
         } catch (e: Exception) {
             return Result.failure(e)
+        }
+    }
+
+    /**
+     * 사용자 정보를 가져오는 함수
+     *
+     * @param context 함수를 실행할 Activity의 Context
+     * @return 사용자 정보를 가져오는데 성공할 경우 User 객체 반환, 실패할 경우 Exception 반환
+     */
+    suspend fun getUserData(context: Context): Result<PaeParoUser> {
+        return try {
+            val documentSnapshot =
+                firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+
+            if (!documentSnapshot.exists()) {
+                Result.failure(Exception("User not found"))
+            } else {
+                val user = documentSnapshot.toObject(PaeParoUser::class.java)
+                Result.success(user!!)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }
