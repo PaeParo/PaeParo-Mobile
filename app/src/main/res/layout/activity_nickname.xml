@@ -58,7 +58,7 @@
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginTop="130dp"
-        android:background="@drawable/bg_btn_edt_nickname"
+        android:background="@drawable/bg_edt_nickname"
         android:hint="닉네임 입력"
         android:inputType="text"
         android:paddingStart="20dp"
