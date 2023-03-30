@@ -195,7 +195,7 @@ object FirebaseManager {
      * @param context 함수를 실행할 Activity의 Context
      * @return 사용자 정보를 가져오는데 성공할 경우 User 객체 반환, 실패할 경우 Exception 반환
      */
-    suspend fun getUserData(context: Context): Result<PaeParoUser> {
+    suspend fun getCurrentUserData(context: Context): Result<PaeParoUser> {
         return try {
             val documentSnapshot =
                 firestoreUsersRef.document(context.getPaeParo().userId).get().await()
@@ -220,7 +220,7 @@ object FirebaseManager {
      * @param travelStyle 사용자 여행 취향
      * @return 성공 여부
      */
-    suspend fun updateUserInfo(
+    suspend fun updateCurrentUserInfo(
         context: Context,
         age: Int,
         gender: String,
@@ -237,6 +237,26 @@ object FirebaseManager {
                 ).await()
 
             Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 닉네임을 이용하여 사용자 ID 를 가져오는 함수
+     *
+     * @param nickname 검색할 사용자의 닉네임
+     * @return 사용자 ID를 가져오는데 성공할 경우 사용자 ID 반환, 실패할 경우 Exception 반환
+     */
+    suspend fun getUserIdByNickname(nickname: String): Result<String> {
+        return try {
+            val userData =
+                firestoreUsersRef.whereEqualTo("nickname", nickname).limit(1).get().await()
+            if (userData.documents.isEmpty()) {
+                Result.failure(Exception("User not found"))
+            } else {
+                Result.success(userData.documents[0].id)
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

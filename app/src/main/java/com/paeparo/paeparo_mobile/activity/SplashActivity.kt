@@ -33,7 +33,7 @@ class SplashActivity : AppCompatActivity() {
                     if (userRegisteredResult.isSuccess) { // 사용자 등록 여부 확인을 성공할 경우
                         when (userRegisteredResult.getOrNull()!!) {
                             FirebaseConstants.RegistrationStatus.REGISTERED -> {
-                                val getUserResult = FirebaseManager.getUserData(this@SplashActivity)
+                                val getUserResult = FirebaseManager.getCurrentUserData(this@SplashActivity)
 
                                 withContext(Dispatchers.Main) {
                                     if (getUserResult.isSuccess) {

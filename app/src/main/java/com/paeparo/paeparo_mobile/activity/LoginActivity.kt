@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
                     if (userRegisteredResult.isSuccess) { // 사용자 등록 여부 확인을 성공할 경우
                         when (userRegisteredResult.getOrNull()!!) {
                             FirebaseConstants.RegistrationStatus.REGISTERED -> {
-                                val getUserResult = FirebaseManager.getUserData(this@LoginActivity)
+                                val getUserResult = FirebaseManager.getCurrentUserData(this@LoginActivity)
 
                                 withContext(Dispatchers.Main) {
                                     if (getUserResult.isSuccess) {
