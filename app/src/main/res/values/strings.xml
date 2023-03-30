@@ -3,6 +3,13 @@
 
     <string name="sample_text_btn_google_login">Google 계정으로 시작</string>
     <string name="sample_text_login_title">여정의 시작을 PaeParo와 함께 해보세요</string>
+
+    <string name="sample_text_tv_nickname_name_right"> 님,</string>
+    <string name="sample_text_nickname_title">PaeParo와 떠날 준비가 되셨나요?</string>
+    <string name="sample_text_edt_nickname">닉네임 입력</string>
+    <string name="sample_text_nickname_warning">• 닉네임에는 특수문자와 공백을 포함할 수 없습니다\n• 닉네임 길이는 최소 2자리, 최대 12자리까지 가능합니다\n• 설정한 닉네임은 추후 변경이 불가능합니다</string>
+    <string name="sample_text_btn_nickname_next">다음</string>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
