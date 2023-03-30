@@ -13,4 +13,5 @@
     <color name="indian_red_400">#FFDD4C4C</color>
     <color name="indian_red_700">#FFC0282C</color>
     <color name="indian_red_900">#FFA4151A</color>
+    <color name="app_personal_red">#DD4C4C</color>
 </resources>
