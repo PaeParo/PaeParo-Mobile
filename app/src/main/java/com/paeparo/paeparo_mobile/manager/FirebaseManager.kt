@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
@@ -20,6 +21,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
+import com.paeparo.paeparo_mobile.model.AgeDistribution
+import com.paeparo.paeparo_mobile.model.GenderDistribution
+import com.paeparo.paeparo_mobile.model.TravelPreferences
 import kotlinx.coroutines.tasks.await
 import com.paeparo.paeparo_mobile.model.User as PaeParoUser
 
@@ -166,7 +170,7 @@ object FirebaseManager {
 
             if (!documentSnapshot.exists()) { // 사용자가 등록 되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
                 val newUser = PaeParoUser()
-                firestoreUsersRef.document(context.getPaeParo().userId).set(newUser.toMap()).await()
+                firestoreUsersRef.document(context.getPaeParo().userId).set(newUser).await()
                 return Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
             } else { // 사용자가 등록되어 있을 경우
                 val user = documentSnapshot.toObject(PaeParoUser::class.java)
@@ -233,6 +237,95 @@ object FirebaseManager {
                 ).await()
 
             Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 새로운 여행을 생성하는 함수
+     *
+     * @param context 함수를 실행할 Activity의 Context
+     * @param name 여행 이름
+     * @param duration 여행 기간
+     * @param startDate 여행 시작 날짜
+     * @param endDate 여행 종료 날짜
+     * @param budget 여행 예산
+     * @param members 여행에 참여할 멤버들의 ID
+     * @return 성공 여부
+     */
+    suspend fun createNewTrip(
+        context: Context,
+        name: String,
+        duration: Int,
+        startDate: String,
+        endDate: String,
+        budget: Int,
+        members: List<String>
+    ): Result<String> {
+        return try {
+            val genderDistribution = GenderDistribution()
+            val ageDistribution = AgeDistribution()
+            val travelPreferences = TravelPreferences()
+
+            for (memberId in members) {
+                val userData = firestoreUsersRef.document(memberId).get().await()
+                val user = userData.toObject(PaeParoUser::class.java)
+
+                if (user != null) { // 사용자가 존재할 경우
+                    when (user.gender) {
+                        "M" -> genderDistribution.male++
+                        "F" -> genderDistribution.female++
+                    }
+
+                    when ((user.age / 10) * 10) {
+                        10 -> ageDistribution.`10s`++
+                        20 -> ageDistribution.`20s`++
+                        30 -> ageDistribution.`30s`++
+                        40 -> ageDistribution.`40s`++
+                        50 -> ageDistribution.`50s`++
+                        60 -> ageDistribution.`60s`++
+                    }
+
+                    for (travelStyle in user.travelStyle) {
+                        when (travelStyle) {
+                            "activity" -> travelPreferences.activity++
+                            "scenery" -> travelPreferences.scenery++
+                            "relaxation" -> travelPreferences.relaxation++
+                            "luxury" -> travelPreferences.luxury++
+                            "costEffectiveness" -> travelPreferences.costEffectiveness++
+                            "accommodation" -> travelPreferences.accommodation++
+                            "food" -> travelPreferences.food++
+                            "transportation" -> travelPreferences.transportation++
+                            "shopping" -> travelPreferences.shopping++
+                        }
+                    }
+                } else {
+                    return Result.failure(Exception("사용자가 존재하지 않습니다: $memberId"))
+                }
+            }
+
+            val newTripRef = firestoreTripsRef.document()
+            firestore.runBatch { batch ->
+                batch.set(
+                    newTripRef, mapOf(
+                        "name" to name,
+                        "duration" to duration,
+                        "startDate" to startDate,
+                        "endDate" to endDate,
+                        "budget" to budget,
+                        "members" to members.associateWith { false },
+                        "genderDistribution" to genderDistribution,
+                        "ageDistribution" to ageDistribution,
+                        "travelPreferences" to travelPreferences
+                    )
+                )
+                batch.update(
+                    firestoreUsersRef.document(context.getPaeParo().userId),
+                    mapOf("trips" to FieldValue.arrayUnion(newTripRef.id))
+                )
+            }.await()
+            Result.success(newTripRef.id)
         } catch (e: Exception) {
             Result.failure(e)
         }
