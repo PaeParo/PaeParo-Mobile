@@ -7,12 +7,11 @@ data class Trip(
     val startDate: String = "",
     val endDate: String = "",
     val budget: Int = 0,
-    val members: List<String> = listOf(),
+    val members: Map<String, Boolean> = mapOf(),
     val genderDistribution: GenderDistribution = GenderDistribution(),
     val ageDistribution: AgeDistribution = AgeDistribution(),
     val travelPreferences: TravelPreferences = TravelPreferences()
 )
-
 data class GenderDistribution(
     var male: Int = 0,
     var female: Int = 0
