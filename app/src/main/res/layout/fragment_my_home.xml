@@ -35,16 +35,15 @@
                 android:layout_weight="0"
                 android:gravity="center|left"
                 android:orientation="vertical"
-                android:paddingLeft="20dp">
+                android:paddingStart="20dp">
 
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:textSize="30dp"
+                    android:textSize="30sp"
                     android:textColor="@color/white"
-                    android:text="닉네임" />
+                    android:text="@string/myhome_text_nickname" />
 
                 <TextView
                     android:id="@+id/fixhome"
@@ -52,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:textColor="@color/teal_700"
-                    android:text="프로필 정보 보기" />
+                    android:text="@string/myhome_text_nickname_show" />
             </LinearLayout>
 
         </LinearLayout>
@@ -81,15 +80,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center|left"
-                    android:paddingLeft="10dp"
+                    android:paddingStart="10dp"
                     android:textColor="@color/white"
-                    android:text="찜한 일정" />
+                    android:text="@string/myhome_text_like" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_centerInParent="true"
                 android:background="#66FFFFFF"/>
 
             <LinearLayout
@@ -110,14 +108,13 @@
                     android:layout_height="60dp"
                     android:gravity="center|left"
                     android:textColor="@color/white"
-                    android:paddingLeft="10dp"
-                    android:text="프로필" />
+                    android:paddingStart="10dp"
+                    android:text="@string/myhome_text_profile" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_centerInParent="true"
                 android:background="#66FFFFFF"/>
 
             <LinearLayout
@@ -138,14 +135,13 @@
                     android:layout_height="60dp"
                     android:gravity="center|left"
                     android:textColor="@color/white"
-                    android:paddingLeft="10dp"
-                    android:text="내가 만든 일정" />
+                    android:paddingStart="10dp"
+                    android:text="@string/myhome_text_plan" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_centerInParent="true"
                 android:background="#66FFFFFF"/>
 
             <LinearLayout
@@ -165,14 +161,13 @@
                     android:layout_height="60dp"
                     android:gravity="center|left"
                     android:textColor="@color/white"
-                    android:paddingLeft="10dp"
-                    android:text="설정" />
+                    android:paddingStart="10dp"
+                    android:text="@string/myhome_teext_settings" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_centerInParent="true"
                 android:background="#66FFFFFF"/>
 
             <LinearLayout
@@ -185,22 +180,22 @@
                     android:id="@+id/imageView4"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_myhome_comment" />
+                    android:src="@drawable/ic_myhome_comment"
+                     />
                 <TextView
                     android:id="@+id/profile_commant"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center|left"
                     android:textColor="@color/white"
-                    android:paddingLeft="10dp"
-                    android:text="댓글 단 글" />
+                    android:paddingStart="10dp"
+                    android:text="@string/myhome_text_comment" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_centerInParent="true"
                 android:background="#66FFFFFF"/>
 
             <LinearLayout
@@ -221,13 +216,12 @@
                     android:layout_height="60dp"
                     android:gravity="center|left"
                     android:textColor="@color/white"
-                    android:paddingLeft="10dp"
-                    android:text="자주 묻는 질문(FAQ)" />
+                    android:paddingStart="10dp"
+                    android:text="@string/myhome_text_faq" />
             </LinearLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_centerInParent="true"
                 android:background="#66FFFFFF"/>
         </LinearLayout>
     </LinearLayout>
