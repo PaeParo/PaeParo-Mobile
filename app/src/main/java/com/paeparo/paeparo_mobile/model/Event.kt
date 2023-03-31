@@ -9,16 +9,51 @@ open class Event(
     var startTime: Long = 0L,
     var endTime: Long = 0L,
     var budget: Int = 0
-)
+) {
+    open fun toMapWithoutEventId(): Map<String, Any> {
+        return mapOf(
+            "name" to name,
+            "type" to type,
+            "start_time" to startTime,
+            "end_time" to endTime,
+            "budget" to budget
+        )
+    }
+}
+
 data class PlaceEvent(
     var place: Place = Place(),
-) : Event()
+) : Event() {
+    override fun toMapWithoutEventId(): Map<String, Any> {
+        return mapOf(
+            "name" to name,
+            "type" to type,
+            "start_time" to startTime,
+            "end_time" to endTime,
+            "budget" to budget,
+            "place" to place
+        )
+    }
+}
 
 data class MoveEvent(
     var mode: String = "",
     var origin: Place = Place(),
     var destination: Place = Place()
-) : Event()
+) : Event() {
+    override fun toMapWithoutEventId(): Map<String, Any> {
+        return mapOf(
+            "name" to name,
+            "type" to type,
+            "start_time" to startTime,
+            "end_time" to endTime,
+            "budget" to budget,
+            "mode" to mode,
+            "origin" to origin,
+            "destination" to destination
+        )
+    }
+}
 
 
 data class Place(
