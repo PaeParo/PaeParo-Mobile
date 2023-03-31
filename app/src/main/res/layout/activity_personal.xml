@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--취향 어떻게-->
+    <!--tv_personal_title3에서 여러분, DB이름 어떤거 할지?-->
+    <!--버튼에 로고사진입력?-->
+    <!--    hardcoded string 해결하기-->
+
+    <!--연령대, 취향 라디오그룹 두개를 묶는 코딩이 필요함-->
+    <!--    btn_personal_gender_man 체크 해제하기-->
+
+    <TextView
+        android:id="@+id/tv_personal_title1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:text="잠깐!"
+        android:textColor="#FFFFFF"
+        android:textSize="38sp"
+        android:textStyle="bold"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_personal_title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="나만의 맞춤 서비스를 이용해보세요"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"
+        android:textStyle="bold"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_title1" />
+
+    <TextView
+        android:id="@+id/tv_personal_title3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="아래의 항목에 대해 알려주시면 여러분과 더 관련 있는 여행 일정들을 제공받으실 수 있습니다"
+        android:textColor="#999999"
+        android:textSize="15sp"
+        android:textStyle="bold"
+
+        app:layout_constraintEnd_toEndOf="@id/tv_personal_title2"
+        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_title2" />
+
+
+    <TextView
+        android:id="@+id/tv_personal_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="성별"
+        android:textColor="#FFFFFF"
+        android:textSize="23sp"
+        android:textStyle="bold"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_title3" />
+
+    <RadioGroup
+        android:id="@+id/rg_personal_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_gender">
+
+        <RadioButton
+            android:id="@+id/btn_personal_gender_man"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:checked="true"
+            android:paddingStart="75dp"
+            android:paddingEnd="75dp"
+            android:text="남성"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+
+        <RadioButton
+            android:id="@+id/btn_personal_gender_woman"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="75dp"
+            android:paddingEnd="75dp"
+            android:text="여성"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+    </RadioGroup>
+
+
+    <TextView
+        android:id="@+id/tv_personal_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="연령대"
+        android:textColor="#FFFFFF"
+        android:textSize="23sp"
+        android:textStyle="bold"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
+        app:layout_constraintTop_toBottomOf="@+id/rg_personal_gender" />
+
+    <RadioGroup
+        android:id="@+id/rg_personal_age1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_age">
+
+        <RadioButton
+            android:id="@+id/btn_personal_age_teens"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:text="10대"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+
+        <RadioButton
+            android:id="@+id/btn_personal_age_twenty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:text="20대"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+
+        <RadioButton
+            android:id="@+id/btn_personal_age_thirty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:text="30대"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/rg_personal_age2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rg_personal_age1">
+
+        <RadioButton
+            android:id="@+id/btn_personal_age_forty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:text="40대"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal"
+            app:layout_constraintTop_toBottomOf="@id/btn_personal_age_twenty" />
+
+        <RadioButton
+            android:id="@+id/btn_personal_age_fifty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:text="50대"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+    </RadioGroup>
+
+
+    <TextView
+        android:id="@+id/tv_personal_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="취향"
+        android:textColor="#FFFFFF"
+        android:textSize="23sp"
+        android:textStyle="bold"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
+        app:layout_constraintTop_toBottomOf="@id/rg_personal_age2" />
+
+    <RadioGroup
+        android:id="@+id/rg_personal_style1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_style">
+
+        <RadioButton
+            android:id="@+id/btn_personal_style_style1"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="취향1"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+
+        <RadioButton
+            android:id="@+id/btn_personal_style_style2"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="취향2"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+
+        <RadioButton
+            android:id="@+id/btn_personal_style_style3"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="취향3"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+
+        <RadioButton
+            android:id="@+id/btn_personal_style_style4"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="취향4"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/rg_personal_style2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rg_personal_style1">
+
+        <RadioButton
+            android:id="@+id/btn_personal_style_style5"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="취향5"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+
+        <RadioButton
+            android:id="@+id/btn_personal_style_style6"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="취향6"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+
+        <RadioButton
+            android:id="@+id/btn_personal_style_style7"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_btn_personal"
+            android:button="@null"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="취향7"
+            android:textAlignment="center"
+            android:textColor="@drawable/tc_btn_personal" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="#DD4C4C"
+        android:text="Paeparo와 함께 여행 시작"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+        android:textStyle="bold"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.9" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
