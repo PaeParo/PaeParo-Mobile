@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
@@ -24,6 +23,7 @@ import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.model.AgeDistribution
 import com.paeparo.paeparo_mobile.model.GenderDistribution
 import com.paeparo.paeparo_mobile.model.TravelPreferences
+import com.paeparo.paeparo_mobile.model.Trip
 import kotlinx.coroutines.tasks.await
 import com.paeparo.paeparo_mobile.model.User as PaeParoUser
 
@@ -190,7 +190,7 @@ object FirebaseManager {
     }
 
     /**
-     * 사용자 정보를 가져오는 함수
+     * 현재 사용자 정보를 가져오는 함수
      *
      * @param context 함수를 실행할 Activity의 Context
      * @return 사용자 정보를 가져오는데 성공할 경우 User 객체 반환, 실패할 경우 Exception 반환
@@ -204,7 +204,8 @@ object FirebaseManager {
                 Result.failure(Exception("User not found"))
             } else {
                 val user = documentSnapshot.toObject(PaeParoUser::class.java)
-                Result.success(user!!)
+                user!!.userId = documentSnapshot.id
+                Result.success(user)
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -212,7 +213,7 @@ object FirebaseManager {
     }
 
     /**
-     * 사용자 세부정보를 업데이트하는 함수
+     * 현재 사용자 세부정보를 업데이트하는 함수
      *
      * @param context 함수를 실행할 Activity의 Context
      * @param age 사용자 나이
@@ -224,7 +225,7 @@ object FirebaseManager {
         context: Context,
         age: Int,
         gender: String,
-        travelStyle: String
+        travelStyle: List<String>
     ): Result<Unit> {
         return try {
             FirebaseFirestore.getInstance().collection("users")
@@ -252,9 +253,9 @@ object FirebaseManager {
         return try {
             val userData =
                 firestoreUsersRef.whereEqualTo("nickname", nickname).limit(1).get().await()
-            if (userData.documents.isEmpty()) {
+            if (userData.documents.isEmpty()) { // 사용자가 존재하지 않을 경우
                 Result.failure(Exception("User not found"))
-            } else {
+            } else { // 사용자가 존재할 경우
                 Result.success(userData.documents[0].id)
             }
         } catch (e: Exception) {
@@ -267,7 +268,6 @@ object FirebaseManager {
      *
      * @param context 함수를 실행할 Activity의 Context
      * @param name 여행 이름
-     * @param duration 여행 기간
      * @param startDate 여행 시작 날짜
      * @param endDate 여행 종료 날짜
      * @param budget 여행 예산
@@ -277,9 +277,8 @@ object FirebaseManager {
     suspend fun createNewTrip(
         context: Context,
         name: String,
-        duration: Int,
-        startDate: String,
-        endDate: String,
+        startDate: Long,
+        endDate: Long,
         budget: Int,
         members: List<String>
     ): Result<String> {
@@ -299,25 +298,19 @@ object FirebaseManager {
                     }
 
                     when ((user.age / 10) * 10) {
-                        10 -> ageDistribution.`10s`++
-                        20 -> ageDistribution.`20s`++
-                        30 -> ageDistribution.`30s`++
-                        40 -> ageDistribution.`40s`++
-                        50 -> ageDistribution.`50s`++
-                        60 -> ageDistribution.`60s`++
+                        10 -> ageDistribution._10s++
+                        20 -> ageDistribution._20s++
+                        30 -> ageDistribution._30s++
+                        40 -> ageDistribution._40s++
+                        50 -> ageDistribution._50s++
+                        60 -> ageDistribution._60s++
                     }
 
                     for (travelStyle in user.travelStyle) {
                         when (travelStyle) {
-                            "activity" -> travelPreferences.activity++
-                            "scenery" -> travelPreferences.scenery++
-                            "relaxation" -> travelPreferences.relaxation++
-                            "luxury" -> travelPreferences.luxury++
-                            "costEffectiveness" -> travelPreferences.costEffectiveness++
-                            "accommodation" -> travelPreferences.accommodation++
                             "food" -> travelPreferences.food++
-                            "transportation" -> travelPreferences.transportation++
-                            "shopping" -> travelPreferences.shopping++
+                            "complex" -> travelPreferences.complex++
+                            "activity" -> travelPreferences.activity++
                         }
                     }
                 } else {
@@ -326,25 +319,19 @@ object FirebaseManager {
             }
 
             val newTripRef = firestoreTripsRef.document()
-            firestore.runBatch { batch ->
-                batch.set(
-                    newTripRef, mapOf(
-                        "name" to name,
-                        "duration" to duration,
-                        "startDate" to startDate,
-                        "endDate" to endDate,
-                        "budget" to budget,
-                        "members" to members.associateWith { false },
-                        "genderDistribution" to genderDistribution,
-                        "ageDistribution" to ageDistribution,
-                        "travelPreferences" to travelPreferences
-                    )
-                )
-                batch.update(
-                    firestoreUsersRef.document(context.getPaeParo().userId),
-                    mapOf("trips" to FieldValue.arrayUnion(newTripRef.id))
-                )
-            }.await()
+            newTripRef.set(
+                Trip(
+                    newTripRef.id,
+                    name,
+                    startDate,
+                    endDate,
+                    budget,
+                    members.associateWith { false },
+                    genderDistribution,
+                    ageDistribution,
+                    travelPreferences
+                ).toMapWithoutTripId()
+            ).await()
             Result.success(newTripRef.id)
         } catch (e: Exception) {
             Result.failure(e)
