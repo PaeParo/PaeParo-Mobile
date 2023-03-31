@@ -11,12 +11,14 @@ import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.databinding.FragmentMyHomeBinding
 
 class MyHomeFragment : Fragment() {
-    private var binding:FragmentMyHomeBinding? = null
+    private var _binding:FragmentMyHomeBinding? = null
+    private val binding get()=_binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding=FragmentMyHomeBinding.inflate(inflater)
+
+        _binding=FragmentMyHomeBinding.inflate(inflater)
 
         binding!!.fixhome.setOnClickListener{
             binding!!.name.text="fixhome"
@@ -46,5 +48,10 @@ class MyHomeFragment : Fragment() {
         }
 
         return binding!!.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding=null
     }
 }
