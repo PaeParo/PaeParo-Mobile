@@ -1,28 +1,27 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.firebase.firestore.GeoPoint
+
 open class Event(
-    val eventId: String = "",
-    val name: String = "",
-    val type: String = "",
-    val startTime: String = "",
-    val endTime: String = ""
+    var eventId: String = "",
+    var name: String = "",
+    var type: String = "",
+    var startTime: Long = 0L,
+    var endTime: Long = 0L,
+    var budget: Int = 0
 )
-
 data class PlaceEvent(
-    val location: Place = Place(),
-    val transportation: String = "",
-) : Event("", "", "", "", "")
+    var place: Place = Place(),
+) : Event()
 
-data class Transportation(
-    val mode: String = "",
-    val transitCount: Int = 0,
-    val travelTime: Int = 0,
-    val origin: Place = Place(),
-    val destination: Place = Place()
-) : Event("", "", "", "", "")
+data class MoveEvent(
+    var mode: String = "",
+    var origin: Place = Place(),
+    var destination: Place = Place()
+) : Event()
+
 
 data class Place(
-    val name: String = "",
-    val latitude: Double = 0.0,
-    val longitude: Double = 0.0
+    var name: String = "",
+    var location: GeoPoint = GeoPoint(0.0, 0.0),
 )

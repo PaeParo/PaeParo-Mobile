@@ -1,39 +1,46 @@
 package com.paeparo.paeparo_mobile.model
 
 data class Trip(
-    val tripId: String = "",
-    val name: String = "",
-    val duration: Int = 0,
-    val startDate: String = "",
-    val endDate: String = "",
-    val budget: Int = 0,
-    val members: Map<String, Boolean> = mapOf(),
-    val genderDistribution: GenderDistribution = GenderDistribution(),
-    val ageDistribution: AgeDistribution = AgeDistribution(),
-    val travelPreferences: TravelPreferences = TravelPreferences()
-)
+    var tripId: String = "",
+    var name: String = "",
+    var startDate: Long = 0L,
+    var endDate: Long = 0L,
+    var budget: Int = 0,
+    var members: Map<String, Boolean> = mapOf(),
+    var genderDistribution: GenderDistribution = GenderDistribution(),
+    var ageDistribution: AgeDistribution = AgeDistribution(),
+    var travelPreferences: TravelPreferences = TravelPreferences()
+) {
+    fun toMapWithoutTripId(): Map<String, Any> {
+        return mapOf(
+            "name" to name,
+            "start_date" to startDate,
+            "end_date" to endDate,
+            "budget" to budget,
+            "members" to members,
+            "gender_distribution" to genderDistribution,
+            "age_distribution" to ageDistribution,
+            "travel_preferences" to travelPreferences
+        )
+    }
+}
+
 data class GenderDistribution(
     var male: Int = 0,
     var female: Int = 0
 )
 
 data class AgeDistribution(
-    var `10s`: Int = 0,
-    var `20s`: Int = 0,
-    var `30s`: Int = 0,
-    var `40s`: Int = 0,
-    var `50s`: Int = 0,
-    var `60s`: Int = 0
+    var _10s: Int = 0,
+    var _20s: Int = 0,
+    var _30s: Int = 0,
+    var _40s: Int = 0,
+    var _50s: Int = 0,
+    var _60s: Int = 0
 )
 
 data class TravelPreferences(
-    var activity: Int = 0,
-    var scenery: Int = 0,
-    var relaxation: Int = 0,
-    var luxury: Int = 0,
-    var costEffectiveness: Int = 0,
-    var accommodation: Int = 0,
     var food: Int = 0,
-    var transportation: Int = 0,
-    var shopping: Int = 0
+    var complex: Int = 0,
+    var activity: Int = 0
 )
