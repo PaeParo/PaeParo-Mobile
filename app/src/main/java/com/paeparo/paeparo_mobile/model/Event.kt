@@ -1,16 +1,22 @@
 package com.paeparo.paeparo_mobile.model
 
 import com.google.firebase.firestore.GeoPoint
-import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 
 open class Event(
     var eventId: String = "",
     var name: String = "",
-    var type: FirebaseConstants.EventType = FirebaseConstants.EventType.NONE,
+    var type: EventType = EventType.NONE,
     var startTime: Long = 0L,
     var endTime: Long = 0L,
     var budget: Int = 0
 ) {
+    enum class EventType {
+        NONE,
+        PLACE,
+        MOVE,
+        MEAL
+    }
+
     open fun toMapWithoutEventId(): Map<String, Any> {
         return mapOf(
             "name" to name,

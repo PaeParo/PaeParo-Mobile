@@ -3,6 +3,7 @@ package com.paeparo.paeparo_mobile.model
 data class Trip(
     var tripId: String = "",
     var name: String = "",
+    var status: TripStatus = TripStatus.NONE,
     var startDate: Long = 0L,
     var endDate: Long = 0L,
     var budget: Int = 0,
@@ -11,9 +12,17 @@ data class Trip(
     var ageDistribution: AgeDistribution = AgeDistribution(),
     var travelPreferences: TravelPreferences = TravelPreferences()
 ) {
+    enum class TripStatus {
+        NONE,
+        PLANNING,
+        ONGOING,
+        FINISHED
+    }
+
     fun toMapWithoutTripId(): Map<String, Any> {
         return mapOf(
             "name" to name,
+            "status" to status,
             "start_date" to startDate,
             "end_date" to endDate,
             "budget" to budget,

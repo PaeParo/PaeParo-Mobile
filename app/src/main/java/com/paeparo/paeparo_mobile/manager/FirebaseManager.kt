@@ -388,6 +388,7 @@ object FirebaseManager {
                 Trip(
                     newTripRef.id,
                     name,
+                    Trip.TripStatus.PLANNING,
                     startDate,
                     endDate,
                     budget,
@@ -404,7 +405,7 @@ object FirebaseManager {
                 TripUpdateInfo(
                     context.getPaeParo().userId,
                     "",
-                    FirebaseConstants.UpdateType.CREATE,
+                    TripUpdate.UpdateType.CREATE,
                     Timestamp.now().seconds
                 )
             )
@@ -465,7 +466,7 @@ object FirebaseManager {
                 TripUpdateInfo(
                     context.getPaeParo().userId,
                     "events/${tripId}/day_${day}/${newEventRef.id}",
-                    FirebaseConstants.UpdateType.ADD,
+                    TripUpdate.UpdateType.ADD,
                     Timestamp.now().seconds
                 )
             )
@@ -500,7 +501,7 @@ object FirebaseManager {
                 TripUpdateInfo(
                     context.getPaeParo().userId,
                     "events/${tripId}/day_${day}/${eventId}",
-                    FirebaseConstants.UpdateType.REMOVE,
+                    TripUpdate.UpdateType.REMOVE,
                     Timestamp.now().seconds
                 )
             )
@@ -526,10 +527,10 @@ object FirebaseManager {
                 .await()
 
             if (eventSnapshot.exists()) { // 이벤트가 존재할 경우
-                val event: Event? = when (eventSnapshot["type"] as? FirebaseConstants.EventType) {
-                    FirebaseConstants.EventType.PLACE -> eventSnapshot.toObject(PlaceEvent::class.java)
-                    FirebaseConstants.EventType.MOVE -> eventSnapshot.toObject(MoveEvent::class.java)
-                    FirebaseConstants.EventType.MEAL -> eventSnapshot.toObject(PlaceEvent::class.java)
+                val event: Event? = when (eventSnapshot["type"] as? Event.EventType) {
+                    Event.EventType.PLACE -> eventSnapshot.toObject(PlaceEvent::class.java)
+                    Event.EventType.MOVE -> eventSnapshot.toObject(MoveEvent::class.java)
+                    Event.EventType.MEAL -> eventSnapshot.toObject(PlaceEvent::class.java)
                     else -> eventSnapshot.toObject(Event::class.java)
                 }
 

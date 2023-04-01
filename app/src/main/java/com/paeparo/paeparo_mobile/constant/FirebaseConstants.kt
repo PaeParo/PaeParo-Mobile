@@ -6,19 +6,4 @@ object FirebaseConstants {
         DETAIL_INFO_NOT_REGISTERED,
         REGISTERED
     }
-
-    enum class UpdateType {
-        NONE,
-        CREATE,
-        ADD,
-        REMOVE,
-        UPDATE
-    }
-
-    enum class EventType {
-        NONE,
-        PLACE,
-        MOVE,
-        MEAL
-    }
 }
