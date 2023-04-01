@@ -9,7 +9,7 @@ data class TripUpdate(
 
 data class TripUpdateInfo(
     var userId: String = "",
-    var eventId: String = "",
+    var eventReference: String = "",
     var updateType: FirebaseConstants.UpdateType = FirebaseConstants.UpdateType.NONE,
     var timestamp: Long = 0L
 )

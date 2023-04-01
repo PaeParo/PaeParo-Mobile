@@ -337,7 +337,12 @@ object FirebaseManager {
      * @return 성공 여부
      */
     suspend fun createNewTrip(
-        context: Context, name: String, startDate: Long, endDate: Long, budget: Int, members: List<String>
+        context: Context,
+        name: String,
+        startDate: Long,
+        endDate: Long,
+        budget: Int,
+        members: List<String>
     ): Result<String> {
         return try {
             val batch = FirebaseFirestore.getInstance().batch()
@@ -459,7 +464,7 @@ object FirebaseManager {
                 tripUpdateRef,
                 TripUpdateInfo(
                     context.getPaeParo().userId,
-                    newEventRef.id,
+                    "events/${tripId}/day_${day}/${newEventRef.id}",
                     FirebaseConstants.UpdateType.ADD,
                     Timestamp.now().seconds
                 )
@@ -494,7 +499,7 @@ object FirebaseManager {
                 tripUpdateRef,
                 TripUpdateInfo(
                     context.getPaeParo().userId,
-                    eventId,
+                    "events/${tripId}/day_${day}/${eventId}",
                     FirebaseConstants.UpdateType.REMOVE,
                     Timestamp.now().seconds
                 )
@@ -502,6 +507,40 @@ object FirebaseManager {
 
             batch.commit().await()
             Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Evnet 참조를 이용하여 해당 Event를 가져오는 함수
+     *
+     * @param eventReference Event 참조
+     * @return Event를 가져오는데 성공할 경우 Event 객체 반환, 실패할 경우 Exception 반환
+     */
+    suspend fun getEventByReference(eventReference: String): Result<Event> {
+        return try {
+            val eventSnapshot = FirebaseFirestore.getInstance()
+                .document(eventReference)
+                .get()
+                .await()
+
+            if (eventSnapshot.exists()) { // 이벤트가 존재할 경우
+                val event: Event? = when (eventSnapshot["type"] as? FirebaseConstants.EventType) {
+                    FirebaseConstants.EventType.PLACE -> eventSnapshot.toObject(PlaceEvent::class.java)
+                    FirebaseConstants.EventType.MOVE -> eventSnapshot.toObject(MoveEvent::class.java)
+                    FirebaseConstants.EventType.MEAL -> eventSnapshot.toObject(PlaceEvent::class.java)
+                    else -> eventSnapshot.toObject(Event::class.java)
+                }
+
+                if (event != null) { // 이벤트 변환이 성공할 경우
+                    Result.success(event)
+                } else { // 이벤트 변환이 실패할 경우
+                    Result.failure(Exception("이벤트 변환 중 오류가 발생했습니다"))
+                }
+            } else {
+                Result.failure(Exception("해당 이벤트를 찾을 수 없습니다"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
