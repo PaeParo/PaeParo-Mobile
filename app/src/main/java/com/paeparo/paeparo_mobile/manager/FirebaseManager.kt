@@ -22,8 +22,7 @@ import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.model.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import com.paeparo.paeparo_mobile.model.User as PaeParoUser
 
 
@@ -162,44 +161,32 @@ object FirebaseManager {
      *
      * @return 등록 및 세부정보 입력 상태에 대한 확인 결과값
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun checkUserRegistered(context: Context): Result<FirebaseConstants.RegistrationStatus> {
-        return suspendCancellableCoroutine { cancellableCoroutine ->
-            val currentUserRef = firestoreUsersRef.document(context.getPaeParo().userId)
+        return try {
+            val documentSnapshot = firestoreUsersRef.document(context.getPaeParo().userId).get().await()
 
-            currentUserRef.get().addOnSuccessListener { documentSnapshot ->
-                if (!documentSnapshot.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
-                    val newUser = PaeParoUser()
-                    currentUserRef.set(newUser).addOnSuccessListener {
-                        cancellableCoroutine.resume(
-                            Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED),
-                            onCancellation = null
-                        )
-                    }.addOnFailureListener { e ->
-                        cancellableCoroutine.resume(Result.failure(e), onCancellation = null)
-                    }
-                } else { // 사용자가 등록되어 있을 경우
-                    val user = documentSnapshot.toObject(PaeParoUser::class.java)
+            if (!documentSnapshot.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
+                val newUser = PaeParoUser()
+                firestoreUsersRef.document(context.getPaeParo().userId).set(newUser).await()
+                Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
+            } else { // 사용자가 등록되어 있을 경우
+                val user = documentSnapshot.toObject(PaeParoUser::class.java)
 
-                    val result = when {
-                        user!!.nickname == "" -> { // 사용자 닉네임이 설정 되어 있지 않을 경우
-                            FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED
-                        }
-                        user.age == 0 -> { // 사용자 세부정보가 설정 되어 있지 않을 경우
-                            FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED
-                        }
-                        else -> { // 사용자 정보가 모두 설정 되어 있을 경우
-                            context.getPaeParo().nickname = user.nickname
-                            FirebaseConstants.RegistrationStatus.REGISTERED
-                        }
+                val result = when {
+                    user!!.nickname == "" -> FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED
+                    user.age == 0 -> FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED
+                    else -> {
+                        context.getPaeParo().nickname = user.nickname
+                        FirebaseConstants.RegistrationStatus.REGISTERED
                     }
-                    cancellableCoroutine.resume(Result.success(result), onCancellation = null)
                 }
-            }.addOnFailureListener { e ->
-                cancellableCoroutine.resume(Result.failure(e), onCancellation = null)
+                Result.success(result)
             }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
+
 
     /**
      * 현재 사용자 정보를 가져오는 함수
@@ -207,23 +194,19 @@ object FirebaseManager {
      * @param context 함수를 실행할 Activity의 Context
      * @return 사용자 정보를 가져오는데 성공할 경우 User 객체 반환, 실패할 경우 Exception 반환
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun getCurrentUserData(context: Context): Result<PaeParoUser> {
-        return suspendCancellableCoroutine { cancellableCoroutine ->
-            firestoreUsersRef.document(context.getPaeParo().userId).get()
-                .addOnSuccessListener { documentSnapshot ->
-                    if (!documentSnapshot.exists()) {
-                        cancellableCoroutine.resume(
-                            Result.failure(Exception("User not found")), onCancellation = null
-                        )
-                    } else {
-                        val user = documentSnapshot.toObject(PaeParoUser::class.java)
-                        user!!.userId = documentSnapshot.id
-                        cancellableCoroutine.resume(Result.success(user), onCancellation = null)
-                    }
-                }.addOnFailureListener { e ->
-                    cancellableCoroutine.resume(Result.failure(e), onCancellation = null)
-                }
+        return try {
+            val documentSnapshot = firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+
+            if (!documentSnapshot.exists()) {
+                Result.failure(Exception("사용자를 찾을 수 없습니다"))
+            } else {
+                val user = documentSnapshot.toObject(PaeParoUser::class.java)
+                user!!.userId = documentSnapshot.id
+                Result.success(user)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
@@ -234,31 +217,23 @@ object FirebaseManager {
      * @param nickname 업데이트할 닉네임
      * @return 닉네임 업데이트 성공 여부
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun updateCurrentUserNickname(
-        context: Context, nickname: String
-    ): Result<Unit> {
-        return suspendCancellableCoroutine { cancellableCoroutine ->
-            val currentUserRef = firestoreUsersRef.document(context.getPaeParo().userId)
+    suspend fun updateCurrentUserNickname(context: Context, nickname: String): Result<Unit> {
+        return try {
+            val snapshot = firestoreUsersRef.document(context.getPaeParo().userId).get().await()
 
-            currentUserRef.get().addOnSuccessListener { snapshot ->
-                if (snapshot.exists() && snapshot.getString("nickname")
-                        .isNullOrEmpty()
-                ) { // 닉네임이 설정되어있지 않을 경우
-                    currentUserRef.update("nickname", nickname).addOnSuccessListener {
-                        context.getPaeParo().nickname = nickname
-                        cancellableCoroutine.resume(Result.success(Unit), onCancellation = null)
-                    }.addOnFailureListener {
-                        cancellableCoroutine.resume(Result.failure(it), onCancellation = null)
-                    }
-                } else { // 닉네임이 설정되어있을 경우
-                    cancellableCoroutine.resume(
-                        Result.failure(Exception("닉네임이 이미 설정되어있습니다")), onCancellation = null
-                    )
+            if (snapshot.exists()) { // 닉네임이 설정되어있지 않을 경우
+                if(snapshot.getString("nickname").isNullOrEmpty()) {
+                    firestoreUsersRef.document(context.getPaeParo().userId).update("nickname", nickname).await()
+                    context.getPaeParo().nickname = nickname
+                    Result.success(Unit)
+                } else {
+                    Result.failure(Exception("닉네임이 이미 설정되어있습니다"))
                 }
-            }.addOnFailureListener { e ->
-                cancellableCoroutine.resume(Result.failure(e), onCancellation = null)
+            } else { // 닉네임이 설정되어있을 경우
+                Result.failure(Exception("사용자가 존재하지 않습니다"))
             }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
@@ -271,11 +246,10 @@ object FirebaseManager {
      * @param travelStyle 사용자 여행 취향
      * @return 성공 여부
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun updateCurrentUserInfo(
         context: Context, age: Int, gender: String, travelStyle: List<String>
     ): Result<Unit> {
-        return suspendCancellableCoroutine { continuation ->
+        return try {
             val currentUserRef = FirebaseFirestore.getInstance().collection("users")
                 .document(context.getPaeParo().userId)
 
@@ -283,11 +257,10 @@ object FirebaseManager {
                 mapOf(
                     "age" to age, "gender" to gender, "travel_style" to travelStyle
                 )
-            ).addOnSuccessListener {
-                continuation.resume(Result.success(Unit), onCancellation = null)
-            }.addOnFailureListener { e ->
-                continuation.resume(Result.failure(e), onCancellation = null)
-            }
+            ).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
@@ -297,23 +270,17 @@ object FirebaseManager {
      * @param nickname 검색할 사용자의 닉네임
      * @return 사용자 ID를 가져오는데 성공할 경우 사용자 ID 반환, 실패할 경우 Exception 반환
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun getUserIdByNickname(nickname: String): Result<String> {
-        return suspendCancellableCoroutine { cancellableCoroutine ->
-            firestoreUsersRef.whereEqualTo("nickname", nickname).limit(1).get()
-                .addOnSuccessListener { userData ->
-                    if (userData.documents.isEmpty()) { // 사용자가 존재하지 않을 경우
-                        cancellableCoroutine.resume(
-                            Result.failure(Exception("사용자를 찾을 수 없습니다")), onCancellation = null
-                        )
-                    } else { // 사용자가 존재할 경우
-                        cancellableCoroutine.resume(
-                            Result.success(userData.documents[0].id), onCancellation = null
-                        )
-                    }
-                }.addOnFailureListener { e ->
-                    cancellableCoroutine.resume(Result.failure(e), onCancellation = null)
-                }
+        return try {
+            val userData = firestoreUsersRef.whereEqualTo("nickname", nickname).limit(1).get().await()
+
+            if (userData.documents.isEmpty()) { // 사용자가 존재하지 않을 경우
+                Result.failure(Exception("사용자를 찾을 수 없습니다"))
+            } else { // 사용자가 존재할 경우
+                Result.success(userData.documents[0].id)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
@@ -327,51 +294,42 @@ object FirebaseManager {
      * @param members 여행에 참여할 멤버들의 ID
      * @return 성공 여부
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun createNewTrip(
         name: String, startDate: Long, endDate: Long, budget: Int, members: List<String>
     ): Result<String> {
-        return suspendCancellableCoroutine { cancellableCoroutine ->
+        return try {
             val genderDistribution = GenderDistribution()
             val ageDistribution = AgeDistribution()
             val travelPreferences = TravelPreferences()
 
             for (memberId in members) {
-                firestoreUsersRef.document(memberId).get().addOnSuccessListener { userData ->
-                    val user = userData.toObject(PaeParoUser::class.java)
+                val userData = firestoreUsersRef.document(memberId).get().await()
+                val user = userData.toObject(PaeParoUser::class.java)
 
-                    if (user != null) { // 사용자가 존재할 경우
-                        when (user.gender) {
-                            "M" -> genderDistribution.male++
-                            "F" -> genderDistribution.female++
-                        }
-
-                        when ((user.age / 10) * 10) {
-                            10 -> ageDistribution._10s++
-                            20 -> ageDistribution._20s++
-                            30 -> ageDistribution._30s++
-                            40 -> ageDistribution._40s++
-                            50 -> ageDistribution._50s++
-                            60 -> ageDistribution._60s++
-                        }
-
-                        for (travelStyle in user.travelStyle) {
-                            when (travelStyle) {
-                                "food" -> travelPreferences.food++
-                                "complex" -> travelPreferences.complex++
-                                "activity" -> travelPreferences.activity++
-                            }
-                        }
-                    } else {
-                        cancellableCoroutine.resume(
-                            Result.failure(Exception(memberId + "에 해당하는 사용자가 존재하지 않습니다")),
-                            onCancellation = null
-                        )
+                if (user != null) { // 사용자가 존재할 경우
+                    when (user.gender) {
+                        "M" -> genderDistribution.male++
+                        "F" -> genderDistribution.female++
                     }
-                }.addOnFailureListener { e ->
-                    cancellableCoroutine.resume(
-                        Result.failure(e), onCancellation = null
-                    )
+
+                    when ((user.age / 10) * 10) {
+                        10 -> ageDistribution._10s++
+                        20 -> ageDistribution._20s++
+                        30 -> ageDistribution._30s++
+                        40 -> ageDistribution._40s++
+                        50 -> ageDistribution._50s++
+                        60 -> ageDistribution._60s++
+                    }
+
+                    for (travelStyle in user.travelStyle) {
+                        when (travelStyle) {
+                            "food" -> travelPreferences.food++
+                            "complex" -> travelPreferences.complex++
+                            "activity" -> travelPreferences.activity++
+                        }
+                    }
+                } else {
+                    return Result.failure(Exception(memberId + "에 해당하는 사용자가 존재하지 않습니다"))
                 }
             }
 
@@ -388,13 +346,14 @@ object FirebaseManager {
                     ageDistribution,
                     travelPreferences
                 ).toMapWithoutTripId()
-            ).addOnSuccessListener {
-                cancellableCoroutine.resume(Result.success(newTripRef.id), onCancellation = null)
-            }.addOnFailureListener { e ->
-                cancellableCoroutine.resume(Result.failure(e), onCancellation = null)
-            }
+            ).await()
+
+            Result.success(newTripRef.id)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
+
 
     /**
      * 현재 사용자가 속해있는 모든 여행 목록을 가져오는 함수
@@ -402,21 +361,19 @@ object FirebaseManager {
      * @param context 함수를 실행할 Activity의 Context
      * @return 여행 목록을 가져오는데 성공할 경우 여행 목록 반환, 실패할 경우 Exception 반환
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun getCurrentUserTrips(context: Context): Result<List<Trip>> {
-        return suspendCancellableCoroutine { cancellableCoroutine ->
-            firestoreTripsRef.whereArrayContains("members", context.getPaeParo().userId).get()
-                .addOnSuccessListener { trips ->
-                    val userTrips = mutableListOf<Trip>()
-                    for (trip in trips) {
-                        val tripData = trip.toObject(Trip::class.java)
-                        tripData.tripId = trip.id
-                        userTrips.add(tripData)
-                    }
-                    cancellableCoroutine.resume(Result.success(userTrips), onCancellation = null)
-                }.addOnFailureListener { e ->
-                    cancellableCoroutine.resume(Result.failure(e), onCancellation = null)
-                }
+        return try {
+            val trips = firestoreTripsRef.whereArrayContains("members", context.getPaeParo().userId).get().await()
+
+            val userTrips = mutableListOf<Trip>()
+            for (trip in trips) {
+                val tripData = trip.toObject(Trip::class.java)
+                tripData.tripId = trip.id
+                userTrips.add(tripData)
+            }
+            Result.success(userTrips)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
@@ -428,11 +385,11 @@ object FirebaseManager {
      * @param event 추가할 이벤트 객체
      * @return 성공 여부
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     suspend fun addEventToTrips(
         context: Context, tripId: String, day: Int, event: Event
     ): Result<String> {
-        return suspendCancellableCoroutine { cancellableContinuation ->
+        return try {
             val newEventRef = firestoreEventsRef.document(tripId).collection("day_$day").document()
             val tripUpdateRef = firestoreTripUpdatesRef.document(tripId)
 
@@ -448,11 +405,10 @@ object FirebaseManager {
                 )
             )
 
-            batch.commit().addOnSuccessListener {
-                cancellableContinuation.resume(Result.success(newEventRef.id), onCancellation = null)
-            }.addOnFailureListener { e ->
-                cancellableContinuation.resume(Result.failure(e), onCancellation = null)
-            }
+            batch.commit().await()
+            Result.success(newEventRef.id)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
@@ -464,11 +420,10 @@ object FirebaseManager {
      * @param eventId 제거할 이벤트 ID
      * @return 성공 여부
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun removeEventFromTrips(
         context: Context, tripId: String, day: Int, eventId: String
     ): Result<Unit> {
-        return suspendCancellableCoroutine { cancellableContinuation ->
+        return try {
             val eventRef =
                 firestoreEventsRef.document(tripId).collection("day_$day").document(eventId)
             val tripUpdateRef = firestoreTripUpdatesRef.document(tripId)
@@ -485,11 +440,10 @@ object FirebaseManager {
                 )
             )
 
-            batch.commit().addOnSuccessListener {
-                cancellableContinuation.resume(Result.success(Unit), onCancellation = null)
-            }.addOnFailureListener { e ->
-                cancellableContinuation.resume(Result.failure(e), onCancellation = null)
-            }
+            batch.commit().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }
