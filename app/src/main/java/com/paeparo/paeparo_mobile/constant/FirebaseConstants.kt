@@ -9,6 +9,7 @@ object FirebaseConstants {
 
     enum class UpdateType {
         NONE,
+        CREATE,
         ADD,
         REMOVE,
         UPDATE
