@@ -80,12 +80,12 @@ object FirebaseManager {
     /**
      * Cloud Firestore의 TripUpdates 컬렉션에 대한 참조
      */
-    private val firestoreTripUpdatesRef = firestore.collection("trip_updates")
+    private val firestoreTripUpdateRef = firestore.collection("trip_update")
 
     /**
      * Cloud Firestore의 LocationUpdates 컬렉션에 대한 참조
      */
-    private val firestoreLocationUpdatesRef = firestore.collection("location_updates")
+    private val firestoreLocationUpdateRef = firestore.collection("location_update")
 
     /**
      * Cloud Firestore의 Users 컬렉션에 대한 참조
@@ -107,16 +107,21 @@ object FirebaseManager {
      */
     private val firestorePostsRef = firestore.collection("posts")
 
+    /**
+     * Cloud Firestore의 Comments 컬렉션에 대한 참조
+     */
+    private val firestoreCommentsRef = firestore.collection("comments")
+
 
     /**
      * TripUpdates에 대한 변경사항을 수신하는 Listener
      */
-    private var tripUpdatesListener: ListenerRegistration? = null
+    private var tripUpdateListener: ListenerRegistration? = null
 
     /**
      * LocationUpdates에 대한 변경사항을 수신하는 Listener
      */
-    private var locationUpdatesListener: ListenerRegistration? = null
+    private var locationUpdateListener: ListenerRegistration? = null
 
     /**
      * FirebaseManager 사용 전 객체 내 요소들을 초기화하는 함수
@@ -191,6 +196,88 @@ object FirebaseManager {
      */
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
+    }
+
+    /**
+     * TripUpdate에 대한 업데이트 리스너를 시작하는 함수
+     *
+     * @param tripId 업데이트를 감지할 여행 ID
+     * @param onUpdate 업데이트 시 호출할 함수
+     */
+    fun startTripUpdateListener(tripId: String, onUpdate: (TripUpdate) -> Unit) {
+        tripUpdateListener =
+            firestoreTripUpdateRef.document(tripId).addSnapshotListener { value, error ->
+                if (error != null) { // 에러가 발생할 경우
+                    Log.e("TripUpdateListener", "Listener 등록 실패", error)
+                    return@addSnapshotListener
+                }
+
+                if (value != null && value.exists()) { // 데이터가 있을 경우
+                    val tripUpdateInfo = value.toObject(TripUpdateInfo::class.java)
+                    if (tripUpdateInfo != null) {
+                        onUpdate(TripUpdate(tripId, tripUpdateInfo))
+                    }
+                } else { // 데이터가 없을 경우
+                    Log.d("TripUpdateListener", "데이터가 없습니다")
+                }
+            }
+    }
+
+    /**
+     * TripUpdates에 대한 업데이트 리스너를 중지하는 함수
+     */
+    fun stopTripUpdateListener() {
+        tripUpdateListener?.remove()
+        tripUpdateListener = null
+    }
+
+    /**
+     * LocationUpdate에 대한 위치정보 업데이트 리스너를 시작하는 함수
+     *
+     * @param tripId 업데이트를 감지할 여행 ID
+     * @param onUpdate 업데이트 시 호출할 함수
+     */
+    fun startLocationUpdateListener(tripId: String, onUpdate: (List<LocationUpdateInfo>) -> Unit) {
+        val memberLocationsRef =
+            firestoreLocationUpdateRef.document(tripId).collection("member_locations")
+
+        locationUpdateListener = memberLocationsRef.addSnapshotListener { memberLocations, error ->
+            if (error != null) {
+                Log.w("LocationUpdateListener", "Listener 등록 실패", error)
+                return@addSnapshotListener
+            }
+
+            if (memberLocations != null && !memberLocations.isEmpty) {
+                val locationUpdates = mutableListOf<LocationUpdateInfo>()
+
+                for (snapshot in memberLocations.documents) {
+                    val userId = snapshot.id
+                    val userLocationData = snapshot.data
+
+                    if (userLocationData != null) {
+                        val timestamp = (userLocationData["timestamp"] as? Number)?.toLong()
+                        val location = userLocationData["location"] as? GeoPoint
+
+                        if (location != null && timestamp != null) {
+                            val locationUpdateInfo = LocationUpdateInfo(userId, timestamp, location)
+                            locationUpdates.add(locationUpdateInfo)
+                        }
+                    }
+                }
+
+                onUpdate(locationUpdates)
+            } else {
+                Log.d("LocationUpdateListener", "데이터가 없습니다")
+            }
+        }
+    }
+
+    /**
+     * 여행 동행자들의 위치정보 업데이트 리스너를 중지하는 함수
+     */
+    fun stopLocationUpdateListener() {
+        locationUpdateListener?.remove()
+        locationUpdateListener = null
     }
 
     /**
@@ -399,7 +486,7 @@ object FirebaseManager {
                 ).toMapWithoutTripId()
             )
 
-            val tripUpdatesRef = firestoreTripUpdatesRef.document(newTripRef.id)
+            val tripUpdatesRef = firestoreTripUpdateRef.document(newTripRef.id)
             batch.set(
                 tripUpdatesRef,
                 TripUpdateInfo(
@@ -427,37 +514,37 @@ object FirebaseManager {
      */
     suspend fun getCurrentUserTrips(context: Context): Result<List<Trip>> {
         return try {
-            val trips =
+            val tripsReference =
                 firestoreTripsRef.whereArrayContains("members", context.getPaeParo().userId).get()
                     .await()
 
-            val userTrips = mutableListOf<Trip>()
-            for (trip in trips) {
+            val trips = mutableListOf<Trip>()
+            for (trip in tripsReference) {
                 val tripData = trip.toObject(Trip::class.java)
                 tripData.tripId = trip.id
-                userTrips.add(tripData)
+                trips.add(tripData)
             }
-            Result.success(userTrips)
+            Result.success(trips)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
     /**
-     * 여행 일정에 이벤트를 추가하는 함수
+     * 이벤트를 여행에 추가하는 함수
      *
      * @param tripId 이벤트를 추가할 여행 ID
-     * @param day 이벤트를 추가할 일차
      * @param event 추가할 이벤트 객체
      * @return 성공 여부
      */
 
-    suspend fun addEventToTrips(
-        context: Context, tripId: String, day: Int, event: Event
+    suspend fun addEventToTrip(
+        context: Context, tripId: String, event: Event
     ): Result<String> {
         return try {
-            val newEventRef = firestoreEventsRef.document(tripId).collection("day_$day").document()
-            val tripUpdateRef = firestoreTripUpdatesRef.document(tripId)
+            val newEventRef =
+                firestoreEventsRef.document(tripId).collection("trip_events").document()
+            val tripUpdateRef = firestoreTripUpdateRef.document(tripId)
 
             val batch = FirebaseFirestore.getInstance().batch()
             batch.set(newEventRef, event.toMapWithoutEventId())
@@ -465,7 +552,7 @@ object FirebaseManager {
                 tripUpdateRef,
                 TripUpdateInfo(
                     context.getPaeParo().userId,
-                    "events/${tripId}/day_${day}/${newEventRef.id}",
+                    "events/${tripId}/trip_events/${newEventRef.id}",
                     TripUpdate.UpdateType.ADD,
                     Timestamp.now().seconds
                 )
@@ -479,20 +566,19 @@ object FirebaseManager {
     }
 
     /**
-     * 이벤트를 일정에서 제거하는 함수
+     * 이벤트를 여행에서 제거하는 함수
      *
      * @param tripId 제거할 이벤트가 들어있는 여행 ID
-     * @param day 제거할 이벤트가 들어있는 일차
      * @param eventId 제거할 이벤트 ID
      * @return 성공 여부
      */
-    suspend fun removeEventFromTrips(
-        context: Context, tripId: String, day: Int, eventId: String
-    ): Result<Unit> {
+    suspend fun removeEventFromTrip(
+        context: Context, tripId: String, eventId: String
+    ): Result<String> {
         return try {
             val eventRef =
-                firestoreEventsRef.document(tripId).collection("day_$day").document(eventId)
-            val tripUpdateRef = firestoreTripUpdatesRef.document(tripId)
+                firestoreEventsRef.document(tripId).collection("trip_events").document(eventId)
+            val tripUpdateRef = firestoreTripUpdateRef.document(tripId)
 
             val batch = FirebaseFirestore.getInstance().batch()
             batch.delete(eventRef)
@@ -500,14 +586,14 @@ object FirebaseManager {
                 tripUpdateRef,
                 TripUpdateInfo(
                     context.getPaeParo().userId,
-                    "events/${tripId}/day_${day}/${eventId}",
+                    "events/${tripId}/trip_events/${eventId}",
                     TripUpdate.UpdateType.REMOVE,
                     Timestamp.now().seconds
                 )
             )
 
             batch.commit().await()
-            Result.success(Unit)
+            Result.success(eventId)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -545,86 +631,5 @@ object FirebaseManager {
         } catch (e: Exception) {
             Result.failure(e)
         }
-    }
-
-    /**
-     * TripUpdates에 대한 업데이트 리스너를 시작하는 함수
-     *
-     * @param tripId 업데이트를 감지할 여행 ID
-     * @param onUpdate 업데이트 시 호출할 함수
-     */
-    fun startTripUpdatesListener(tripId: String, onUpdate: (TripUpdate) -> Unit) {
-        tripUpdatesListener =
-            firestoreTripUpdatesRef.document(tripId).addSnapshotListener { value, error ->
-                if (error != null) { // 에러가 발생할 경우
-                    Log.e("TripUpdatesListener", "Listener 등록 실패", error)
-                    return@addSnapshotListener
-                }
-
-                if (value != null && value.exists()) { // 데이터가 있을 경우
-                    val tripUpdateInfo = value.toObject(TripUpdateInfo::class.java)
-                    if (tripUpdateInfo != null) {
-                        onUpdate(TripUpdate(tripId, tripUpdateInfo))
-                    }
-                } else { // 데이터가 없을 경우
-                    Log.d("TripUpdatesListener", "데이터가 없습니다")
-                }
-            }
-    }
-
-    /**
-     * TripUpdates에 대한 업데이트 리스너를 중지하는 함수
-     */
-    fun stopTripUpdatesListener() {
-        tripUpdatesListener?.remove()
-        tripUpdatesListener = null
-    }
-
-    /**
-     * LocationUpdates에 대한 위치정보 업데이트 리스너를 시작하는 함수
-     *
-     * @param tripId 업데이트를 감지할 여행 ID
-     * @param onUpdate 업데이트 시 호출할 함수
-     */
-    fun startLocationUpdatesListener(tripId: String, onUpdate: (List<LocationUpdateInfo>) -> Unit) {
-        val locationUpdateRef = firestoreLocationUpdatesRef.document(tripId)
-
-        locationUpdatesListener = locationUpdateRef.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                Log.w("LocationUpdatesListener", "Listener 등록 실패", error)
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                val locationUpdates = mutableListOf<LocationUpdateInfo>()
-
-                for (userEntry in snapshot.data?.entries.orEmpty()) {
-                    val userId = userEntry.key
-                    val userLocationData = userEntry.value as? Map<*, *>
-
-                    if (userLocationData != null) {
-                        val timestamp = (userLocationData["timestamp"] as? Number)?.toLong()
-                        val location = userLocationData["location"] as? GeoPoint
-
-                        if (location != null && timestamp != null) {
-                            val locationUpdateInfo = LocationUpdateInfo(userId, timestamp, location)
-                            locationUpdates.add(locationUpdateInfo)
-                        }
-                    }
-                }
-
-                onUpdate(locationUpdates)
-            } else {
-                Log.d("LocationUpdatesListener", "데이터가 없습니다")
-            }
-        }
-    }
-
-    /**
-     * 여행 동행자들의 위치정보 업데이트 리스너를 중지하는 함수
-     */
-    fun stopLocationUpdatesListener() {
-        locationUpdatesListener?.remove()
-        locationUpdatesListener = null
     }
 }
