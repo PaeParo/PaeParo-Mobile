@@ -4,7 +4,7 @@ import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 
 data class TripUpdate(
     var tripId: String = "",
-    var lastUpdate: TripUpdateInfo = TripUpdateInfo()
+    var tripUpdateInfo: TripUpdateInfo = TripUpdateInfo()
 )
 
 data class TripUpdateInfo(

@@ -4,10 +4,10 @@ import com.google.firebase.firestore.GeoPoint
 
 data class LocationUpdate(
     var tripId: String = "",
-    var locationInfoList: List<LocationInfo> = listOf()
+    var locationUpdateInfoList: List<LocationUpdateInfo> = listOf()
 )
 
-data class LocationInfo(
+data class LocationUpdateInfo(
     var userId: String = "",
     var timestamp: Long = 0L,
     var location: GeoPoint = GeoPoint(0.0, 0.0)
