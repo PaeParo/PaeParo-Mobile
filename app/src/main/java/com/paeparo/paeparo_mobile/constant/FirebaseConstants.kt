@@ -14,4 +14,11 @@ object FirebaseConstants {
         REMOVE,
         UPDATE
     }
+
+    enum class EventType {
+        NONE,
+        PLACE,
+        MOVE,
+        MEAL
+    }
 }
