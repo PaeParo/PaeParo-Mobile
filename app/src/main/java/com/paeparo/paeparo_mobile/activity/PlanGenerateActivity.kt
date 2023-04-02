@@ -1,10 +1,11 @@
-package com.paeparo.paeparo_mobile
+package com.paeparo.paeparo_mobile.activity
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.paeparo.paeparo_mobile.R
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,10 +29,12 @@ class PlanGenerateActivity : AppCompatActivity() {
 
             calendar.timeInMillis = it.first.toLong()
             val format = SimpleDateFormat("yyyy년 MM월 dd일").format(calendar.time)
-            Log.d("FIRST RANGE",format)
+            Log.d("FIRST RANGE", format)
         }
 
-
         dateRangePicker.show(supportFragmentManager, "date_picker")
+
     }
 }
+
+
