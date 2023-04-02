@@ -23,7 +23,9 @@ class PlanGenerateActivity : AppCompatActivity() {
 
         viewPager.apply {
             adapter = PlanGenerateAdapter(context as FragmentActivity)
+            isUserInputEnabled = false
         }
+
     }
 }
 

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewpager2.widget.ViewPager2
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanDateBinding
 
@@ -40,6 +41,12 @@ class PlanDateFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentPlanDateBinding.inflate(inflater,container,false)
+        binding.btnFragmentname.setOnClickListener{
+            val vp = activity?.findViewById<ViewPager2>(R.id.vp_plan_generate)
+            vp?.setCurrentItem(1,true)
+        }
+
+
         return binding.root
     }
 
