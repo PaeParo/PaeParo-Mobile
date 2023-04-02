@@ -1,5 +1,9 @@
 package com.paeparo.paeparo_mobile.model
 
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.jvm.isAccessible
+
 data class Trip(
     var tripId: String = "",
     var name: String = "",
@@ -31,6 +35,23 @@ data class Trip(
             "age_distribution" to ageDistribution,
             "travel_preferences" to travelPreferences
         )
+    }
+
+    fun getChangedFields(other: Trip): Map<String, Any?> {
+        return this::class.declaredMemberProperties
+            .filter { it.isAccessible }
+            .mapNotNull { prop ->
+                @Suppress("UNCHECKED_CAST")
+                val typedProp = prop as KProperty1<Trip, *>
+                val currentMemberValue = typedProp.get(this)
+                val otherMemberValue = prop.get(other)
+
+                if (currentMemberValue != otherMemberValue) {
+                    prop.name to otherMemberValue
+                } else {
+                    null
+                }
+            }.toMap()
     }
 }
 
