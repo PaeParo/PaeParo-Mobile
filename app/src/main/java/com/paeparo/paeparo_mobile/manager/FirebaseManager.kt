@@ -292,7 +292,7 @@ object FirebaseManager {
 
             if (!documentSnapshot.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
                 val newUser = PaeParoUser()
-                firestoreUsersRef.document(context.getPaeParo().userId).set(newUser).await()
+                firestoreUsersRef.document(context.getPaeParo().userId).set(newUser.toMapWithoutUserId()).await()
                 Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
             } else { // 사용자가 등록되어 있을 경우
                 val user = documentSnapshot.toObject(PaeParoUser::class.java)
