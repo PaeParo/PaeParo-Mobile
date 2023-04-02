@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tv_time"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:srcCompat="@drawable/sunweather_sun" />
+        tools:srcCompat="@drawable/ic_weather_sun" />
 
     <TextView
         android:id="@+id/tv_time"
