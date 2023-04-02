@@ -1,12 +1,9 @@
 package com.paeparo.paeparo_mobile.fragment
 
-import android.content.Intent
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.paeparo.paeparo_mobile.activity.MyHome
 import com.paeparo.paeparo_mobile.databinding.FragmentMyHomeBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.User
