@@ -31,7 +31,7 @@ class PlanFragment : Fragment() {
         val button = view.findViewById<Button>(R.id.btn_fragment_plan)
         button.setOnClickListener {
             val intent = Intent(context, PlanGenerateActivity::class.java)
-              startActivity(intent)
+            startActivity(intent)
         }
     }
 }
