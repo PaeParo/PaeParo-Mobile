@@ -1,25 +1,22 @@
 package com.paeparo.paeparo_mobile.activity
 
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.paeparo.paeparo_mobile.PlanGenerateAdapter
-import com.paeparo.paeparo_mobile.R
+import androidx.viewpager2.widget.ViewPager2
+import com.paeparo.paeparo_mobile.adapter.PlanGenerateAdapter
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanGenerateBinding
-import java.text.SimpleDateFormat
-import java.util.*
 
 class PlanGenerateActivity : AppCompatActivity() {
     private lateinit var binding : ActivityPlanGenerateBinding
+    lateinit var viewPager : ViewPager2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlanGenerateBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewPager = binding.vpPlanGenerate
+        viewPager = binding.vpPlanGenerate
 
         viewPager.apply {
             adapter = PlanGenerateAdapter(context as FragmentActivity)
@@ -29,8 +26,14 @@ class PlanGenerateActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-    }
+        val num = viewPager.currentItem
+        Toast.makeText(applicationContext,"$num",Toast.LENGTH_SHORT).show()
+        viewPager.currentItem-=1
+        if(num==0) finish()
+        }
+
+        //super.onBackPressed()
+
 }
 
 
