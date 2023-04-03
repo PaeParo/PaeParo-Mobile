@@ -13,10 +13,10 @@
         android:theme="@style/Theme.PaeParoMobile"
         tools:targetApi="31">
         <activity
-            android:name=".activity.MyHomeComment"
+            android:name=".activity.MyHomeCommentActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.MyHomeLike"
+            android:name=".activity.MyHomeLikeActivity"
             android:exported="false" />
         <activity
             android:name=".activity.MyHomeFaqActivity"

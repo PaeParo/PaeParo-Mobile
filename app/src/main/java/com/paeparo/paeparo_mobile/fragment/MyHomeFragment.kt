@@ -55,12 +55,12 @@ class MyHomeFragment : Fragment() {
             startActivity(intent)
         }
         binding!!.comment.setOnClickListener {
-            val intent = Intent(activity, MyHomeComment::class.java)
+            val intent = Intent(activity, MyHomeCommentActivity::class.java)
             startActivity(intent)
         }
 
         binding!!.like.setOnClickListener{
-            val intent = Intent(activity, MyHomeLike::class.java)
+            val intent = Intent(activity, MyHomeLikeActivity::class.java)
             startActivity(intent)
         }
 
