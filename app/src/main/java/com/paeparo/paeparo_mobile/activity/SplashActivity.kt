@@ -51,7 +51,11 @@ class SplashActivity : AppCompatActivity() {
                                 }
                             }
                             FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED -> {
-                                // TODO: [석민재] 회원가입 Activity에서 닉네임 입력화면 표시
+                                val intent =
+                                    Intent(this@SplashActivity, NickNameActivity::class.java)
+                                startActivity(intent)
+                                finish()
+
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(
                                         this@SplashActivity, "닉네임을 설정해주세요", Toast.LENGTH_SHORT
