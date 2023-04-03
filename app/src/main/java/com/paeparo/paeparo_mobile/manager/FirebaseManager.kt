@@ -178,7 +178,8 @@ object FirebaseManager {
 
             if (!documentSnapshot.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
                 val newUser = PaeParoUser()
-                firestoreUsersRef.document(context.getPaeParo().userId).set(newUser.toMapWithoutUserId()).await()
+                firestoreUsersRef.document(context.getPaeParo().userId)
+                    .set(newUser.toMapWithoutUserId()).await()
                 Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
             } else { // 사용자가 등록되어 있을 경우
                 val user = documentSnapshot.toObject(PaeParoUser::class.java)
@@ -341,26 +342,26 @@ object FirebaseManager {
      *
      * @param context 함수를 실행할 Activity의 Context
      * @param nickname 업데이트할 닉네임
-     * @return 닉네임 업데이트 성공 여부
+     * @return 닉네임 업데이트 처리결과
      */
-    suspend fun updateCurrentUserNickname(context: Context, nickname: String): Result<Unit> {
+    suspend fun updateCurrentUserNickname(
+        context: Context,
+        nickname: String
+    ): FirebaseConstants.UpdateNicknameResult {
         return try {
-            val snapshot = firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+            val existingUserWithNickname =
+                firestoreUsersRef.whereEqualTo("nickname", nickname).get().await()
 
-            if (snapshot.exists()) { // 닉네임이 설정되어있지 않을 경우
-                if (snapshot.getString("nickname").isNullOrEmpty()) {
-                    firestoreUsersRef.document(context.getPaeParo().userId)
-                        .update("nickname", nickname).await()
-                    context.getPaeParo().nickname = nickname
-                    Result.success(Unit)
-                } else {
-                    Result.failure(Exception("닉네임이 이미 설정되어있습니다"))
-                }
-            } else { // 닉네임이 설정되어있을 경우
-                Result.failure(Exception("사용자가 존재하지 않습니다"))
-            }
+            if (!existingUserWithNickname.isEmpty) return FirebaseConstants.UpdateNicknameResult.DuplicateError
+
+            firestoreUsersRef.document(context.getPaeParo().userId)
+                .update("nickname", nickname).await()
+
+            context.getPaeParo().nickname = nickname
+
+            FirebaseConstants.UpdateNicknameResult.UpdateSuccess
         } catch (e: Exception) {
-            Result.failure(e)
+            FirebaseConstants.UpdateNicknameResult.OtherError(Exception("나중에 다시 시도해주세요"))
         }
     }
 

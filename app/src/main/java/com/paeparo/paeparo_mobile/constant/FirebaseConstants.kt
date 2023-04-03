@@ -6,4 +6,10 @@ object FirebaseConstants {
         DETAIL_INFO_NOT_REGISTERED,
         REGISTERED
     }
+
+    sealed class UpdateNicknameResult {
+        object UpdateSuccess : UpdateNicknameResult()
+        object DuplicateError : UpdateNicknameResult()
+        data class OtherError(val exception: Throwable) : UpdateNicknameResult()
+    }
 }
