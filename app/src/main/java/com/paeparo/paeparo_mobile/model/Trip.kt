@@ -12,6 +12,7 @@ data class Trip(
     var endDate: Long = 0L,
     var budget: Int = 0,
     var members: Map<String, Boolean> = mapOf(),
+    var travelStyles: Map<String, List<String>> = mutableMapOf(),
     var genderDistribution: GenderDistribution = GenderDistribution(),
     var ageDistribution: AgeDistribution = AgeDistribution(),
     var travelPreferences: TravelPreferences = TravelPreferences()
@@ -31,6 +32,7 @@ data class Trip(
             "end_date" to endDate,
             "budget" to budget,
             "members" to members,
+            "travel_styles" to travelStyles,
             "gender_distribution" to genderDistribution,
             "age_distribution" to ageDistribution,
             "travel_preferences" to travelPreferences
