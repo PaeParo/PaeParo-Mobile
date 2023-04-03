@@ -173,12 +173,20 @@ object FirebaseManager {
      */
     suspend fun checkCurrentUserRegistration(context: Context): FirebaseConstants.CheckRegistrationResult {
         return try {
-            val user = firestoreUsersRef.document(context.getPaeParo().userId).get().await()
-                .toObject(PaeParoUser::class.java)
+            val userRef =
+                firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+
+            if (!userRef.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
+                val newUser = PaeParoUser()
+                firestoreUsersRef.document(context.getPaeParo().userId)
+                    .set(newUser.toMapWithoutUserId()).await()
+                return FirebaseConstants.CheckRegistrationResult.NicknameNotSet
+            }
+
+            val user = userRef.toObject(PaeParoUser::class.java)
 
             when {
-                user == null -> FirebaseConstants.CheckRegistrationResult.OtherError(Exception("User not found"))
-                user.nickname.isEmpty() -> FirebaseConstants.CheckRegistrationResult.NicknameNotSet
+                user!!.nickname.isEmpty() -> FirebaseConstants.CheckRegistrationResult.NicknameNotSet
                 user.age == 0 -> FirebaseConstants.CheckRegistrationResult.DetailInfoNotSet
                 else -> {
                     context.getPaeParo().nickname = user.nickname
