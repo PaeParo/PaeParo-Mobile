@@ -39,7 +39,8 @@ class NickNameActivity : AppCompatActivity() {
             val user = auth.currentUser
             if (user != null) {
                 val nicknameMap = hashMapOf("nickname" to nickname)
-                firestore.collection("users").document(user.uid).update(nicknameMap as Map<String, Any>)
+                firestore.collection("users").document(user.uid)
+                    .update(nicknameMap as Map<String, Any>)
                     .addOnSuccessListener {
                         Toast.makeText(
                             this@NickNameActivity, "닉네임이 설정되었습니다.", Toast.LENGTH_SHORT
