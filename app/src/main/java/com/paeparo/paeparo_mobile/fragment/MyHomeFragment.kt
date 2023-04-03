@@ -1,10 +1,12 @@
 package com.paeparo.paeparo_mobile.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.paeparo.paeparo_mobile.activity.*
 import com.paeparo.paeparo_mobile.databinding.FragmentMyHomeBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.User
@@ -20,7 +22,7 @@ class MyHomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         networkScope.launch {
             val result: Result<User> = FirebaseManager.getCurrentUserData(this@MyHomeFragment.requireContext())
-            println(result)
+
         }
     }
     override fun onCreateView(
@@ -30,11 +32,13 @@ class MyHomeFragment : Fragment() {
         _binding=FragmentMyHomeBinding.inflate(inflater)
 
         binding!!.fixhome.setOnClickListener{
-            binding!!.name.text="fixhome"
+            val intent = Intent(activity, MyHomeProfileActivity::class.java)
+            startActivity(intent)
         }
 
         binding!!.settings.setOnClickListener{
-            binding!!.name.text="settings"
+            val intent = Intent(activity, MyHomeSettingsActivity::class.java)
+            startActivity(intent)
         }
 
         binding!!.plan.setOnClickListener{
@@ -42,19 +46,22 @@ class MyHomeFragment : Fragment() {
         }
 
         binding!!.profile.setOnClickListener{
-            //val intent = Intent(activity,MyHome::class.java)
-            //startActivity(intent)
+            val intent = Intent(activity, MyHomeProfileActivity::class.java)
+            startActivity(intent)
         }
 
         binding!!.faq.setOnClickListener{
-            binding!!.name.text="faq"
+            val intent = Intent(activity, MyHomeFaqActivity::class.java)
+            startActivity(intent)
         }
         binding!!.comment.setOnClickListener {
-            binding!!.name.text="comment"
+            val intent = Intent(activity, MyHomeComment::class.java)
+            startActivity(intent)
         }
 
         binding!!.like.setOnClickListener{
-            binding!!.name.text="like"
+            val intent = Intent(activity, MyHomeLike::class.java)
+            startActivity(intent)
         }
 
         return binding!!.root

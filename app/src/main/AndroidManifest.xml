@@ -13,6 +13,21 @@
         android:theme="@style/Theme.PaeParoMobile"
         tools:targetApi="31">
         <activity
+            android:name=".activity.MyHomeComment"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyHomeLike"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyHomeFaqActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyHomeSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyHomeProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.PlanGenerateActivity"
             android:exported="false" />
         <activity
