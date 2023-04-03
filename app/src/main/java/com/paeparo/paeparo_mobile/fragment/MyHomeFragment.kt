@@ -80,7 +80,8 @@ class MyHomeFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        networkScope.cancel()
         _binding=null
+        super.onDestroy()
     }
 }
