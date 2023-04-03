@@ -9,6 +9,7 @@
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
+        android:id="@+id/ll_plan_title"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="@drawable/rounded_bottom"
@@ -21,14 +22,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cv_plan"
+        >
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
             android:fontFamily="@font/noto_sans"
+            android:text="Title"
             android:textColor="@color/white"
             android:textSize="24dp" />
 
@@ -36,12 +39,26 @@
             android:id="@+id/tv_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/noto_sans"
             android:text="SubTitle"
             android:textColor="@color/white"
-            android:fontFamily="@font/noto_sans"
             android:textSize="14dp" />
 
     </LinearLayout>
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:id="@+id/cv_plan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:mcv_selectionColor="@color/app_personal_red"
+        app:mcv_showOtherDates="all"
+        app:layout_constraintBottom_toTopOf="@+id/btn_fragmentname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_plan_title"
+        app:mcv_selectionMode="range"
+
+        />
 
     <TextView
         android:id="@+id/btn_fragmentname"
@@ -52,7 +69,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="24dp"
+        android:textSize="24sp"
         android:background="@color/app_personal_red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
