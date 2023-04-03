@@ -17,7 +17,7 @@ class PlanGenerateAdapter(fa : FragmentActivity) : FragmentStateAdapter(fa){
             0 -> { PlanDateFragment() }
             1 -> { PlanCompanionFragment.newInstance("helloworld","") }
             2 -> { PlanLocationFragment.newInstance("helloworld","") }
-            else -> { PlanStyleFragment.newInstance("helloworld","") }
+            else -> { PlanStyleFragment() }
 
         }
     }
