@@ -27,19 +27,19 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
+            android:text="동행자 추가하기"
             android:fontFamily="@font/noto_sans"
             android:textColor="@color/white"
-            android:textSize="24dp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/tv_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SubTitle"
+            android:text="친구를 검색해 동행자를 추가하세요."
             android:textColor="@color/white"
             android:fontFamily="@font/noto_sans"
-            android:textSize="14dp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -52,7 +52,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="24dp"
+        android:textSize="24sp"
         android:background="@color/app_personal_red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

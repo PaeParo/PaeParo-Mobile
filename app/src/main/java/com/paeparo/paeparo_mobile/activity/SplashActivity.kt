@@ -33,7 +33,8 @@ class SplashActivity : AppCompatActivity() {
                     if (userRegisteredResult.isSuccess) { // 사용자 등록 여부 확인을 성공할 경우
                         when (userRegisteredResult.getOrNull()!!) {
                             FirebaseConstants.RegistrationStatus.REGISTERED -> {
-                                val getUserResult = FirebaseManager.getCurrentUserData(this@SplashActivity)
+                                val getUserResult =
+                                    FirebaseManager.getCurrentUserData(this@SplashActivity)
 
                                 withContext(Dispatchers.Main) {
                                     if (getUserResult.isSuccess) {
@@ -51,7 +52,11 @@ class SplashActivity : AppCompatActivity() {
                                 }
                             }
                             FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED -> {
-                                // TODO: [석민재] 회원가입 Activity에서 닉네임 입력화면 표시
+                                val intent =
+                                    Intent(this@SplashActivity, NickNameActivity::class.java)
+                                startActivity(intent)
+                                finish()
+
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(
                                         this@SplashActivity, "닉네임을 설정해주세요", Toast.LENGTH_SHORT
@@ -60,6 +65,12 @@ class SplashActivity : AppCompatActivity() {
                             }
                             FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED -> {
                                 // TODO: [석민재] 회원가입 Activity에서 세부정보 입력화면 표시
+                                //test
+                                val intent =
+                                    Intent(this@SplashActivity, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(
                                         this@SplashActivity, "세부정보를 설정해주세요", Toast.LENGTH_SHORT

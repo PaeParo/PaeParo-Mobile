@@ -10,12 +10,7 @@ import androidx.fragment.app.Fragment
 import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.R
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PlanFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
+
 class PlanFragment : Fragment() {
 
     override fun onCreateView(

@@ -19,17 +19,20 @@ class MyHomeFragment : Fragment() {
     private var _binding:FragmentMyHomeBinding? = null
     private val binding get()=_binding!!
     private val networkScope = CoroutineScope(Dispatchers.IO)
-    private lateinit var username : String
+    private lateinit var user:User
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var user : User
+        val job=
         networkScope.launch {
-            val result: Result<User> = FirebaseManager.getCurrentUserData(this@MyHomeFragment.requireContext())
-            result.onSuccess {
-                user = it as User
-                username = user.nickname
-                Log.d("USERNAME:",username)
-           }
+            FirebaseManager.getCurrentUserData(this@MyHomeFragment.requireContext()).onSuccess {
+                user=it
+            }
+        }
+
+        runBlocking {
+            job.join()
         }
     }
     override fun onCreateView(
@@ -38,45 +41,47 @@ class MyHomeFragment : Fragment() {
     ): View? {
         _binding=FragmentMyHomeBinding.inflate(inflater)
 
-        binding!!.fixhome.setOnClickListener{
+        binding.name.text=user.nickname
+
+        binding.fixhome.setOnClickListener{
             val intent = Intent(activity, MyHomeProfileActivity::class.java)
             startActivity(intent)
-            Log.d("USERNAME:",username)
         }
 
-        binding!!.settings.setOnClickListener{
+        binding.settings.setOnClickListener{
             val intent = Intent(activity, MyHomeSettingsActivity::class.java)
             startActivity(intent)
         }
 
-        binding!!.plan.setOnClickListener{
-            binding!!.name.text="plan"
+        binding.plan.setOnClickListener{
+            binding.name.text="plan"
         }
 
-        binding!!.profile.setOnClickListener{
+        binding.profile.setOnClickListener{
             val intent = Intent(activity, MyHomeProfileActivity::class.java)
             startActivity(intent)
         }
 
-        binding!!.faq.setOnClickListener{
+        binding.faq.setOnClickListener{
             val intent = Intent(activity, MyHomeFaqActivity::class.java)
             startActivity(intent)
         }
-        binding!!.comment.setOnClickListener {
+        binding.comment.setOnClickListener {
             val intent = Intent(activity, MyHomeCommentActivity::class.java)
             startActivity(intent)
         }
 
-        binding!!.like.setOnClickListener{
+        binding.like.setOnClickListener{
             val intent = Intent(activity, MyHomeLikeActivity::class.java)
             startActivity(intent)
         }
 
-        return binding!!.root
+        return binding.root
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        networkScope.cancel()
         _binding=null
+        super.onDestroy()
     }
 }

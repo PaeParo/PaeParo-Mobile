@@ -20,7 +20,6 @@
         android:paddingEnd="14dp"
         android:paddingBottom="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/cv_plan"
@@ -31,25 +30,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/noto_sans"
-            android:text="Title"
+            android:text="일정 선택"
             android:textColor="@color/white"
-            android:textSize="24dp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/tv_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/noto_sans"
-            android:text="SubTitle"
+            android:text="지역은 선택해주세요."
             android:textColor="@color/white"
-            android:textSize="14dp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/cv_plan"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:mcv_selectionColor="@color/app_personal_red"
         app:mcv_showOtherDates="all"
         app:layout_constraintBottom_toTopOf="@+id/btn_fragmentname"
