@@ -1,17 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.PlanLocationFragment">
+    tools:context=".fragment.PlanDateFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@drawable/rounded_bottom"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingStart="14dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:fontFamily="@font/noto_sans"
+            android:textColor="@color/white"
+            android:textSize="24dp" />
+
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SubTitle"
+            android:textColor="@color/white"
+            android:fontFamily="@font/noto_sans"
+            android:textSize="14dp" />
+
+    </LinearLayout>
+
     <TextView
-        android:layout_width="wrap_content"
-        android:textColor="@color/white"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_fragmentname"
+        android:id="@+id/btn_fragmentname"
+        android:layout_width="0dp"
+        android:layout_height="47dp"
+        android:text="@string/btn_next"
+        android:fontFamily="@font/noto_sans"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_gravity="center"
-        android:text="@string/hello_blank_fragment" />
-</FrameLayout>
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="24dp"
+        android:background="@color/app_personal_red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

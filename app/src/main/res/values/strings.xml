@@ -21,4 +21,5 @@
     <string name="myhome_text_plan">내가 만든 일정</string>
     <string name="myhome_teext_settings">설정</string>
     <string name="myhome_text_faq">자주 묻는 질문(FAQ)</string>
+    <string name="btn_next">다음</string>
 </resources>
