@@ -1,19 +1,26 @@
 package com.paeparo.paeparo_mobile.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.databinding.ActivityNicknameBinding
+import com.paeparo.paeparo_mobile.manager.FirebaseManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class NickNameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNicknameBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
-    // private val networkScope = CoroutineScope(Dispatchers.IO)
+    private val networkScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,39 +41,41 @@ class NickNameActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val user = auth.currentUser
-            if (user != null) {
-                val nicknameMap = hashMapOf("nickname" to nickname)
-                firestore.collection("users").document(user.uid)
-                    .update(nicknameMap as Map<String, Any>)
-                    .addOnSuccessListener {
-                        Toast.makeText(
-                            this@NickNameActivity, "닉네임이 설정되었습니다.", Toast.LENGTH_SHORT
-                        ).show()
-                        finish()
-                    }.addOnFailureListener {
-                        Toast.makeText(
-                            this@NickNameActivity, "닉네임 설정에 실패했습니다.", Toast.LENGTH_SHORT
-                        ).show()
-                    }
-            }
+            networkScope.launch {
+                val result =
+                    FirebaseManager.updateCurrentUserNickname(this@NickNameActivity, nickname)
 
+                withContext(Dispatchers.Main) {
+                    when (result) {
+                        is FirebaseConstants.UpdateNicknameResult.UpdateSuccess -> {
+                            Toast.makeText(
+                                this@NickNameActivity,
+                                "닉네임 등록에 성공했습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            val intent = Intent(this@NickNameActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        is FirebaseConstants.UpdateNicknameResult.DuplicateError -> {
+                            Toast.makeText(
+                                this@NickNameActivity,
+                                "이미 존재하는 닉네임입니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        is FirebaseConstants.UpdateNicknameResult.OtherError -> {
+                            Toast.makeText(
+                                this@NickNameActivity,
+                                "닉네임 등록에 실패했습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
         }
     }
-//    if(isNicknameValid(nick))
-            //TODO: 닉네임 중복 검사 처리
-            //닉네임 중복검사
-//            networkScope.launch {
-//                val result: Result<String> = FirebaseManager.getUserIdByNickname(nick)
-//                result.onSuccess {
-                    // TODO: 닉네임 중복인 경우
-//                }
-//                result.onFailure {
-                    // TODO: 닉네임 중복이 없는거
-                    //FirebaseManager.updateCurrentUserNickname()
-//                }
-
-
 
     private fun isNicknameValid(nickname: String): Boolean {
         val regex = "^[a-zA-Z가-힣0-9]*$"
