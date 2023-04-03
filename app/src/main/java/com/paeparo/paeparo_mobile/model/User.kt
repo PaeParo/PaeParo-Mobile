@@ -7,6 +7,7 @@ import kotlin.reflect.jvm.isAccessible
 data class User(
     var userId: String = "",
     var nickname: String = "",
+    var thumbnail: String = "",
     var age: Int = 0,
     var gender: String = "",
     var travelStyle: List<String> = listOf(),
@@ -15,6 +16,7 @@ data class User(
     fun toMapWithoutUserId(): Map<String, Any> {
         return mapOf(
             "nickname" to nickname,
+            "thumbnail" to thumbnail,
             "age" to age,
             "gender" to gender,
             "travel_style" to travelStyle,
