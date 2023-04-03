@@ -173,27 +173,26 @@ object FirebaseManager {
      */
     suspend fun checkUserRegistered(context: Context): Result<FirebaseConstants.RegistrationStatus> {
         return try {
-            val documentSnapshot =
+            val userRef =
                 firestoreUsersRef.document(context.getPaeParo().userId).get().await()
 
-            if (!documentSnapshot.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
+            if (!userRef.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
                 val newUser = PaeParoUser()
                 firestoreUsersRef.document(context.getPaeParo().userId)
                     .set(newUser.toMapWithoutUserId()).await()
-                Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
-            } else { // 사용자가 등록되어 있을 경우
-                val user = documentSnapshot.toObject(PaeParoUser::class.java)
-
-                val result = when {
-                    user!!.nickname == "" -> FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED
-                    user.age == 0 -> FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED
-                    else -> {
-                        context.getPaeParo().nickname = user.nickname
-                        FirebaseConstants.RegistrationStatus.REGISTERED
-                    }
-                }
-                Result.success(result)
+                return Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
             }
+
+            val user = userRef.toObject(PaeParoUser::class.java)
+            val result = when {
+                user!!.nickname == "" -> FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED
+                user.age == 0 -> FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED
+                else -> {
+                    context.getPaeParo().nickname = user.nickname
+                    FirebaseConstants.RegistrationStatus.REGISTERED
+                }
+            }
+            Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -322,16 +321,12 @@ object FirebaseManager {
      */
     suspend fun getCurrentUserData(context: Context): Result<PaeParoUser> {
         return try {
-            val documentSnapshot =
+            val userData =
                 firestoreUsersRef.document(context.getPaeParo().userId).get().await()
 
-            if (!documentSnapshot.exists()) {
-                Result.failure(Exception("사용자를 찾을 수 없습니다"))
-            } else {
-                val user = documentSnapshot.toObject(PaeParoUser::class.java)
-                user!!.userId = documentSnapshot.id
-                Result.success(user)
-            }
+            val user = userData.toObject(PaeParoUser::class.java)
+            user!!.userId = userData.id
+            Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -361,7 +356,7 @@ object FirebaseManager {
 
             FirebaseConstants.UpdateNicknameResult.UpdateSuccess
         } catch (e: Exception) {
-            FirebaseConstants.UpdateNicknameResult.OtherError(Exception("나중에 다시 시도해주세요"))
+            FirebaseConstants.UpdateNicknameResult.OtherError(e)
         }
     }
 
@@ -374,7 +369,7 @@ object FirebaseManager {
      * @param travelStyle 사용자 여행 취향
      * @return 성공 여부
      */
-    suspend fun updateCurrentUserInfo(
+    suspend fun updateCurrentUserDetailInfo(
         context: Context, age: Int, gender: String, travelStyle: List<String>
     ): Result<Unit> {
         return try {
@@ -393,98 +388,23 @@ object FirebaseManager {
     }
 
     /**
-     * 닉네임을 이용하여 사용자 ID 를 가져오는 함수
-     *
-     * @param nickname 검색할 사용자의 닉네임
-     * @return 사용자 ID를 가져오는데 성공할 경우 사용자 ID 반환, 실패할 경우 Exception 반환
-     */
-    suspend fun getUserIdByNickname(nickname: String): Result<String> {
-        return try {
-            val userData =
-                firestoreUsersRef.whereEqualTo("nickname", nickname).limit(1).get().await()
-
-            if (userData.documents.isEmpty()) { // 사용자가 존재하지 않을 경우
-                Result.failure(Exception("사용자를 찾을 수 없습니다"))
-            } else { // 사용자가 존재할 경우
-                Result.success(userData.documents[0].id)
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    /**
-     * 새로운 여행을 생성하는 함수
+     * 여행을 생성하는 함수
      *
      * @param context 함수를 실행할 Activity의 Context
-     * @param name 여행 이름
-     * @param startDate 여행 시작 날짜
-     * @param endDate 여행 종료 날짜
-     * @param budget 여행 예산
-     * @param members 여행에 참여할 멤버들의 ID
+     * @param trip 생성할 여행
      * @return 성공 여부
      */
     suspend fun createNewTrip(
         context: Context,
-        name: String,
-        startDate: Long,
-        endDate: Long,
-        budget: Int,
-        members: List<String>
+        trip: Trip
     ): Result<String> {
         return try {
             val batch = FirebaseFirestore.getInstance().batch()
 
-            val genderDistribution = GenderDistribution()
-            val ageDistribution = AgeDistribution()
-            val travelPreferences = TravelPreferences()
-
-            for (memberId in members) {
-                val userData = firestoreUsersRef.document(memberId).get().await()
-                val user = userData.toObject(PaeParoUser::class.java)
-
-                if (user != null) { // 사용자가 존재할 경우
-                    when (user.gender) {
-                        "M" -> genderDistribution.male++
-                        "F" -> genderDistribution.female++
-                    }
-
-                    when ((user.age / 10) * 10) {
-                        10 -> ageDistribution._10s++
-                        20 -> ageDistribution._20s++
-                        30 -> ageDistribution._30s++
-                        40 -> ageDistribution._40s++
-                        50 -> ageDistribution._50s++
-                        60 -> ageDistribution._60s++
-                    }
-
-                    for (travelStyle in user.travelStyle) {
-                        when (travelStyle) {
-                            "food" -> travelPreferences.food++
-                            "complex" -> travelPreferences.complex++
-                            "activity" -> travelPreferences.activity++
-                        }
-                    }
-                } else {
-                    return Result.failure(Exception(memberId + "에 해당하는 사용자가 존재하지 않습니다"))
-                }
-            }
-
             val newTripRef = firestoreTripsRef.document()
             batch.set(
                 newTripRef,
-                Trip(
-                    newTripRef.id,
-                    name,
-                    Trip.TripStatus.PLANNING,
-                    startDate,
-                    endDate,
-                    budget,
-                    members.associateWith { false },
-                    genderDistribution,
-                    ageDistribution,
-                    travelPreferences
-                ).toMapWithoutTripId()
+                trip.toMapWithoutTripId()
             )
 
             val tripUpdatesRef = firestoreTripUpdateRef.document(newTripRef.id)
