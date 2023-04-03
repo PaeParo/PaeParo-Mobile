@@ -2,12 +2,10 @@ package com.paeparo.paeparo_mobile.activity
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.databinding.ActivityNicknameBinding
 
 
@@ -15,6 +13,7 @@ class NickNameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNicknameBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    // private val networkScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +23,7 @@ class NickNameActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        val btnNicknameNext: Button = findViewById(R.id.btn_nickname_next)
-        btnNicknameNext.setOnClickListener {
+        binding.btnNicknameNext.setOnClickListener {
             val nickname: String = binding.edtNickname.text.toString().trim()
 
             if (TextUtils.isEmpty(nickname)) {
@@ -55,6 +53,19 @@ class NickNameActivity : AppCompatActivity() {
 
         }
     }
+//    if(isNicknameValid(nick))
+            //TODO: 닉네임 중복 검사 처리
+            //닉네임 중복검사
+//            networkScope.launch {
+//                val result: Result<String> = FirebaseManager.getUserIdByNickname(nick)
+//                result.onSuccess {
+                    // TODO: 닉네임 중복인 경우
+//                }
+//                result.onFailure {
+                    // TODO: 닉네임 중복이 없는거
+                    //FirebaseManager.updateCurrentUserNickname()
+//                }
+
 
 
     private fun isNicknameValid(nickname: String): Boolean {
