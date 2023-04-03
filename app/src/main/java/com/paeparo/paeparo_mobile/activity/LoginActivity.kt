@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.lifecycleScope
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
@@ -22,7 +23,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var tvLoginTitle: TextView
     private lateinit var btnLoginGoogleLogin: ConstraintLayout
     private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
-    private val networkScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,57 +39,50 @@ class LoginActivity : AppCompatActivity() {
         // Google 로그인 결과를 처리하는 launcher를 LoginActivity에서 생성
         googleSignInLauncher =
             FirebaseManager.createGoogleLoginLauncher(this@LoginActivity, onSuccess = {
-                Toast.makeText(this@LoginActivity, "자동 로그인: 사용자 인증에 성공했습니다", Toast.LENGTH_SHORT)
-                    .show()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    when (FirebaseManager.checkCurrentUserRegistration(this@LoginActivity)) {
+                        is FirebaseConstants.CheckRegistrationResult.Registered -> {
+                            val getUserResult =
+                                FirebaseManager.getCurrentUserData(this@LoginActivity)
 
-                networkScope.launch {
-                    val userRegisteredResult: Result<FirebaseConstants.RegistrationStatus> =
-                        FirebaseManager.checkUserRegistered(this@LoginActivity)
-
-                    if (userRegisteredResult.isSuccess) { // 사용자 등록 여부 확인을 성공할 경우
-                        when (userRegisteredResult.getOrNull()!!) {
-                            FirebaseConstants.RegistrationStatus.REGISTERED -> {
-                                val getUserResult = FirebaseManager.getCurrentUserData(this@LoginActivity)
-
-                                withContext(Dispatchers.Main) {
-                                    if (getUserResult.isSuccess) {
-                                        val intent =
-                                            Intent(this@LoginActivity, MainActivity::class.java)
-                                        startActivity(intent)
-                                        finish()
-                                    } else {
-                                        Toast.makeText(
-                                            this@LoginActivity,
-                                            "사용자 정보를 가져오는데 실패했습니다",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
-                            FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED -> {
-                                // TODO: [석민재] 회원가입 Activity에서 닉네임 입력화면 표시
-                                withContext(Dispatchers.Main) {
+                            withContext(Dispatchers.Main) {
+                                if (getUserResult.isSuccess) {
+                                    val intent =
+                                        Intent(this@LoginActivity, MainActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                } else {
                                     Toast.makeText(
-                                        this@LoginActivity, "닉네임을 설정해주세요", Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                            FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED -> {
-                                // TODO: [석민재] 회원가입 Activity에서 세부정보 입력화면 표시
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(
-                                        this@LoginActivity, "세부정보를 설정해주세요", Toast.LENGTH_SHORT
+                                        this@LoginActivity,
+                                        "사용자 정보를 가져오는데 실패했습니다",
+                                        Toast.LENGTH_SHORT
                                     ).show()
                                 }
                             }
                         }
-                    } else { // 사용자 등록 여부 확인을 실패할 경우
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "사용자 인증에 실패했습니다. 나중에 다시 시도해주세요",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        is FirebaseConstants.CheckRegistrationResult.NicknameNotSet -> {
+                            withContext(Dispatchers.Main) {
+                                val intent =
+                                    Intent(this@LoginActivity, NickNameActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                        is FirebaseConstants.CheckRegistrationResult.DetailInfoNotSet -> {
+                            withContext(Dispatchers.Main) {
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                        is FirebaseConstants.CheckRegistrationResult.OtherError -> {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "사용자 등록 여부 확인에 실패했습니다",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 }
@@ -130,7 +123,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        networkScope.cancel()
         super.onDestroy()
     }
 }

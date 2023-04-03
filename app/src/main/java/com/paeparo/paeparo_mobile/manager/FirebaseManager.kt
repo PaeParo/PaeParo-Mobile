@@ -171,30 +171,22 @@ object FirebaseManager {
      *
      * @return 등록 및 세부정보 입력 상태에 대한 확인 결과값
      */
-    suspend fun checkUserRegistered(context: Context): Result<FirebaseConstants.RegistrationStatus> {
+    suspend fun checkCurrentUserRegistration(context: Context): FirebaseConstants.CheckRegistrationResult {
         return try {
-            val userRef =
-                firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+            val user = firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+                .toObject(PaeParoUser::class.java)
 
-            if (!userRef.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
-                val newUser = PaeParoUser()
-                firestoreUsersRef.document(context.getPaeParo().userId)
-                    .set(newUser.toMapWithoutUserId()).await()
-                return Result.success(FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED)
-            }
-
-            val user = userRef.toObject(PaeParoUser::class.java)
-            val result = when {
-                user!!.nickname == "" -> FirebaseConstants.RegistrationStatus.NICKNAME_NOT_REGISTERED
-                user.age == 0 -> FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED
+            when {
+                user == null -> FirebaseConstants.CheckRegistrationResult.OtherError(Exception("User not found"))
+                user.nickname.isEmpty() -> FirebaseConstants.CheckRegistrationResult.NicknameNotSet
+                user.age == 0 -> FirebaseConstants.CheckRegistrationResult.DetailInfoNotSet
                 else -> {
                     context.getPaeParo().nickname = user.nickname
-                    FirebaseConstants.RegistrationStatus.REGISTERED
+                    FirebaseConstants.CheckRegistrationResult.Registered
                 }
             }
-            Result.success(result)
         } catch (e: Exception) {
-            Result.failure(e)
+            FirebaseConstants.CheckRegistrationResult.OtherError(e)
         }
     }
 
