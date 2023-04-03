@@ -64,6 +64,12 @@ class SplashActivity : AppCompatActivity() {
                             }
                             FirebaseConstants.RegistrationStatus.DETAIL_INFO_NOT_REGISTERED -> {
                                 // TODO: [석민재] 회원가입 Activity에서 세부정보 입력화면 표시
+                                //test
+                                val intent =
+                                    Intent(this@SplashActivity, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(
                                         this@SplashActivity, "세부정보를 설정해주세요", Toast.LENGTH_SHORT
