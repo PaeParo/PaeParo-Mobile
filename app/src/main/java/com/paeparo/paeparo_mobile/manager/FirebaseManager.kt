@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
@@ -280,24 +279,16 @@ object FirebaseManager {
             }
 
             if (memberLocations != null && !memberLocations.isEmpty) {
-                val locationUpdates = mutableListOf<LocationUpdateInfo>()
+                val locationUpdateInfos = mutableListOf<LocationUpdateInfo>()
 
-                for (snapshot in memberLocations.documents) {
-                    val userId = snapshot.id
-                    val userLocationData = snapshot.data
-
-                    if (userLocationData != null) {
-                        val timestamp = (userLocationData["timestamp"] as? Number)?.toLong()
-                        val location = userLocationData["location"] as? GeoPoint
-
-                        if (location != null && timestamp != null) {
-                            val locationUpdateInfo = LocationUpdateInfo(userId, timestamp, location)
-                            locationUpdates.add(locationUpdateInfo)
-                        }
+                for (memberLocation in memberLocations.documents) {
+                    val locationUpdateInfo = memberLocation.toObject(LocationUpdateInfo::class.java)
+                    if (locationUpdateInfo != null) {
+                        locationUpdateInfos.add(locationUpdateInfo)
                     }
                 }
 
-                onUpdate(locationUpdates)
+                onUpdate(locationUpdateInfos)
             } else {
                 Log.d("LocationUpdateListener", "데이터가 없습니다")
             }
@@ -528,17 +519,17 @@ object FirebaseManager {
      */
     suspend fun getEventByReference(eventReference: String): Result<Event> {
         return try {
-            val eventSnapshot = FirebaseFirestore.getInstance()
+            val eventRef = FirebaseFirestore.getInstance()
                 .document(eventReference)
                 .get()
                 .await()
 
-            if (eventSnapshot.exists()) { // 이벤트가 존재할 경우
-                val event: Event? = when (eventSnapshot["type"] as? Event.EventType) {
-                    Event.EventType.PLACE -> eventSnapshot.toObject(PlaceEvent::class.java)
-                    Event.EventType.MOVE -> eventSnapshot.toObject(MoveEvent::class.java)
-                    Event.EventType.MEAL -> eventSnapshot.toObject(PlaceEvent::class.java)
-                    else -> eventSnapshot.toObject(Event::class.java)
+            if (eventRef.exists()) { // 이벤트가 존재할 경우
+                val event: Event? = when (eventRef["type"] as? Event.EventType) {
+                    Event.EventType.PLACE -> eventRef.toObject(PlaceEvent::class.java)
+                    Event.EventType.MOVE -> eventRef.toObject(MoveEvent::class.java)
+                    Event.EventType.MEAL -> eventRef.toObject(PlaceEvent::class.java)
+                    else -> eventRef.toObject(Event::class.java)
                 }
 
                 if (event != null) { // 이벤트 변환이 성공할 경우
