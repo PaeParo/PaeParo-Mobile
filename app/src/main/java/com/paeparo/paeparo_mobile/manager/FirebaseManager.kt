@@ -379,6 +379,29 @@ object FirebaseManager {
     }
 
     /**
+     * 닉네임이 특정 문자열로 시작하는 사용자들을 가져오는 함수
+     *
+     * @param startWith 닉네임 시작 문자열
+     * @return 사용자 정보를 가져오는데 성공할 경우 User 객체 리스트 반환, 실패할 경우 Exception 반환
+     */
+    suspend fun getUsersStartWith(startWith: String): Result<List<PaeParoUser>> {
+        return try {
+            val resultList = mutableListOf<PaeParoUser>()
+            val filteredUserList =
+                firestoreUsersRef.orderBy("nickname").startAt(startWith).endAt(startWith + "\uf8ff")
+                    .limit(5).get().await()
+
+            for (user in filteredUserList.documents) {
+                resultList.add(PaeParoUser(user.id, user.getString("nickname")!!))
+            }
+
+            Result.success(resultList)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
      * 여행을 생성하는 함수
      *
      * @param context 함수를 실행할 Activity의 Context
