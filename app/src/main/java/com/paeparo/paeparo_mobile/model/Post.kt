@@ -17,20 +17,29 @@ data class Post(
     var authorReview: AuthorReview = AuthorReview(),
 ) {
     fun getChangedFields(other: Post): Map<String, Any?> {
-        return this::class.declaredMemberProperties
-            .filter { it.isAccessible }
-            .mapNotNull { prop ->
-                @Suppress("UNCHECKED_CAST")
-                val typedProp = prop as KProperty1<Post, *>
-                val currentMemberValue = typedProp.get(this)
-                val otherMemberValue = prop.get(other)
+        fun getChanges(currentData: Any, otherData: Any): Map<String, Any?> {
+            return currentData::class.declaredMemberProperties
+                .filter { it.isAccessible }
+                .mapNotNull { prop ->
+                    @Suppress("UNCHECKED_CAST")
+                    val typedProp = prop as KProperty1<Any, *>
+                    val currentMemberValue = typedProp.get(currentData)
+                    val otherMemberValue = typedProp.get(otherData)
 
-                if (currentMemberValue != otherMemberValue) {
-                    prop.name to otherMemberValue
-                } else {
-                    null
-                }
-            }.toMap()
+                    when {
+                        currentMemberValue == otherMemberValue -> null
+                        currentMemberValue is Any && currentMemberValue::class.isData -> {
+                            val nestedChanges = getChanges(
+                                currentMemberValue,
+                                otherMemberValue ?: return@mapNotNull null
+                            )
+                            if (nestedChanges.isNotEmpty()) prop.name to nestedChanges else null
+                        }
+                        else -> prop.name to otherMemberValue
+                    }
+                }.toMap()
+        }
+        return getChanges(this, other)
     }
 }
 
