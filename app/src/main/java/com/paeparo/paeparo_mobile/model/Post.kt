@@ -11,7 +11,7 @@ data class Post(
     var userId: String = "",
     var tripId: String = "",
     var createdAt: Long = 0L,
-    var like: Int = 0,
+    var likes: Int = 0,
     var tags: List<String> = listOf(),
     var images: List<String> = listOf(),
     var authorReview: AuthorReview = AuthorReview(),
