@@ -176,9 +176,7 @@ object FirebaseManager {
                 firestoreUsersRef.document(context.getPaeParo().userId).get().await()
 
             if (!userRef.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
-                val newUser = PaeParoUser()
-                firestoreUsersRef.document(context.getPaeParo().userId)
-                    .set(newUser.toMapWithoutUserId()).await()
+                createUser(PaeParoUser(userId = context.getPaeParo().userId))
                 return FirebaseConstants.CheckRegistrationResult.NicknameNotSet
             }
 
@@ -303,20 +301,34 @@ object FirebaseManager {
         locationUpdateListener = null
     }
 
+    /**
+     * 새로운 사용자를 생성하는 함수
+     *
+     * @param user 생성할 사용자 객체
+     * @return 생성된 사용자의 ID
+     */
+    private suspend fun createUser(user: PaeParoUser): Result<String> {
+        return try {
+            val newUserRef = firestoreUsersRef.document(user.userId)
+            newUserRef.set(user.toMapWithoutUserId()).await()
+            Result.success(newUserRef.id)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
     /**
-     * 현재 사용자 정보를 가져오는 함수
+     * 사용자를 가져오는 함수
      *
-     * @param context 함수를 실행할 Activity의 Context
-     * @return 사용자 정보를 가져오는데 성공할 경우 User 객체 반환, 실패할 경우 Exception 반환
+     * @param userId 가져올 사용자 ID
+     * @return 가져온 사용자 객체
      */
-    suspend fun getCurrentUserData(context: Context): Result<PaeParoUser> {
+    suspend fun getUser(userId: String): Result<PaeParoUser> {
         return try {
-            val userData =
-                firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+            val userRef = firestoreUsersRef.document(userId).get().await()
 
-            val user = userData.toObject(PaeParoUser::class.java)
-            user!!.userId = userData.id
+            val user = userRef.toObject(PaeParoUser::class.java)
+            user!!.userId = userRef.id
             Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
@@ -324,14 +336,14 @@ object FirebaseManager {
     }
 
     /**
-     * 현재 사용자의 닉네임을 업데이트하는 함수
+     * 사용자 닉네임을 업데이트하는 함수
      *
-     * @param context 함수를 실행할 Activity의 Context
+     * @param userId 닉네임을 업데이트할 사용자의 ID
      * @param nickname 업데이트할 닉네임
-     * @return 닉네임 업데이트 처리결과
+     * @return 업데이트 결과
      */
-    suspend fun updateCurrentUserNickname(
-        context: Context,
+    suspend fun updateUserNickname(
+        userId: String,
         nickname: String
     ): FirebaseConstants.UpdateNicknameResult {
         return try {
@@ -340,12 +352,10 @@ object FirebaseManager {
 
             if (!existingUserWithNickname.isEmpty) return FirebaseConstants.UpdateNicknameResult.DuplicateError
 
-            firestoreUsersRef.document(context.getPaeParo().userId)
+            firestoreUsersRef.document(userId)
                 .update("nickname", nickname).await()
 
-            context.getPaeParo().nickname = nickname
-
-            FirebaseConstants.UpdateNicknameResult.UpdateSuccess
+            FirebaseConstants.UpdateNicknameResult.UpdateSuccess(nickname)
         } catch (e: Exception) {
             FirebaseConstants.UpdateNicknameResult.OtherError(e)
         }

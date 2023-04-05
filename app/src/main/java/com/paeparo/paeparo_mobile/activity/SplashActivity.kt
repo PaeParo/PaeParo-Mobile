@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
                     when (FirebaseManager.checkCurrentUserRegistration(this@SplashActivity)) {
                         is FirebaseConstants.CheckRegistrationResult.Registered -> {
                             val getUserResult =
-                                FirebaseManager.getCurrentUserData(this@SplashActivity)
+                                FirebaseManager.getUser(this@SplashActivity.getPaeParo().userId)
 
                             withContext(Dispatchers.Main) {
                                 if (getUserResult.isSuccess) {

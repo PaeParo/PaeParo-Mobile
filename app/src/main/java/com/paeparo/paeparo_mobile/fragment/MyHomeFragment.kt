@@ -2,13 +2,12 @@ package com.paeparo.paeparo_mobile.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.paeparo.paeparo_mobile.activity.*
+import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.FragmentMyHomeBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.User
@@ -16,53 +15,55 @@ import kotlinx.coroutines.*
 
 
 class MyHomeFragment : Fragment() {
-    private var _binding:FragmentMyHomeBinding? = null
-    private val binding get()=_binding!!
+    private var _binding: FragmentMyHomeBinding? = null
+    private val binding get() = _binding!!
     private val networkScope = CoroutineScope(Dispatchers.IO)
-    private lateinit var user:User
+    private lateinit var user: User
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val job=
-        networkScope.launch {
-            FirebaseManager.getCurrentUserData(this@MyHomeFragment.requireContext()).onSuccess {
-                user=it
+        val job =
+            networkScope.launch {
+                FirebaseManager.getUser(this@MyHomeFragment.requireContext().getPaeParo().userId)
+                    .onSuccess {
+                        user = it
+                    }
             }
-        }
 
         runBlocking {
             job.join()
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding=FragmentMyHomeBinding.inflate(inflater)
+        _binding = FragmentMyHomeBinding.inflate(inflater)
 
-        binding.name.text=user.nickname
+        binding.name.text = user.nickname
 
-        binding.fixhome.setOnClickListener{
+        binding.fixhome.setOnClickListener {
             val intent = Intent(activity, MyHomeProfileActivity::class.java)
             startActivity(intent)
         }
 
-        binding.settings.setOnClickListener{
+        binding.settings.setOnClickListener {
             val intent = Intent(activity, MyHomeSettingsActivity::class.java)
             startActivity(intent)
         }
 
-        binding.plan.setOnClickListener{
-            binding.name.text="plan"
+        binding.plan.setOnClickListener {
+            binding.name.text = "plan"
         }
 
-        binding.profile.setOnClickListener{
+        binding.profile.setOnClickListener {
             val intent = Intent(activity, MyHomeProfileActivity::class.java)
             startActivity(intent)
         }
 
-        binding.faq.setOnClickListener{
+        binding.faq.setOnClickListener {
             val intent = Intent(activity, MyHomeFaqActivity::class.java)
             startActivity(intent)
         }
@@ -71,7 +72,7 @@ class MyHomeFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.like.setOnClickListener{
+        binding.like.setOnClickListener {
             val intent = Intent(activity, MyHomeLikeActivity::class.java)
             startActivity(intent)
         }
@@ -81,7 +82,7 @@ class MyHomeFragment : Fragment() {
 
     override fun onDestroy() {
         networkScope.cancel()
-        _binding=null
+        _binding = null
         super.onDestroy()
     }
 }
