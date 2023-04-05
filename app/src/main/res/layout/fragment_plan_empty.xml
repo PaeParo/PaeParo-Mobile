@@ -7,40 +7,19 @@
     android:layout_height="match_parent"
     app:layout_insetEdge="none"
     tools:context=".fragment.PlanFragment">
-    <LinearLayout
-        android:id="@+id/lL_plan_title"
+
+    <com.paeparo.paeparo_mobile.customView.CustomHeader
+        android:id="@+id/plan_date_header"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:background="@drawable/rounded_bottom"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingStart="14dp"
-        android:paddingTop="2dp"
-        android:paddingEnd="14dp"
-        android:paddingBottom="2dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/lL_plan_mid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="일정 계획"
-            android:fontFamily="@font/noto_sans"
-            android:textColor="@color/white"
-            android:textSize="24dp" />
-
-        <TextView
-            android:id="@+id/tv_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="일정을 계획해보세요"
-            android:textColor="@color/white"
-            android:fontFamily="@font/noto_sans"
-            android:textSize="14dp" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="일정 계획"
+        app:subtitle="일정을 계획해보세요."
+        />
 
     <LinearLayout
         android:id="@+id/lL_plan_mid"
@@ -54,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lL_plan_title"
+        app:layout_constraintTop_toBottomOf="@id/plan_date_header"
         app:layout_constraintVertical_bias="1.0">
 
         <ImageView
