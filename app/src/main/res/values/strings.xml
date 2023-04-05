@@ -10,6 +10,28 @@
     <string name="sample_text_nickname_warning">• 닉네임에는 특수문자와 공백을 포함할 수 없습니다\n• 닉네임 길이는 최소 2자리, 최대 12자리까지 가능합니다\n• 설정한 닉네임은 추후 변경이 불가능합니다</string>
     <string name="sample_text_btn_nickname_next">다음</string>
 
+    <string name="sample_text_tv_personal_title1">잠깐!</string>
+    <string name="sample_text_tv_personal_title2">나만의 맞춤 서비스를 이용해보세요</string>
+    <string name="sample_text_tv_personal_title3">아래의 항목에 대해 알려주시면 여러분께 더 관련 있는 여행 일정들을 제공받으실 수 있습니다</string>
+    <string name="sample_text_tv_personal_gender">성별</string>
+    <string name="gender_man">남성</string>
+    <string name="gender_woman">여성</string>
+    <string name="sample_text_tv_personal_age">연령대</string>
+    <string name="age_teens">10대</string>
+    <string name="age_twenty">20대</string>
+    <string name="age_thirty">30대</string>
+    <string name="age_forty">40대</string>
+    <string name="age_fifty">50대</string>
+    <string name="sample_text_tv_personal_style">취향</string>
+    <string name="sample_text_tv_personal_style_style1">취향1</string>
+    <string name="sample_text_tv_personal_style_style2">취향2</string>
+    <string name="sample_text_tv_personal_style_style3">취향3</string>
+    <string name="sample_text_tv_personal_style_style4">취향4</string>
+    <string name="sample_text_tv_personal_style_style5">취향5</string>
+    <string name="sample_text_tv_personal_style_style6">취향6</string>
+    <string name="sample_text_tv_personal_style_style7">취향7</string>
+    <string name="sample_text_tv_personal_nextButton">Paeparo와 함께 여행 시작</string>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
