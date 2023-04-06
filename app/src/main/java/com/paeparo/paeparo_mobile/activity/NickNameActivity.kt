@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.databinding.ActivityNicknameBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
@@ -43,11 +44,12 @@ class NickNameActivity : AppCompatActivity() {
 
             networkScope.launch {
                 val result =
-                    FirebaseManager.updateCurrentUserNickname(this@NickNameActivity, nickname)
+                    FirebaseManager.updateUserNickname(getPaeParo().userId, nickname)
 
                 withContext(Dispatchers.Main) {
                     when (result) {
                         is FirebaseConstants.UpdateNicknameResult.UpdateSuccess -> {
+                            this@NickNameActivity.getPaeParo().nickname = result.nickname
                             Toast.makeText(
                                 this@NickNameActivity,
                                 "닉네임 등록에 성공했습니다.",

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import kotlinx.coroutines.*
@@ -43,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
                     when (FirebaseManager.checkCurrentUserRegistration(this@LoginActivity)) {
                         is FirebaseConstants.CheckRegistrationResult.Registered -> {
                             val getUserResult =
-                                FirebaseManager.getCurrentUserData(this@LoginActivity)
+                                FirebaseManager.getUser(this@LoginActivity.getPaeParo().userId)
 
                             withContext(Dispatchers.Main) {
                                 if (getUserResult.isSuccess) {

@@ -9,7 +9,7 @@ object FirebaseConstants {
     }
 
     sealed class UpdateNicknameResult {
-        object UpdateSuccess : UpdateNicknameResult()
+        data class UpdateSuccess(val nickname: String) : UpdateNicknameResult()
         object DuplicateError : UpdateNicknameResult()
         data class OtherError(val exception: Throwable) : UpdateNicknameResult()
     }

@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
@@ -177,9 +176,7 @@ object FirebaseManager {
                 firestoreUsersRef.document(context.getPaeParo().userId).get().await()
 
             if (!userRef.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
-                val newUser = PaeParoUser()
-                firestoreUsersRef.document(context.getPaeParo().userId)
-                    .set(newUser.toMapWithoutUserId()).await()
+                createUser(PaeParoUser(userId = context.getPaeParo().userId))
                 return FirebaseConstants.CheckRegistrationResult.NicknameNotSet
             }
 
@@ -280,24 +277,16 @@ object FirebaseManager {
             }
 
             if (memberLocations != null && !memberLocations.isEmpty) {
-                val locationUpdates = mutableListOf<LocationUpdateInfo>()
+                val locationUpdateInfos = mutableListOf<LocationUpdateInfo>()
 
-                for (snapshot in memberLocations.documents) {
-                    val userId = snapshot.id
-                    val userLocationData = snapshot.data
-
-                    if (userLocationData != null) {
-                        val timestamp = (userLocationData["timestamp"] as? Number)?.toLong()
-                        val location = userLocationData["location"] as? GeoPoint
-
-                        if (location != null && timestamp != null) {
-                            val locationUpdateInfo = LocationUpdateInfo(userId, timestamp, location)
-                            locationUpdates.add(locationUpdateInfo)
-                        }
+                for (memberLocation in memberLocations.documents) {
+                    val locationUpdateInfo = memberLocation.toObject(LocationUpdateInfo::class.java)
+                    if (locationUpdateInfo != null) {
+                        locationUpdateInfos.add(locationUpdateInfo)
                     }
                 }
 
-                onUpdate(locationUpdates)
+                onUpdate(locationUpdateInfos)
             } else {
                 Log.d("LocationUpdateListener", "데이터가 없습니다")
             }
@@ -312,20 +301,34 @@ object FirebaseManager {
         locationUpdateListener = null
     }
 
+    /**
+     * 새로운 사용자를 생성하는 함수
+     *
+     * @param user 생성할 사용자 객체
+     * @return 생성된 사용자의 ID
+     */
+    private suspend fun createUser(user: PaeParoUser): Result<String> {
+        return try {
+            val newUserRef = firestoreUsersRef.document(user.userId)
+            newUserRef.set(user.toMapWithoutUserId()).await()
+            Result.success(newUserRef.id)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
     /**
-     * 현재 사용자 정보를 가져오는 함수
+     * 사용자를 가져오는 함수
      *
-     * @param context 함수를 실행할 Activity의 Context
-     * @return 사용자 정보를 가져오는데 성공할 경우 User 객체 반환, 실패할 경우 Exception 반환
+     * @param userId 가져올 사용자 ID
+     * @return 가져온 사용자 객체
      */
-    suspend fun getCurrentUserData(context: Context): Result<PaeParoUser> {
+    suspend fun getUser(userId: String): Result<PaeParoUser> {
         return try {
-            val userData =
-                firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+            val userRef = firestoreUsersRef.document(userId).get().await()
 
-            val user = userData.toObject(PaeParoUser::class.java)
-            user!!.userId = userData.id
+            val user = userRef.toObject(PaeParoUser::class.java)
+            user!!.userId = userRef.id
             Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
@@ -333,14 +336,14 @@ object FirebaseManager {
     }
 
     /**
-     * 현재 사용자의 닉네임을 업데이트하는 함수
+     * 사용자 닉네임을 업데이트하는 함수
      *
-     * @param context 함수를 실행할 Activity의 Context
+     * @param userId 닉네임을 업데이트할 사용자의 ID
      * @param nickname 업데이트할 닉네임
-     * @return 닉네임 업데이트 처리결과
+     * @return 업데이트 결과
      */
-    suspend fun updateCurrentUserNickname(
-        context: Context,
+    suspend fun updateUserNickname(
+        userId: String,
         nickname: String
     ): FirebaseConstants.UpdateNicknameResult {
         return try {
@@ -349,12 +352,10 @@ object FirebaseManager {
 
             if (!existingUserWithNickname.isEmpty) return FirebaseConstants.UpdateNicknameResult.DuplicateError
 
-            firestoreUsersRef.document(context.getPaeParo().userId)
+            firestoreUsersRef.document(userId)
                 .update("nickname", nickname).await()
 
-            context.getPaeParo().nickname = nickname
-
-            FirebaseConstants.UpdateNicknameResult.UpdateSuccess
+            FirebaseConstants.UpdateNicknameResult.UpdateSuccess(nickname)
         } catch (e: Exception) {
             FirebaseConstants.UpdateNicknameResult.OtherError(e)
         }
@@ -382,6 +383,29 @@ object FirebaseManager {
                 )
             ).await()
             Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 닉네임이 특정 문자열로 시작하는 사용자들을 가져오는 함수
+     *
+     * @param startWith 닉네임 시작 문자열
+     * @return 사용자 정보를 가져오는데 성공할 경우 User 객체 리스트 반환, 실패할 경우 Exception 반환
+     */
+    suspend fun getUsersStartWith(startWith: String): Result<List<PaeParoUser>> {
+        return try {
+            val resultList = mutableListOf<PaeParoUser>()
+            val filteredUserList =
+                firestoreUsersRef.orderBy("nickname").startAt(startWith).endAt(startWith + "\uf8ff")
+                    .limit(5).get().await()
+
+            for (user in filteredUserList.documents) {
+                resultList.add(PaeParoUser(user.id, user.getString("nickname")!!))
+            }
+
+            Result.success(resultList)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -528,17 +552,17 @@ object FirebaseManager {
      */
     suspend fun getEventByReference(eventReference: String): Result<Event> {
         return try {
-            val eventSnapshot = FirebaseFirestore.getInstance()
+            val eventRef = FirebaseFirestore.getInstance()
                 .document(eventReference)
                 .get()
                 .await()
 
-            if (eventSnapshot.exists()) { // 이벤트가 존재할 경우
-                val event: Event? = when (eventSnapshot["type"] as? Event.EventType) {
-                    Event.EventType.PLACE -> eventSnapshot.toObject(PlaceEvent::class.java)
-                    Event.EventType.MOVE -> eventSnapshot.toObject(MoveEvent::class.java)
-                    Event.EventType.MEAL -> eventSnapshot.toObject(PlaceEvent::class.java)
-                    else -> eventSnapshot.toObject(Event::class.java)
+            if (eventRef.exists()) { // 이벤트가 존재할 경우
+                val event: Event? = when (eventRef["type"] as? Event.EventType) {
+                    Event.EventType.PLACE -> eventRef.toObject(PlaceEvent::class.java)
+                    Event.EventType.MOVE -> eventRef.toObject(MoveEvent::class.java)
+                    Event.EventType.MEAL -> eventRef.toObject(PlaceEvent::class.java)
+                    else -> eventRef.toObject(Event::class.java)
                 }
 
                 if (event != null) { // 이벤트 변환이 성공할 경우
