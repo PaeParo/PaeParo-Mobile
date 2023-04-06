@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
@@ -381,6 +382,104 @@ object FirebaseManager {
     }
 
     /**
+     * 특정 사용자가 포함된 여행 목록을 가져오는 함수
+     *
+     * @param userId 사용자 ID
+     * @return 성공 시 여행 목록 반환, 실패 시 Exception 반환
+     */
+    suspend fun getUserTrips(userId: String): Result<List<Trip>> {
+        return try {
+            val tripsRef =
+                firestoreTripsRef.whereArrayContains("members", userId).get()
+                    .await()
+
+            val trips = mutableListOf<Trip>()
+            for (tripRef in tripsRef) {
+                val trip = tripRef.toObject(Trip::class.java)
+                trip.tripId = tripRef.id
+                trips.add(trip)
+            }
+            Result.success(trips)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 사용자가 작성한 게시물 목록을 가져오는 함수
+     *
+     * @param userId 사용자 ID
+     * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
+     */
+    suspend fun getUserPosts(userId: String): Result<List<Post>> {
+        return try {
+            val postsRef =
+                firestorePostsRef.whereEqualTo("userId", userId).get()
+                    .await()
+
+            val posts = mutableListOf<Post>()
+            for (postRef in postsRef) {
+                val post = postRef.toObject(Post::class.java)
+                post.postId = postRef.id
+                posts.add(post)
+            }
+            Result.success(posts)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 게시글에 특정 사용자가 좋아요를 추가하는 함수
+     *
+     * @param postId
+     * @param userId
+     * @return 성공 시 Unit, 실패 시 Exception 반환
+     */
+    suspend fun likePost(postId: String, userId: String): Result<Unit> {
+        return try {
+            val postRef = firestorePostsRef.document(postId)
+            val userRef = firestoreUsersRef.document(userId)
+
+            val batch = firestore.batch()
+
+            batch.update(postRef, "likes", FieldValue.increment(1))
+            batch.update(userRef, "liked_posts", FieldValue.arrayUnion(postId))
+
+            batch.commit().await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 게시글에 특정 사용자가 좋아요를 취소하는 함수
+     *
+     * @param postId
+     * @param userId
+     * @return 성공 시 Unit, 실패 시 Exception 반환
+     */
+    suspend fun cancelLikePost(postId: String, userId: String): Result<Unit> {
+        return try {
+            val postRef = firestorePostsRef.document(postId)
+            val userRef = firestoreUsersRef.document(userId)
+
+            val batch = firestore.batch()
+
+            batch.update(postRef, "likes", FieldValue.increment(-1))
+            batch.update(userRef, "liked_posts", FieldValue.arrayRemove(postId))
+
+            batch.commit().await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
      * 특정 닉네임으로 시작하는 사용자 5명을 불러오는 함수
      *
      * @param startWith 닉네임 시작 문자열
@@ -434,30 +533,6 @@ object FirebaseManager {
             batch.commit().await()
 
             Result.success(newTripRef.id)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    /**
-     * 특정 사용자가 포함된 여행 목록을 가져오는 함수
-     *
-     * @param userId 사용자 ID
-     * @return 성공 시 여행 목록 반환, 실패 시 Exception 반환
-     */
-    suspend fun getUserTrips(userId: String): Result<List<Trip>> {
-        return try {
-            val tripsRef =
-                firestoreTripsRef.whereArrayContains("members", userId).get()
-                    .await()
-
-            val trips = mutableListOf<Trip>()
-            for (tripRef in tripsRef) {
-                val trip = tripRef.toObject(Trip::class.java)
-                trip.tripId = tripRef.id
-                trips.add(trip)
-            }
-            Result.success(trips)
         } catch (e: Exception) {
             Result.failure(e)
         }
