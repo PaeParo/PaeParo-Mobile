@@ -587,6 +587,84 @@ object FirebaseManager {
     }
 
     /**
+     * 특정 여행을 가져오는 함수
+     *
+     * @param tripId 가져올 여행 ID
+     * @return 성공 시 여행 객체 반환, 실패 시 Exception 반환
+     */
+    suspend fun getTrip(tripId: String): Result<Trip> {
+        return try {
+            val tripRef = firestoreTripsRef.document(tripId).get().await()
+            val trip = tripRef.toObject(Trip::class.java)!!
+            trip.tripId = tripRef.id
+
+            Result.success(trip)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 여행을 수정하는 함수
+     *
+     * @param tripId 수정할 여행 ID
+     * @param updateFields 수정할 요소의 이름과 값이 담긴 Map
+     * @return 성공 시 Unit 반환, 실패 시 Exception 반환
+     */
+    suspend fun updateTrip(tripId: String, updateFields: Map<String, Any?>): Result<Unit> {
+        return try {
+            firestoreTripsRef.document(tripId).update(updateFields).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 여행을 삭제하는 함수
+     *
+     * @param tripId
+     * @return
+     */
+    suspend fun deleteTrip(tripId: String): Result<Unit> {
+        return try {
+            firestoreTripsRef.document(tripId).delete().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 여행 초대를 수락하는 함수
+     *
+     * @param tripId 초대를 수락할 여행 ID
+     * @param userId 수락하는 사용자 ID
+     * @return 성공 시 Unit 반환, 실패 시 Exception 반환
+     */
+    suspend fun acceptTripInvitation(tripId: String, userId: String): Result<Unit> {
+        return try {
+            val tripRef = firestoreTripsRef.document(tripId)
+
+            tripRef.update("members.$userId", true).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun rejectTripInvitation(tripId: String, userId: String): Result<Unit> {
+        return try {
+            val tripRef = firestoreTripsRef.document(tripId)
+
+            tripRef.update("members.$userId", FieldValue.delete()).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
      * 특정 여행에 이벤트를 추가하는 함수
      *
      * @param userId 이벤트를 추가한 사용자 ID
