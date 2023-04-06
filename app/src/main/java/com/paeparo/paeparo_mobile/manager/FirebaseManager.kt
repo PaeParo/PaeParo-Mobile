@@ -60,6 +60,9 @@ object FirebaseManager {
     /**
      * Firebase Cloud Functions Module
      */
+    // Firebase Functions를 사용할 경우에는 다음 코드 주석 해제
+    // private val functions: FirebaseFunctions = FirebaseFunctions.getInstance()
+    // Firebase Functions Emulator를 사용할 경우에는 다음 코드 주석 해제
     private val functions: FirebaseFunctions = FirebaseFunctions.getInstance()
 
     /**
@@ -177,7 +180,10 @@ object FirebaseManager {
                 firestoreUsersRef.document(context.getPaeParo().userId).get().await()
 
             if (!userRef.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
-                createUser(PaeParoUser(userId = context.getPaeParo().userId))
+                val result = createUser(PaeParoUser(userId = context.getPaeParo().userId))
+                if (result.isFailure) {
+                    return FirebaseConstants.CheckRegistrationResult.OtherError(result.exceptionOrNull()!!)
+                }
                 return FirebaseConstants.CheckRegistrationResult.NicknameNotSet
             }
 
@@ -310,9 +316,24 @@ object FirebaseManager {
      */
     private suspend fun createUser(user: PaeParoUser): Result<String> {
         return try {
-            val newUserRef = firestoreUsersRef.document(user.userId)
-            newUserRef.set(user.toMapWithoutUserId()).await()
-            Result.success(newUserRef.id)
+            functions.useEmulator("10.0.2.2", 5001)
+            val functionResult =
+                functions.getHttpsCallable("createUser").call(
+                    hashMapOf(
+                        "user_id" to user.userId,
+                        "user" to user.toMapWithoutUserId()
+                    )
+                ).await()
+            val resultData = functionResult.data as Map<*, *>
+
+            if (resultData["success"] as Boolean) {
+                Result.success(resultData["userId"] as String)
+            } else {
+                Result.failure(Exception(resultData["error"] as String))
+            }
+//            val newUserRef = firestoreUsersRef.document(user.userId)
+//            newUserRef.set(user.toMapWithoutUserId()).await()
+//            Result.success(newUserRef.id)
         } catch (e: Exception) {
             Result.failure(e)
         }
