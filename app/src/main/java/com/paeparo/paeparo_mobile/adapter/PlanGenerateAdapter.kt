@@ -15,8 +15,8 @@ class PlanGenerateAdapter(fa : FragmentActivity) : FragmentStateAdapter(fa){
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> { PlanDateFragment() }
-            1 -> { PlanCompanionFragment.newInstance("helloworld","") }
-            2 -> { PlanLocationFragment.newInstance("helloworld","") }
+            1 -> { PlanCompanionFragment() }
+            2 -> { PlanLocationFragment() }
             else -> { PlanStyleFragment() }
 
         }

@@ -1,6 +1,7 @@
 package com.paeparo.paeparo_mobile.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanDateBinding
+import com.prolificinteractive.materialcalendarview.CalendarDay
 
 class PlanDateFragment : Fragment() {
     private var _binding: FragmentPlanDateBinding? = null
     private val binding get() = _binding!!
-
+    private val isChecked = false
+    private lateinit var startDate : CalendarDay
+    private lateinit var endDate : CalendarDay
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,14 +37,16 @@ class PlanDateFragment : Fragment() {
             //TODO: 날짜 하얀색
             //TODO: 과거 날짜 클릭 금지
 
+
+
             //TODO: 날짜 가져오기
             setOnRangeSelectedListener { widget, dates ->
                 // 시작 날짜와 마지막 날짜 가져오기
-                val startDate = dates[0]
-                val endDate = dates[dates.size - 1]
-
+                startDate = dates[0]
+                endDate = dates[dates.size - 1]
                 val message = "Selected range: $startDate - $endDate"
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
             }
         }
 
