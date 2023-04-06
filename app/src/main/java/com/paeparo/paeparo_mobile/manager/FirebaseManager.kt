@@ -480,6 +480,54 @@ object FirebaseManager {
     }
 
     /**
+     * 특정 사용자가 좋아요한 게시물 목록을 가져오는 함수
+     *
+     * @param userId 사용자 ID
+     * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
+     */
+    suspend fun getUserLikedPosts(userId: String): Result<List<Post>> {
+        return try {
+            val userRef = firestoreUsersRef.document(userId).get().await()
+            val user = userRef.toObject(PaeParoUser::class.java)!!
+
+            val posts = mutableListOf<Post>()
+            for (postId in user.likedPosts) {
+                val postRef = firestorePostsRef.document(postId).get().await()
+                val post = postRef.toObject(Post::class.java)!!
+                post.postId = postRef.id
+                posts.add(post)
+            }
+
+            Result.success(posts)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 사용자가 작성한 댓글 목록을 불러오는 함수
+     *
+     * @param userId 사용자 ID
+     * @return 성공 시 댓글 목록 반환, 실패 시 Exception 반환
+     */
+    suspend fun getUserComments(userId: String): Result<List<Comment>> {
+        return try {
+            val commentsRef = firestoreCommentsRef.whereEqualTo("userId", userId).get().await()
+
+            val comments = mutableListOf<Comment>()
+            for (commentRef in commentsRef) {
+                val comment = commentRef.toObject(Comment::class.java)
+                comment.commentId = commentRef.id
+                comments.add(comment)
+            }
+
+            Result.success(comments)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
      * 특정 닉네임으로 시작하는 사용자 5명을 불러오는 함수
      *
      * @param startWith 닉네임 시작 문자열
