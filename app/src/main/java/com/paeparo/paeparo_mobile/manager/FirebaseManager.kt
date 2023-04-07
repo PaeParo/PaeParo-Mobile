@@ -13,7 +13,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -136,69 +135,51 @@ object FirebaseManager {
         gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(applicationContext.getString(R.string.default_web_client_id))
             .requestEmail().build()
+        functions.useEmulator("10.0.2.2", 5001)
     }
 
     /**
      * Google 계정 연동 로그인용 Launcher를 생성하는 함수
      *
      * @param context 해당 Launcher를 실행할 Activity의 Context
-     * @param onSuccess 로그인 성공 시 실행할 Callback 함수
-     * @param onFailure 로그인 실패 시 실행할 Callback 함수
+     * @param onGoogleSignInSuccess 구글 계정 연동 성공 시 실행할 Callback 함수
+     * @param onGoogleSignInFailed 구글 계정 연동 실패 시 실행할 Callback 함수
      * @return Parameters를 이용하여 생성된 ActivityResultLauncher<Intent>
      */
     fun createGoogleLoginLauncher(
-        context: Context, onSuccess: () -> Unit, onFailure: () -> Unit
+        context: Context,
+        onGoogleSignInSuccess: (idToken: String) -> Unit,
+        onGoogleSignInFailed: () -> Unit
     ): ActivityResultLauncher<Intent> {
         return (context as AppCompatActivity).registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val googleSignInTask = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
-                val account = googleSignInTask.getResult(ApiException::class.java)!!
-                // Google 로그인에서 얻은 ID 토큰으로 Firebase 인증 처리
-                val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
-                auth.signInWithCredential(credential).addOnCompleteListener { firebaseAuthTask ->
-                    if (firebaseAuthTask.isSuccessful) {
-                        context.getPaeParo().userId = auth.currentUser!!.uid
-                        onSuccess()
-                    } else {
-                        onFailure()
-                    }
-                }
+                onGoogleSignInSuccess(googleSignInTask.getResult(ApiException::class.java)!!.idToken!!)
             } catch (e: ApiException) {
-                onFailure()
+                onGoogleSignInFailed()
             }
         }
     }
 
     /**
-     * 사용자 등록 여부를 확인하여 Firestore에 사용자를 추가하는 함수
+     * 로그인 요청을 보내는 함수
      *
+     * @param idToken 발급받은 idToken
      * @return 등록 및 세부정보 입력 상태에 대한 확인 결과값
      */
-    suspend fun checkCurrentUserRegistration(context: Context): FirebaseConstants.CheckRegistrationResult {
+    suspend fun login(idToken: String): Result<String> {
         return try {
-            val userRef =
-                firestoreUsersRef.document(context.getPaeParo().userId).get().await()
+            val result = functions.getHttpsCallable("login")
+                .call(
+                    hashMapOf(
+                        "id_token" to idToken
+                    )
+                ).await() as Map<*, *>
 
-            if (!userRef.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
-                val result = createUser(PaeParoUser(userId = context.getPaeParo().userId))
-                if (result.isFailure) {
-                    return FirebaseConstants.CheckRegistrationResult.OtherError(result.exceptionOrNull()!!)
-                }
-                return FirebaseConstants.CheckRegistrationResult.NicknameNotSet
-            }
-
-            val user = userRef.toObject(PaeParoUser::class.java)
-
-            when {
-                user!!.nickname.isEmpty() -> FirebaseConstants.CheckRegistrationResult.NicknameNotSet
-                user.age == 0 -> FirebaseConstants.CheckRegistrationResult.DetailInfoNotSet
-                else -> {
-                    context.getPaeParo().nickname = user.nickname
-                    FirebaseConstants.CheckRegistrationResult.Registered
-                }
-            }
+            if (result["success"] as Boolean) Result.success(FirebaseConstants.ResponseCodes.SUCCESS)
+            else Result.success(result["code"] as String)
         } catch (e: Exception) {
-            FirebaseConstants.CheckRegistrationResult.OtherError(e)
+            Result.failure(e)
         }
     }
 
