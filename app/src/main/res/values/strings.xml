@@ -4,6 +4,7 @@
     <string name="sample_text_btn_google_login">Google 계정으로 시작</string>
     <string name="sample_text_login_title">여정의 시작을 PaeParo와 함께 해보세요</string>
 
+    <string name="sample_text_tv_nickname_name_left">_____</string>
     <string name="sample_text_tv_nickname_name_right"> 님,</string>
     <string name="sample_text_nickname_title">PaeParo와 떠날 준비가 되셨나요?</string>
     <string name="sample_text_edt_nickname">닉네임 입력</string>
