@@ -2,7 +2,9 @@ package com.paeparo.paeparo_mobile.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -15,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 
 class NickNameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNicknameBinding
@@ -30,6 +31,19 @@ class NickNameActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
+
+        // EditText의 TextWatcher 등록
+        binding.edtNickname.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // 입력한 글자를 tv_nickname_name_left TextView에 표시
+                binding.tvNicknameNameLeft.text = s.toString()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
 
         binding.btnNicknameNext.setOnClickListener {
             val nickname: String = binding.edtNickname.text.toString().trim()
@@ -81,7 +95,7 @@ class NickNameActivity : AppCompatActivity() {
 
     private fun isNicknameValid(nickname: String): Boolean {
         val regex = "^[a-zA-Z가-힣0-9]*$"
-        return nickname.matches(regex.toRegex()) && nickname.length in 2..10
+        return nickname.matches(regex.toRegex()) && nickname.length in 2..12
     }
 
 }
