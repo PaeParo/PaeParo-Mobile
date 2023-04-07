@@ -81,7 +81,11 @@ data class AgeDistribution(
 )
 
 data class TravelPreferences(
+    var activity: Int = 0,
     var food: Int = 0,
-    var complex: Int = 0,
-    var activity: Int = 0
+    var shopping: Int = 0,
+    var culture: Int = 0,
+    var sightseeing: Int = 0,
+    var healing: Int = 0,
+    var accommodation: Int = 0,
 )
