@@ -316,24 +316,24 @@ object FirebaseManager {
      */
     private suspend fun createUser(user: PaeParoUser): Result<String> {
         return try {
-            functions.useEmulator("10.0.2.2", 5001)
-            val functionResult =
-                functions.getHttpsCallable("createUser").call(
-                    hashMapOf(
-                        "user_id" to user.userId,
-                        "user" to user.toMapWithoutUserId()
-                    )
-                ).await()
-            val resultData = functionResult.data as Map<*, *>
-
-            if (resultData["success"] as Boolean) {
-                Result.success(resultData["userId"] as String)
-            } else {
-                Result.failure(Exception(resultData["error"] as String))
-            }
-//            val newUserRef = firestoreUsersRef.document(user.userId)
-//            newUserRef.set(user.toMapWithoutUserId()).await()
-//            Result.success(newUserRef.id)
+//            functions.useEmulator("10.0.2.2", 5001)
+//            val functionResult =
+//                functions.getHttpsCallable("createUser").call(
+//                    hashMapOf(
+//                        "user_id" to user.userId,
+//                        "user" to user.toMapWithoutUserId()
+//                    )
+//                ).await()
+//            val resultData = functionResult.data as Map<*, *>
+//
+//            if (resultData["success"] as Boolean) {
+//                Result.success(resultData["userId"] as String)
+//            } else {
+//                Result.failure(Exception(resultData["error"] as String))
+//            }
+            val newUserRef = firestoreUsersRef.document(user.userId)
+            newUserRef.set(user.toMapWithoutUserId()).await()
+            Result.success(newUserRef.id)
         } catch (e: Exception) {
             Result.failure(e)
         }
