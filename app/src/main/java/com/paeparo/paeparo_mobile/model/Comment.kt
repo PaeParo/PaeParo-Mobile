@@ -1,30 +1,28 @@
 package com.paeparo.paeparo_mobile.model
 
-import kotlin.reflect.KProperty1
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.jvm.isAccessible
+import com.google.gson.annotations.SerializedName
+import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
 data class Comment(
-    var commentId: String = "",
-    var postId: String = "",
-    var nickname: String = "",
-    var createdAt: Long = 0L,
-    var content: String = ""
+    @SerializedName("comment_id") var commentId: String = "",
+    @SerializedName("post_id") var postId: String = "",
+    @SerializedName("nickname") var nickname: String = "",
+    @SerializedName("created_at") var createdAt: Long = 0L,
+    @SerializedName("content") var content: String = ""
 ) {
-    fun getChangedFields(other: Comment): Map<String, Any?> {
-        return this::class.declaredMemberProperties
-            .filter { it.isAccessible }
-            .mapNotNull { prop ->
-                @Suppress("UNCHECKED_CAST")
-                val typedProp = prop as KProperty1<Comment, *>
-                val currentMemberValue = typedProp.get(this)
-                val otherMemberValue = prop.get(other)
+    fun toMapWithoutCommentId(): Map<String, Any?> {
+        val serializedMap = FirestoreNamingUtil.toSerializedMap(this)
+        return serializedMap.filterKeys { it != "comment_id" }
+    }
 
-                if (currentMemberValue != otherMemberValue) {
-                    prop.name to otherMemberValue
-                } else {
-                    null
-                }
-            }.toMap()
+    fun getChangedFields(other: Comment): Map<String, Any?> {
+        val currentMap = FirestoreNamingUtil.toSerializedMap(this)
+        val otherMap = FirestoreNamingUtil.toSerializedMap(other)
+
+        return currentMap.filterKeys { key ->
+            otherMap[key] != currentMap[key]
+        }.mapValues { entry ->
+            otherMap[entry.key]
+        }
     }
 }

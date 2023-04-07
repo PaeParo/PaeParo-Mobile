@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
@@ -59,6 +60,9 @@ object FirebaseManager {
     /**
      * Firebase Cloud Functions Module
      */
+    // Firebase Functions를 사용할 경우에는 다음 코드 주석 해제
+    // private val functions: FirebaseFunctions = FirebaseFunctions.getInstance()
+    // Firebase Functions Emulator를 사용할 경우에는 다음 코드 주석 해제
     private val functions: FirebaseFunctions = FirebaseFunctions.getInstance()
 
     /**
@@ -176,7 +180,10 @@ object FirebaseManager {
                 firestoreUsersRef.document(context.getPaeParo().userId).get().await()
 
             if (!userRef.exists()) { // 사용자가 등록되어 있지 않을 경우, 사용자 등록 및 NICKNAME_NOT_REGISTERED 반환
-                createUser(PaeParoUser(userId = context.getPaeParo().userId))
+                val result = createUser(PaeParoUser(userId = context.getPaeParo().userId))
+                if (result.isFailure) {
+                    return FirebaseConstants.CheckRegistrationResult.OtherError(result.exceptionOrNull()!!)
+                }
                 return FirebaseConstants.CheckRegistrationResult.NicknameNotSet
             }
 
@@ -305,10 +312,25 @@ object FirebaseManager {
      * 새로운 사용자를 생성하는 함수
      *
      * @param user 생성할 사용자 객체
-     * @return 생성된 사용자의 ID
+     * @return 성공 시 생성된 사용자 ID, 실패 시 Exception 반환
      */
     private suspend fun createUser(user: PaeParoUser): Result<String> {
         return try {
+//            functions.useEmulator("10.0.2.2", 5001)
+//            val functionResult =
+//                functions.getHttpsCallable("createUser").call(
+//                    hashMapOf(
+//                        "user_id" to user.userId,
+//                        "user" to user.toMapWithoutUserId()
+//                    )
+//                ).await()
+//            val resultData = functionResult.data as Map<*, *>
+//
+//            if (resultData["success"] as Boolean) {
+//                Result.success(resultData["userId"] as String)
+//            } else {
+//                Result.failure(Exception(resultData["error"] as String))
+//            }
             val newUserRef = firestoreUsersRef.document(user.userId)
             newUserRef.set(user.toMapWithoutUserId()).await()
             Result.success(newUserRef.id)
@@ -318,10 +340,10 @@ object FirebaseManager {
     }
 
     /**
-     * 사용자를 가져오는 함수
+     * 특정 사용자를 가져오는 함수
      *
-     * @param userId 가져올 사용자 ID
-     * @return 가져온 사용자 객체
+     * @param userId 사용자 ID
+     * @return 성공 시 사용자 정보, 실패 시 Exception 반환
      */
     suspend fun getUser(userId: String): Result<PaeParoUser> {
         return try {
@@ -336,11 +358,11 @@ object FirebaseManager {
     }
 
     /**
-     * 사용자 닉네임을 업데이트하는 함수
+     * 특정 사용자 닉네임을 설정하는 함수
      *
-     * @param userId 닉네임을 업데이트할 사용자의 ID
+     * @param userId 사용자 ID
      * @param nickname 업데이트할 닉네임
-     * @return 업데이트 결과
+     * @return 성공 시 업데이트된 닉네임, 실패 시 에러 종류 반환
      */
     suspend fun updateUserNickname(
         userId: String,
@@ -362,26 +384,18 @@ object FirebaseManager {
     }
 
     /**
-     * 현재 사용자 세부정보를 업데이트하는 함수
+     * 특정 사용자 세부정보를 설정하는 함수
      *
-     * @param context 함수를 실행할 Activity의 Context
-     * @param age 사용자 나이
-     * @param gender 사용자 성별
-     * @param travelStyle 사용자 여행 취향
-     * @return 성공 여부
+     * @param userId 사용자 ID
+     * @param updateFields 업데이트할 정보
+     * @return 성공 시 Unit, 실패 시 Exception 반환
      */
-    suspend fun updateCurrentUserDetailInfo(
-        context: Context, age: Int, gender: String, travelStyle: List<String>
+    suspend fun updateUserDetailInfo(
+        userId: String,
+        updateFields: Map<String, Any?>
     ): Result<Unit> {
         return try {
-            val currentUserRef = FirebaseFirestore.getInstance().collection("users")
-                .document(context.getPaeParo().userId)
-
-            currentUserRef.update(
-                mapOf(
-                    "age" to age, "gender" to gender, "travel_style" to travelStyle
-                )
-            ).await()
+            firestoreUsersRef.document(userId).update(updateFields).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -389,39 +403,182 @@ object FirebaseManager {
     }
 
     /**
-     * 닉네임이 특정 문자열로 시작하는 사용자들을 가져오는 함수
+     * 특정 사용자가 포함된 여행 목록을 가져오는 함수
      *
-     * @param startWith 닉네임 시작 문자열
-     * @return 사용자 정보를 가져오는데 성공할 경우 User 객체 리스트 반환, 실패할 경우 Exception 반환
+     * @param userId 사용자 ID
+     * @return 성공 시 여행 목록 반환, 실패 시 Exception 반환
      */
-    suspend fun getUsersStartWith(startWith: String): Result<List<PaeParoUser>> {
+    suspend fun getUserTrips(userId: String): Result<List<Trip>> {
         return try {
-            val resultList = mutableListOf<PaeParoUser>()
-            val filteredUserList =
-                firestoreUsersRef.orderBy("nickname").startAt(startWith).endAt(startWith + "\uf8ff")
-                    .limit(5).get().await()
+            val tripsRef =
+                firestoreTripsRef.whereArrayContains("members", userId).get()
+                    .await()
 
-            for (user in filteredUserList.documents) {
-                resultList.add(PaeParoUser(user.id, user.getString("nickname")!!))
+            val trips = mutableListOf<Trip>()
+            for (tripRef in tripsRef) {
+                val trip = tripRef.toObject(Trip::class.java)
+                trip.tripId = tripRef.id
+                trips.add(trip)
             }
-
-            Result.success(resultList)
+            Result.success(trips)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
     /**
-     * 여행을 생성하는 함수
+     * 특정 사용자가 작성한 게시물 목록을 가져오는 함수
      *
-     * @param context 함수를 실행할 Activity의 Context
-     * @param trip 생성할 여행
-     * @return 성공 여부
+     * @param userId 사용자 ID
+     * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
      */
-    suspend fun createNewTrip(
-        context: Context,
-        trip: Trip
-    ): Result<String> {
+    suspend fun getUserPosts(userId: String): Result<List<Post>> {
+        return try {
+            val postsRef =
+                firestorePostsRef.whereEqualTo("userId", userId).get()
+                    .await()
+
+            val posts = mutableListOf<Post>()
+            for (postRef in postsRef) {
+                val post = postRef.toObject(Post::class.java)
+                post.postId = postRef.id
+                posts.add(post)
+            }
+            Result.success(posts)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 게시글에 특정 사용자가 좋아요를 추가하는 함수
+     *
+     * @param postId
+     * @param userId
+     * @return 성공 시 Unit, 실패 시 Exception 반환
+     */
+    suspend fun likePost(postId: String, userId: String): Result<Unit> {
+        return try {
+            val postRef = firestorePostsRef.document(postId)
+            val userRef = firestoreUsersRef.document(userId)
+
+            val batch = firestore.batch()
+
+            batch.update(postRef, "likes", FieldValue.increment(1))
+            batch.update(userRef, "liked_posts", FieldValue.arrayUnion(postId))
+
+            batch.commit().await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 게시글에 특정 사용자가 좋아요를 취소하는 함수
+     *
+     * @param postId
+     * @param userId
+     * @return 성공 시 Unit, 실패 시 Exception 반환
+     */
+    suspend fun cancelLikePost(postId: String, userId: String): Result<Unit> {
+        return try {
+            val postRef = firestorePostsRef.document(postId)
+            val userRef = firestoreUsersRef.document(userId)
+
+            val batch = firestore.batch()
+
+            batch.update(postRef, "likes", FieldValue.increment(-1))
+            batch.update(userRef, "liked_posts", FieldValue.arrayRemove(postId))
+
+            batch.commit().await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 사용자가 좋아요한 게시물 목록을 가져오는 함수
+     *
+     * @param userId 사용자 ID
+     * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
+     */
+    suspend fun getUserLikedPosts(userId: String): Result<List<Post>> {
+        return try {
+            val userRef = firestoreUsersRef.document(userId).get().await()
+            val user = userRef.toObject(PaeParoUser::class.java)!!
+
+            val posts = mutableListOf<Post>()
+            for (postId in user.likedPosts) {
+                val postRef = firestorePostsRef.document(postId).get().await()
+                val post = postRef.toObject(Post::class.java)!!
+                post.postId = postRef.id
+                posts.add(post)
+            }
+
+            Result.success(posts)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 사용자가 작성한 댓글 목록을 불러오는 함수
+     *
+     * @param userId 사용자 ID
+     * @return 성공 시 댓글 목록 반환, 실패 시 Exception 반환
+     */
+    suspend fun getUserComments(userId: String): Result<List<Comment>> {
+        return try {
+            val commentsRef = firestoreCommentsRef.whereEqualTo("userId", userId).get().await()
+
+            val comments = mutableListOf<Comment>()
+            for (commentRef in commentsRef) {
+                val comment = commentRef.toObject(Comment::class.java)
+                comment.commentId = commentRef.id
+                comments.add(comment)
+            }
+
+            Result.success(comments)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 닉네임으로 시작하는 사용자 5명을 불러오는 함수
+     *
+     * @param startWith 닉네임 시작 문자열
+     * @return 성공 시 사용자 목록 반환, 실패 시 Exception 반환
+     */
+    suspend fun getUsersStartWith(startWith: String): Result<List<PaeParoUser>> {
+        return try {
+            val usersList = mutableListOf<PaeParoUser>()
+            val usersListRef =
+                firestoreUsersRef.orderBy("nickname").startAt(startWith).endAt(startWith + "\uf8ff")
+                    .limit(5).get().await()
+
+            usersListRef.documents.forEach {
+                usersList.add(PaeParoUser(it.id, it.getString("nickname")!!))
+            }
+
+            Result.success(usersList)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 새로운 여행을 생성하는 함수
+     *
+     * @param trip 생성할 여행 객체
+     * @param userId 여행을 생성한 사용자 ID
+     * @return 성공 시 생성된 여행 ID 반환, 실패 시 Exception 반환
+     */
+    suspend fun createTrip(trip: Trip, userId: String): Result<String> {
         return try {
             val batch = FirebaseFirestore.getInstance().batch()
 
@@ -435,7 +592,7 @@ object FirebaseManager {
             batch.set(
                 tripUpdatesRef,
                 TripUpdateInfo(
-                    context.getPaeParo().userId,
+                    userId,
                     "",
                     TripUpdate.UpdateType.CREATE,
                     Timestamp.now().seconds
@@ -450,42 +607,93 @@ object FirebaseManager {
         }
     }
 
-
     /**
-     * 현재 사용자가 속해있는 모든 여행 목록을 가져오는 함수
+     * 특정 여행을 가져오는 함수
      *
-     * @param context 함수를 실행할 Activity의 Context
-     * @return 여행 목록을 가져오는데 성공할 경우 여행 목록 반환, 실패할 경우 Exception 반환
+     * @param tripId 가져올 여행 ID
+     * @return 성공 시 여행 객체 반환, 실패 시 Exception 반환
      */
-    suspend fun getCurrentUserTrips(context: Context): Result<List<Trip>> {
+    suspend fun getTrip(tripId: String): Result<Trip> {
         return try {
-            val tripsReference =
-                firestoreTripsRef.whereArrayContains("members", context.getPaeParo().userId).get()
-                    .await()
+            val tripRef = firestoreTripsRef.document(tripId).get().await()
+            val trip = tripRef.toObject(Trip::class.java)!!
+            trip.tripId = tripRef.id
 
-            val trips = mutableListOf<Trip>()
-            for (trip in tripsReference) {
-                val tripData = trip.toObject(Trip::class.java)
-                tripData.tripId = trip.id
-                trips.add(tripData)
-            }
-            Result.success(trips)
+            Result.success(trip)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
     /**
-     * 이벤트를 여행에 추가하는 함수
+     * 특정 여행을 수정하는 함수
      *
+     * @param tripId 수정할 여행 ID
+     * @param updateFields 수정할 요소의 이름과 값이 담긴 Map
+     * @return 성공 시 Unit 반환, 실패 시 Exception 반환
+     */
+    suspend fun updateTrip(tripId: String, updateFields: Map<String, Any?>): Result<Unit> {
+        return try {
+            firestoreTripsRef.document(tripId).update(updateFields).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 여행을 삭제하는 함수
+     *
+     * @param tripId
+     * @return
+     */
+    suspend fun deleteTrip(tripId: String): Result<Unit> {
+        return try {
+            firestoreTripsRef.document(tripId).delete().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 여행 초대를 수락하는 함수
+     *
+     * @param tripId 초대를 수락할 여행 ID
+     * @param userId 수락하는 사용자 ID
+     * @return 성공 시 Unit 반환, 실패 시 Exception 반환
+     */
+    suspend fun acceptTripInvitation(tripId: String, userId: String): Result<Unit> {
+        return try {
+            val tripRef = firestoreTripsRef.document(tripId)
+
+            tripRef.update("members.$userId", true).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun rejectTripInvitation(tripId: String, userId: String): Result<Unit> {
+        return try {
+            val tripRef = firestoreTripsRef.document(tripId)
+
+            tripRef.update("members.$userId", FieldValue.delete()).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * 특정 여행에 이벤트를 추가하는 함수
+     *
+     * @param userId 이벤트를 추가한 사용자 ID
      * @param tripId 이벤트를 추가할 여행 ID
      * @param event 추가할 이벤트 객체
-     * @return 성공 여부
+     * @return 성공 시 추가된 이벤트 ID 반환, 실패 시 Exception 반환
      */
-
-    suspend fun addEventToTrip(
-        context: Context, tripId: String, event: Event
-    ): Result<String> {
+    suspend fun addEventToTrip(userId: String, tripId: String, event: Event): Result<String> {
         return try {
             val newEventRef =
                 firestoreEventsRef.document(tripId).collection("trip_events").document()
@@ -496,7 +704,7 @@ object FirebaseManager {
             batch.set(
                 tripUpdateRef,
                 TripUpdateInfo(
-                    context.getPaeParo().userId,
+                    userId,
                     "events/${tripId}/trip_events/${newEventRef.id}",
                     TripUpdate.UpdateType.ADD,
                     Timestamp.now().seconds
@@ -511,15 +719,14 @@ object FirebaseManager {
     }
 
     /**
-     * 이벤트를 여행에서 제거하는 함수
+     * 특정 여행에서 이벤트를 제거하는 함수
      *
-     * @param tripId 제거할 이벤트가 들어있는 여행 ID
+     * @param userId 이벤트를 제거한 사용자 ID
+     * @param tripId 이벤트를 제거할 여행 ID
      * @param eventId 제거할 이벤트 ID
-     * @return 성공 여부
+     * @return 성공 시 Unit, 실패 시 Exception 반환
      */
-    suspend fun removeEventFromTrip(
-        context: Context, tripId: String, eventId: String
-    ): Result<String> {
+    suspend fun removeEventFromTrip(userId: String, tripId: String, eventId: String): Result<Unit> {
         return try {
             val eventRef =
                 firestoreEventsRef.document(tripId).collection("trip_events").document(eventId)
@@ -530,7 +737,7 @@ object FirebaseManager {
             batch.set(
                 tripUpdateRef,
                 TripUpdateInfo(
-                    context.getPaeParo().userId,
+                    userId,
                     "events/${tripId}/trip_events/${eventId}",
                     TripUpdate.UpdateType.REMOVE,
                     Timestamp.now().seconds
@@ -538,41 +745,7 @@ object FirebaseManager {
             )
 
             batch.commit().await()
-            Result.success(eventId)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    /**
-     * Evnet 참조를 이용하여 해당 Event를 가져오는 함수
-     *
-     * @param eventReference Event 참조
-     * @return Event를 가져오는데 성공할 경우 Event 객체 반환, 실패할 경우 Exception 반환
-     */
-    suspend fun getEventByReference(eventReference: String): Result<Event> {
-        return try {
-            val eventRef = FirebaseFirestore.getInstance()
-                .document(eventReference)
-                .get()
-                .await()
-
-            if (eventRef.exists()) { // 이벤트가 존재할 경우
-                val event: Event? = when (eventRef["type"] as? Event.EventType) {
-                    Event.EventType.PLACE -> eventRef.toObject(PlaceEvent::class.java)
-                    Event.EventType.MOVE -> eventRef.toObject(MoveEvent::class.java)
-                    Event.EventType.MEAL -> eventRef.toObject(PlaceEvent::class.java)
-                    else -> eventRef.toObject(Event::class.java)
-                }
-
-                if (event != null) { // 이벤트 변환이 성공할 경우
-                    Result.success(event)
-                } else { // 이벤트 변환이 실패할 경우
-                    Result.failure(Exception("이벤트 변환 중 오류가 발생했습니다"))
-                }
-            } else {
-                Result.failure(Exception("해당 이벤트를 찾을 수 없습니다"))
-            }
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }

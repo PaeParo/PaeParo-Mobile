@@ -1,17 +1,16 @@
 package com.paeparo.paeparo_mobile.model
 
 import com.google.firebase.firestore.GeoPoint
-import kotlin.reflect.KProperty1
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.jvm.isAccessible
+import com.google.gson.annotations.SerializedName
+import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
 open class Event(
-    var eventId: String = "",
-    var name: String = "",
-    var type: EventType = EventType.NONE,
-    var startTime: Long = 0L,
-    var endTime: Long = 0L,
-    var budget: Int = 0
+    @SerializedName("event_id") var eventId: String = "",
+    @SerializedName("name") var name: String = "",
+    @SerializedName("type") var type: EventType = EventType.NONE,
+    @SerializedName("start_time") var startTime: Long = 0L,
+    @SerializedName("end_time") var endTime: Long = 0L,
+    @SerializedName("budget") var budget: Int = 0
 ) {
     enum class EventType {
         NONE,
@@ -20,71 +19,33 @@ open class Event(
         MEAL
     }
 
-    open fun toMapWithoutEventId(): Map<String, Any> {
-        return mapOf(
-            "name" to name,
-            "type" to type,
-            "start_time" to startTime,
-            "end_time" to endTime,
-            "budget" to budget
-        )
+    fun toMapWithoutEventId(): Map<String, Any?> {
+        val serializedMap = FirestoreNamingUtil.toSerializedMap(this)
+        return serializedMap.filterKeys { it != "event_id" }
     }
 
-
     fun getChangedFields(other: Event): Map<String, Any?> {
-        return this::class.declaredMemberProperties
-            .filter { it.isAccessible }
-            .mapNotNull { prop ->
-                @Suppress("UNCHECKED_CAST")
-                val typedProp = prop as KProperty1<Event, *>
-                val currentMemberValue = typedProp.get(this)
-                val otherMemberValue = prop.get(other)
+        val serializedThis = FirestoreNamingUtil.toSerializedMap(this)
+        val serializedOther = FirestoreNamingUtil.toSerializedMap(other)
 
-                if (currentMemberValue != otherMemberValue) {
-                    prop.name to otherMemberValue
-                } else {
-                    null
-                }
-            }.toMap()
+        return serializedThis.filter { (key, value) ->
+            serializedOther[key] != value
+        }
     }
 }
 
 data class PlaceEvent(
-    var place: Place = Place(),
-) : Event() {
-    override fun toMapWithoutEventId(): Map<String, Any> {
-        return mapOf(
-            "name" to name,
-            "type" to type,
-            "start_time" to startTime,
-            "end_time" to endTime,
-            "budget" to budget,
-            "place" to place
-        )
-    }
-}
+    @SerializedName("place") var place: Place = Place(),
+) : Event()
 
 data class MoveEvent(
-    var mode: String = "",
-    var origin: Place = Place(),
-    var destination: Place = Place()
-) : Event() {
-    override fun toMapWithoutEventId(): Map<String, Any> {
-        return mapOf(
-            "name" to name,
-            "type" to type,
-            "start_time" to startTime,
-            "end_time" to endTime,
-            "budget" to budget,
-            "mode" to mode,
-            "origin" to origin,
-            "destination" to destination
-        )
-    }
-}
+    @SerializedName("mode") var mode: String = "",
+    @SerializedName("origin") var origin: Place = Place(),
+    @SerializedName("destination") var destination: Place = Place()
+) : Event()
 
 
 data class Place(
-    var name: String = "",
-    var location: GeoPoint = GeoPoint(0.0, 0.0),
+    @SerializedName("name") var name: String = "",
+    @SerializedName("location") var location: GeoPoint = GeoPoint(0.0, 0.0),
 )

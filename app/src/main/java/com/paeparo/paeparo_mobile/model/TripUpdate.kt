@@ -1,8 +1,10 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.gson.annotations.SerializedName
+
 data class TripUpdate(
-    var tripId: String = "",
-    var tripUpdateInfo: TripUpdateInfo = TripUpdateInfo()
+    @SerializedName("trip_id") var tripId: String = "",
+    @SerializedName("trip_update_info") var tripUpdateInfo: TripUpdateInfo = TripUpdateInfo()
 ) {
     enum class UpdateType {
         NONE,
@@ -14,8 +16,8 @@ data class TripUpdate(
 }
 
 data class TripUpdateInfo(
-    var userId: String = "",
-    var eventReference: String = "",
-    var updateType: TripUpdate.UpdateType = TripUpdate.UpdateType.NONE,
-    var timestamp: Long = 0L
+    @SerializedName("user_id") var userId: String = "",
+    @SerializedName("event_reference") var eventReference: String = "",
+    @SerializedName("update_type") var updateType: TripUpdate.UpdateType = TripUpdate.UpdateType.NONE,
+    @SerializedName("timestamp") var timestamp: Long = 0L
 )
