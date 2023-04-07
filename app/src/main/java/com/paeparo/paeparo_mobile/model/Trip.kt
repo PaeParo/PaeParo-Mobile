@@ -1,21 +1,20 @@
 package com.paeparo.paeparo_mobile.model
 
-import kotlin.reflect.KProperty1
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.jvm.isAccessible
+import com.google.gson.annotations.SerializedName
+import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
 data class Trip(
-    var tripId: String = "",
-    var name: String = "",
-    var status: TripStatus = TripStatus.NONE,
-    var startDate: Long = 0L,
-    var endDate: Long = 0L,
-    var budget: Int = 0,
-    var members: Map<String, Boolean> = mapOf(),
-    var travelStyles: Map<String, List<String>> = mutableMapOf(),
-    var genderDistribution: GenderDistribution = GenderDistribution(),
-    var ageDistribution: AgeDistribution = AgeDistribution(),
-    var travelPreferences: TravelPreferences = TravelPreferences()
+    @SerializedName("trip_id") var tripId: String = "",
+    @SerializedName("name") var name: String = "",
+    @SerializedName("status") var status: TripStatus = TripStatus.NONE,
+    @SerializedName("start_date") var startDate: Long = 0L,
+    @SerializedName("end_date") var endDate: Long = 0L,
+    @SerializedName("budget") var budget: Int = 0,
+    @SerializedName("members") var members: Map<String, Boolean> = mapOf(),
+    @SerializedName("travel_styles") var travelStyles: Map<String, List<String>> = mutableMapOf(),
+    @SerializedName("gender_distribution") var genderDistribution: GenderDistribution = GenderDistribution(),
+    @SerializedName("age_distribution") var ageDistribution: AgeDistribution = AgeDistribution(),
+    @SerializedName("travel_preferences") var travelPreferences: TravelPreferences = TravelPreferences()
 ) {
     enum class TripStatus {
         NONE,
@@ -24,68 +23,41 @@ data class Trip(
         FINISHED
     }
 
-    fun toMapWithoutTripId(): Map<String, Any> {
-        return mapOf(
-            "name" to name,
-            "status" to status,
-            "start_date" to startDate,
-            "end_date" to endDate,
-            "budget" to budget,
-            "members" to members,
-            "travel_styles" to travelStyles,
-            "gender_distribution" to genderDistribution,
-            "age_distribution" to ageDistribution,
-            "travel_preferences" to travelPreferences
-        )
+    fun toMapWithoutTripId(): Map<String, Any?> {
+        val serializedMap = FirestoreNamingUtil.toSerializedMap(this)
+        return serializedMap.filterKeys { it != "trip_id" }
     }
 
     fun getChangedFields(other: Trip): Map<String, Any?> {
-        fun getChanges(currentData: Any, otherData: Any): Map<String, Any?> {
-            return currentData::class.declaredMemberProperties
-                .filter { it.isAccessible }
-                .mapNotNull { prop ->
-                    @Suppress("UNCHECKED_CAST")
-                    val typedProp = prop as KProperty1<Any, *>
-                    val currentMemberValue = typedProp.get(currentData)
-                    val otherMemberValue = typedProp.get(otherData)
+        val serializedThis = FirestoreNamingUtil.toSerializedMap(this)
+        val serializedOther = FirestoreNamingUtil.toSerializedMap(other)
 
-                    when {
-                        currentMemberValue == otherMemberValue -> null
-                        currentMemberValue is Any && currentMemberValue::class.isData -> {
-                            val nestedChanges = getChanges(
-                                currentMemberValue,
-                                otherMemberValue ?: return@mapNotNull null
-                            )
-                            if (nestedChanges.isNotEmpty()) prop.name to nestedChanges else null
-                        }
-                        else -> prop.name to otherMemberValue
-                    }
-                }.toMap()
+        return serializedThis.filter { (key, value) ->
+           serializedOther[key] != value
         }
-        return getChanges(this, other)
     }
 }
 
 data class GenderDistribution(
-    var male: Int = 0,
-    var female: Int = 0
+    @SerializedName("male") var male: Int = 0,
+    @SerializedName("female") var female: Int = 0
 )
 
 data class AgeDistribution(
-    var _10s: Int = 0,
-    var _20s: Int = 0,
-    var _30s: Int = 0,
-    var _40s: Int = 0,
-    var _50s: Int = 0,
-    var _60s: Int = 0
+    @SerializedName("10s") var _10s: Int = 0,
+    @SerializedName("20s") var _20s: Int = 0,
+    @SerializedName("30s") var _30s: Int = 0,
+    @SerializedName("40s") var _40s: Int = 0,
+    @SerializedName("50s") var _50s: Int = 0,
+    @SerializedName("60s") var _60s: Int = 0
 )
 
 data class TravelPreferences(
-    var activity: Int = 0,
-    var food: Int = 0,
-    var shopping: Int = 0,
-    var culture: Int = 0,
-    var sightseeing: Int = 0,
-    var healing: Int = 0,
-    var accommodation: Int = 0,
+    @SerializedName("activity") var activity: Int = 0,
+    @SerializedName("food") var food: Int = 0,
+    @SerializedName("shopping") var shopping: Int = 0,
+    @SerializedName("culture") var culture: Int = 0,
+    @SerializedName("sightseeing") var sightseeing: Int = 0,
+    @SerializedName("healing") var healing: Int = 0,
+    @SerializedName("accommodation") var accommodation: Int = 0,
 )

@@ -1,14 +1,15 @@
 package com.paeparo.paeparo_mobile.model
 
 import com.google.firebase.firestore.GeoPoint
+import com.google.gson.annotations.SerializedName
 
 data class LocationUpdate(
-    var tripId: String = "",
-    var memberLocations: List<LocationUpdateInfo> = listOf()
+    @SerializedName("trip_id") var tripId: String = "",
+    @SerializedName("member_locations") var memberLocations: List<LocationUpdateInfo> = listOf()
 )
 
 data class LocationUpdateInfo(
-    var userId: String = "",
-    var timestamp: Long = 0L,
-    var location: GeoPoint = GeoPoint(0.0, 0.0)
+    @SerializedName("user_id") var userId: String = "",
+    @SerializedName("timestamp") var timestamp: Long = 0L,
+    @SerializedName("location") var location: GeoPoint = GeoPoint(0.0, 0.0)
 )
