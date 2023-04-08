@@ -11,8 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,7 +23,11 @@ import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.model.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import com.paeparo.paeparo_mobile.model.User as PaeParoUser
 
 
@@ -135,28 +138,57 @@ object FirebaseManager {
         gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(applicationContext.getString(R.string.default_web_client_id))
             .requestEmail().build()
-        functions.useEmulator("10.0.2.2", 5001)
+
+        /* Emulator에서 실행할 경우 아래 코드 주석 해제 */
+        // functions.useEmulator("10.0.2.2", 5001)
     }
 
     /**
      * Google 계정 연동 로그인용 Launcher를 생성하는 함수
      *
      * @param context 해당 Launcher를 실행할 Activity의 Context
-     * @param onGoogleSignInSuccess 구글 계정 연동 성공 시 실행할 Callback 함수
-     * @param onGoogleSignInFailed 구글 계정 연동 실패 시 실행할 Callback 함수
+     * @param onSuccess 구글 계정 연동 성공 시 실행할 Callback 함수
+     * @param onFailure 구글 계정 연동 실패 시 실행할 Callback 함수
      * @return Parameters를 이용하여 생성된 ActivityResultLauncher<Intent>
      */
     fun createGoogleLoginLauncher(
         context: Context,
-        onGoogleSignInSuccess: (idToken: String) -> Unit,
-        onGoogleSignInFailed: () -> Unit
+        onSuccess: (responseCode: String) -> Unit,
+        onFailure: (responseCode: String) -> Unit
     ): ActivityResultLauncher<Intent> {
         return (context as AppCompatActivity).registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val googleSignInTask = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
-                onGoogleSignInSuccess(googleSignInTask.getResult(ApiException::class.java)!!.idToken!!)
-            } catch (e: ApiException) {
-                onGoogleSignInFailed()
+                val credential = GoogleAuthProvider.getCredential(
+                    googleSignInTask.getResult(ApiException::class.java)!!.idToken!!,
+                    null
+                )
+                CoroutineScope(Dispatchers.Main).launch {
+                    val authResult: AuthResult = withContext(Dispatchers.IO) {
+                        auth.signInWithCredential(credential).await()
+                    }
+                    val idTokenResult: GetTokenResult =
+                        withContext(Dispatchers.IO) { authResult.user!!.getIdToken(true).await() }
+                    val loginResult: Result<String> =
+                        withContext(Dispatchers.IO) { login(idTokenResult.token!!) }
+
+                    if (loginResult.getOrNull()!! == FirebaseConstants.ResponseCodes.UNKNOWN_ERROR)
+                        onFailure(FirebaseConstants.ResponseCodes.UNKNOWN_ERROR)
+                    else {
+                        val userResult: Result<PaeParoUser> =
+                            withContext(Dispatchers.IO) { getUser(authResult.user!!.uid) }
+
+                        if (userResult.isFailure) {
+                            onFailure(FirebaseConstants.ResponseCodes.USER_NOT_FOUND)
+                        } else {
+                            context.getPaeParo().userId = authResult.user!!.uid
+                            context.getPaeParo().nickname = userResult.getOrNull()!!.nickname
+                            onSuccess(loginResult.getOrNull()!!)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                onFailure(FirebaseConstants.ResponseCodes.UNKNOWN_ERROR)
             }
         }
     }
@@ -167,17 +199,16 @@ object FirebaseManager {
      * @param idToken 발급받은 idToken
      * @return 등록 및 세부정보 입력 상태에 대한 확인 결과값
      */
-    suspend fun login(idToken: String): Result<String> {
+    private suspend fun login(idToken: String): Result<String> {
         return try {
             val result = functions.getHttpsCallable("login")
                 .call(
                     hashMapOf(
                         "id_token" to idToken
                     )
-                ).await() as Map<*, *>
+                ).await().data as Map<*, *>
 
-            if (result["success"] as Boolean) Result.success(FirebaseConstants.ResponseCodes.SUCCESS)
-            else Result.success(result["code"] as String)
+            Result.success(result["result"] as String)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -189,7 +220,10 @@ object FirebaseManager {
      * @param context 해당 로그인 함수를 실행할 Activity의 Context
      * @param googleSignInLauncher 이전에 생성한 ActivityResultLauncher<Intent> (FirebaseManager.createGoogleLoginLauncher()을 이용하여 생성한 객체)
      */
-    fun loginWithGoogle(context: Context, googleSignInLauncher: ActivityResultLauncher<Intent>) {
+    fun launchGoogleLoginTask(
+        context: Context,
+        googleSignInLauncher: ActivityResultLauncher<Intent>
+    ) {
         // Google 로그인 창 표시
         googleSignInLauncher.launch(GoogleSignIn.getClient(context, gso).signInIntent)
     }
@@ -287,37 +321,6 @@ object FirebaseManager {
     fun stopLocationUpdateListener() {
         locationUpdateListener?.remove()
         locationUpdateListener = null
-    }
-
-    /**
-     * 새로운 사용자를 생성하는 함수
-     *
-     * @param user 생성할 사용자 객체
-     * @return 성공 시 생성된 사용자 ID, 실패 시 Exception 반환
-     */
-    private suspend fun createUser(user: PaeParoUser): Result<String> {
-        return try {
-            functions.useEmulator("10.0.2.2", 5001)
-            val functionResult =
-                functions.getHttpsCallable("createUser").call(
-                    hashMapOf(
-                        "user_id" to user.userId,
-                        "user" to user.toMapWithoutUserId()
-                    )
-                ).await()
-            val resultData = functionResult.data as Map<*, *>
-
-            if (resultData["success"] as Boolean) {
-                Result.success(resultData["userId"] as String)
-            } else {
-                Result.failure(Exception(resultData["error"] as String))
-            }
-//            val newUserRef = firestoreUsersRef.document(user.userId)
-//            newUserRef.set(user.toMapWithoutUserId()).await()
-//            Result.success(newUserRef.id)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
     }
 
     /**

@@ -7,13 +7,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.paeparo.paeparo_mobile.R
-import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SplashActivity : AppCompatActivity() {
     private val SPLASH_TIME: Long = 2000
@@ -26,81 +23,39 @@ class SplashActivity : AppCompatActivity() {
         googleSignInLauncher =
             FirebaseManager.createGoogleLoginLauncher(
                 this@SplashActivity,
-                onGoogleSignInSuccess = { idToken ->
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val loginResult: Result<String> = FirebaseManager.login(idToken)
-
-                        if (loginResult.isSuccess) {
-                            when (loginResult.getOrNull()) {
-                                FirebaseConstants.ResponseCodes.SUCCESS -> {
-                                    val getUserResult =
-                                        FirebaseManager.getUser(FirebaseManager.getCurrentUser()!!.uid)
-                                    withContext(Dispatchers.Main) {
-                                        if (getUserResult.isSuccess) {
-                                            getPaeParo().userId = getUserResult.getOrNull()!!.userId
-                                            getPaeParo().nickname =
-                                                getUserResult.getOrNull()!!.nickname
-
-                                            val intent = Intent(
-                                                this@SplashActivity,
-                                                MainActivity::class.java
-                                            )
-                                            startActivity(intent)
-                                            finish()
-                                        } else {
-                                            Toast.makeText(
-                                                this@SplashActivity,
-                                                "자동 로그인: 사용자 인증에 실패했습니다",
-                                                Toast.LENGTH_SHORT
-                                            )
-                                                .show()
-                                            val intent = Intent(
-                                                this@SplashActivity,
-                                                LoginActivity::class.java
-                                            )
-                                            startActivity(intent)
-                                            finish()
-                                        }
-                                    }
-                                }
-                                FirebaseConstants.ResponseCodes.NICKNAME_NOT_SET -> {
-                                    withContext(Dispatchers.Main) {
-                                        val intent = Intent(
-                                            this@SplashActivity,
-                                            NickNameActivity::class.java
-                                        )
-                                        startActivity(intent)
-                                        finish()
-                                    }
-                                }
-                                FirebaseConstants.ResponseCodes.DETAIL_INFO_NOT_SET -> {
-                                    withContext(Dispatchers.Main) {
-                                        val intent =
-                                            Intent(this@SplashActivity, MainActivity::class.java)
-                                        startActivity(intent)
-                                        finish()
-                                    }
-                                }
-                            }
-                        } else {
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    this@SplashActivity,
-                                    "자동 로그인: 사용자 인증에 실패했습니다",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                                val intent = Intent(this@SplashActivity, LoginActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
+                onSuccess = { responseCode ->
+                    when (responseCode) {
+                        FirebaseConstants.ResponseCodes.LOGIN_SUCCESS -> {
+                            val intent = Intent(this@SplashActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        FirebaseConstants.ResponseCodes.NICKNAME_NOT_SET -> {
+                            val intent = Intent(this@SplashActivity, NickNameActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        FirebaseConstants.ResponseCodes.DETAIL_INFO_NOT_SET -> {
+                            val intent = Intent(this@SplashActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        FirebaseConstants.ResponseCodes.UNKNOWN_ERROR -> {
+                            Toast.makeText(
+                                this@SplashActivity,
+                                "알 수 없는 문제가 발생했습니다. 나중에 다시 시도해주세요.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            val intent = Intent(this@SplashActivity, LoginActivity::class.java)
+                            startActivity(intent)
+                            finish()
                         }
                     }
                 },
-                onGoogleSignInFailed = {
+                onFailure = { responseCode ->
                     Toast.makeText(
                         this@SplashActivity,
-                        "자동 로그인: 사용자 인증에 실패했습니다",
+                        "자동 로그인 실패했습니다. 다시 로그인해주세요.",
                         Toast.LENGTH_SHORT
                     )
                         .show()
@@ -118,12 +73,8 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else {
-                FirebaseManager.loginWithGoogle(this@SplashActivity, googleSignInLauncher)
+                FirebaseManager.launchGoogleLoginTask(this@SplashActivity, googleSignInLauncher)
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

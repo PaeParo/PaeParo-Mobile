@@ -11,14 +11,9 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.lifecycleScope
 import com.paeparo.paeparo_mobile.R
-import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.constant.FirebaseConstants
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var ivLoginPaeParoLogo: ImageView
@@ -43,84 +38,45 @@ class LoginActivity : AppCompatActivity() {
         googleSignInLauncher =
             FirebaseManager.createGoogleLoginLauncher(
                 this@LoginActivity,
-                onGoogleSignInSuccess = { idToken ->
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val loginResult: Result<String> = FirebaseManager.login(idToken)
-
-                        if (loginResult.isSuccess) {
-                            when (loginResult.getOrNull()) {
-                                FirebaseConstants.ResponseCodes.SUCCESS -> {
-                                    val getUserResult =
-                                        FirebaseManager.getUser(FirebaseManager.getCurrentUser()!!.uid)
-                                    withContext(Dispatchers.Main) {
-                                        if (getUserResult.isSuccess) {
-                                            getPaeParo().userId = getUserResult.getOrNull()!!.userId
-                                            getPaeParo().nickname =
-                                                getUserResult.getOrNull()!!.nickname
-
-                                            val intent = Intent(
-                                                this@LoginActivity,
-                                                MainActivity::class.java
-                                            )
-                                            startActivity(intent)
-                                            finish()
-                                        } else {
-                                            Toast.makeText(
-                                                this@LoginActivity,
-                                                "로그인: 사용자 인증에 실패했습니다",
-                                                Toast.LENGTH_SHORT
-                                            )
-                                                .show()
-                                        }
-                                    }
-                                }
-                                FirebaseConstants.ResponseCodes.NICKNAME_NOT_SET -> {
-                                    withContext(Dispatchers.Main) {
-                                        val intent = Intent(
-                                            this@LoginActivity,
-                                            NickNameActivity::class.java
-                                        )
-                                        startActivity(intent)
-                                        finish()
-                                    }
-                                }
-                                FirebaseConstants.ResponseCodes.DETAIL_INFO_NOT_SET -> {
-                                    withContext(Dispatchers.Main) {
-                                        val intent =
-                                            Intent(this@LoginActivity, MainActivity::class.java)
-                                        startActivity(intent)
-                                        finish()
-                                    }
-                                }
-                            }
-                        } else {
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "로그인: 사용자 인증에 실패했습니다",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                            }
+                onSuccess = { responseCode ->
+                    when (responseCode) {
+                        FirebaseConstants.ResponseCodes.LOGIN_SUCCESS -> {
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        FirebaseConstants.ResponseCodes.NICKNAME_NOT_SET -> {
+                            val intent = Intent(this@LoginActivity, NickNameActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        FirebaseConstants.ResponseCodes.DETAIL_INFO_NOT_SET -> {
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        FirebaseConstants.ResponseCodes.UNKNOWN_ERROR -> {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "알 수 없는 문제가 발생했습니다. 나중에 다시 시도해주세요.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 },
-                onGoogleSignInFailed = {
+                onFailure = {
                     Toast.makeText(
                         this@LoginActivity,
-                        "로그인: 사용자 인증에 실패했습니다",
+                        "로그인 실패했습니다. 계정 확인 후 다시 시도해주세요.",
                         Toast.LENGTH_SHORT
                     )
                         .show()
-                    val intent = Intent(this@LoginActivity, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
                 })
 
         // Firebase Auth 로그인 테스트 코드
         btnLoginGoogleLogin.setOnClickListener {
             // 구글 로그인 처리
-            FirebaseManager.loginWithGoogle(this@LoginActivity, googleSignInLauncher)
+            FirebaseManager.launchGoogleLoginTask(this@LoginActivity, googleSignInLauncher)
         }
     }
 
@@ -146,9 +102,5 @@ class LoginActivity : AppCompatActivity() {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics
         )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }
