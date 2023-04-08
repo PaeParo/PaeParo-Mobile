@@ -44,12 +44,13 @@
 
     </androidx.appcompat.widget.SearchView>
 
-    <TextView
-        android:id="@+id/tv_plan_companion"
+    <androidx.recyclerview.widget.RecyclerView
+        tools:itemCount="3"
+        android:id="@+id/rv_plan_companion"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_height="0dp"
         android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/btn_fragmentname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sv_plan_companion" />
