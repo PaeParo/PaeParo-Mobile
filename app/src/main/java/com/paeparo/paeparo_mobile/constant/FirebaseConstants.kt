@@ -5,9 +5,7 @@ object FirebaseConstants {
         const val INVALID_ID_TOKEN = "auth/invalid-id-token"
         const val UNKNOWN_ERROR = "functions/unknown-error"
 
-        const val SUCCESS = "success"
-        const val FAILED = "failed"
-
+        const val LOGIN_SUCCESS = "user/login-success"
         const val USER_NOT_FOUND = "user/user-not-found"
         const val NICKNAME_NOT_SET = "user/nickname-not-set"
         const val NICKNAME_ALREADY_IN_USE = "user/nickname-already-in-use"
@@ -21,6 +19,7 @@ object FirebaseConstants {
 
         const val COMMENT_NOT_FOUND = "comment/comment-not-found"
     }
+
     sealed class CheckRegistrationResult {
         object Registered : CheckRegistrationResult()
         object NicknameNotSet : CheckRegistrationResult()
