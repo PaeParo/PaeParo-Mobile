@@ -24,13 +24,13 @@
     <string name="age_forty">40대</string>
     <string name="age_fifty">50대</string>
     <string name="sample_text_tv_personal_style">취향</string>
-    <string name="sample_text_tv_personal_style_style1">취향1</string>
-    <string name="sample_text_tv_personal_style_style2">취향2</string>
-    <string name="sample_text_tv_personal_style_style3">취향3</string>
-    <string name="sample_text_tv_personal_style_style4">취향4</string>
-    <string name="sample_text_tv_personal_style_style5">취향5</string>
-    <string name="sample_text_tv_personal_style_style6">취향6</string>
-    <string name="sample_text_tv_personal_style_style7">취향7</string>
+    <string name="sample_text_tv_personal_style_style1">액티비티</string>
+    <string name="sample_text_tv_personal_style_style2">명소</string>
+    <string name="sample_text_tv_personal_style_style3">문화/예술</string>
+    <string name="sample_text_tv_personal_style_style4">쇼핑</string>
+    <string name="sample_text_tv_personal_style_style5">힐링</string>
+    <string name="sample_text_tv_personal_style_style6">먹거리</string>
+    <string name="sample_text_tv_personal_style_style7">숙소</string>
     <string name="sample_text_tv_personal_nextButton">Paeparo와 함께 여행 시작</string>
 
 <!-- TODO: Remove or change this placeholder text -->
