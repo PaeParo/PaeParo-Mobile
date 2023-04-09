@@ -351,19 +351,21 @@ object FirebaseManager {
     suspend fun updateUserNickname(
         userId: String,
         nickname: String
-    ): FirebaseConstants.UpdateNicknameResult {
-        return try {
-            val existingUserWithNickname =
-                firestoreUsersRef.whereEqualTo("nickname", nickname).get().await()
+    ): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("updateUserNickname")
+                    .call(
+                        hashMapOf(
+                            "user_id" to userId,
+                            "nickname" to nickname
+                        )
+                    ).await().data as Map<*, *>
 
-            if (!existingUserWithNickname.isEmpty) return FirebaseConstants.UpdateNicknameResult.DuplicateError
-
-            firestoreUsersRef.document(userId)
-                .update("nickname", nickname).await()
-
-            FirebaseConstants.UpdateNicknameResult.UpdateSuccess(nickname)
-        } catch (e: Exception) {
-            FirebaseConstants.UpdateNicknameResult.OtherError(e)
+                Result.success(result["result"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
