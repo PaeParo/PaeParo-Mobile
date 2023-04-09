@@ -5,6 +5,9 @@ object FirebaseConstants {
         const val INVALID_ID_TOKEN = "auth/invalid-id-token"
         const val UNKNOWN_ERROR = "functions/unknown-error"
 
+        const val SUCCESS = "success"
+        const val FAILURE = "failure"
+
         const val LOGIN_SUCCESS = "user/login-success"
         const val USER_NOT_FOUND = "user/user-not-found"
         const val NICKNAME_NOT_SET = "user/nickname-not-set"
