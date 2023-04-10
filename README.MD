@@ -78,7 +78,7 @@ PaeParo는 여행 일정을 더 쉽고, 편리하게 구성할 수 있도록 도
     </tr>
     <tr>
         <td width="100" align="center">손형식</td>
-        <td width="200">Frondend<br>마이페이지 및 설정화면</td>
+        <td width="200">Frontend<br>마이페이지 및 설정화면</td>
         <td width="100" align="center">
           <a href="https://github.com/Blenbre777">
             <img src="http://img.shields.io/badge/Blenbre777-655ced?style=social&logo=github"/>
