@@ -40,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
                 this@LoginActivity,
                 onSuccess = { responseCode ->
                     when (responseCode) {
-                        FirebaseConstants.ResponseCodes.LOGIN_SUCCESS -> {
+                        FirebaseConstants.ResponseCodes.SUCCESS -> {
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             startActivity(intent)
                             finish()

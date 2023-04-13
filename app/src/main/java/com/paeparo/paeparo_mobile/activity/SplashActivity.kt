@@ -25,7 +25,7 @@ class SplashActivity : AppCompatActivity() {
                 this@SplashActivity,
                 onSuccess = { responseCode ->
                     when (responseCode) {
-                        FirebaseConstants.ResponseCodes.LOGIN_SUCCESS -> {
+                        FirebaseConstants.ResponseCodes.SUCCESS -> {
                             val intent = Intent(this@SplashActivity, MainActivity::class.java)
                             startActivity(intent)
                             finish()

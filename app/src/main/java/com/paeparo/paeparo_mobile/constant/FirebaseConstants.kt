@@ -8,7 +8,6 @@ object FirebaseConstants {
         const val SUCCESS = "success"
         const val FAILURE = "failure"
 
-        const val LOGIN_SUCCESS = "user/login-success"
         const val USER_NOT_FOUND = "user/user-not-found"
         const val NICKNAME_NOT_SET = "user/nickname-not-set"
         const val NICKNAME_ALREADY_IN_USE = "user/nickname-already-in-use"
