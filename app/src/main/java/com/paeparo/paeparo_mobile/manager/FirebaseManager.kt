@@ -10,10 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.*
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
@@ -571,34 +569,23 @@ object FirebaseManager {
      *
      * @param trip 생성할 여행 객체
      * @param userId 여행을 생성한 사용자 ID
-     * @return 성공 시 생성된 여행 ID 반환, 실패 시 Exception 반환
+     * @return 여행 생성 결과(TRIP_ID, UNKNOWN_ERROR)
      */
     suspend fun createTrip(trip: Trip, userId: String): Result<String> {
-        return try {
-            val batch = FirebaseFirestore.getInstance().batch()
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("createTrip")
+                    .call(
+                        hashMapOf(
+                            "trip" to trip.toMapWithoutTripId(),
+                            "user_id" to userId
+                        )
+                    ).await().data as Map<*, *>
 
-            val newTripRef = firestoreTripsRef.document()
-            batch.set(
-                newTripRef,
-                trip.toMapWithoutTripId()
-            )
-
-            val tripUpdatesRef = firestoreTripUpdateRef.document(newTripRef.id)
-            batch.set(
-                tripUpdatesRef,
-                TripUpdateInfo(
-                    userId,
-                    "",
-                    TripUpdate.UpdateType.CREATE,
-                    Timestamp.now().seconds
-                )
-            )
-
-            batch.commit().await()
-
-            Result.success(newTripRef.id)
-        } catch (e: Exception) {
-            Result.failure(e)
+                Result.success(result["trip_id"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
@@ -625,29 +612,42 @@ object FirebaseManager {
      *
      * @param tripId 수정할 여행 ID
      * @param updateFields 수정할 요소의 이름과 값이 담긴 Map
-     * @return 성공 시 Unit 반환, 실패 시 Exception 반환
+     * @return 여행 수정 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
      */
-    suspend fun updateTrip(tripId: String, updateFields: Map<String, Any?>): Result<Unit> {
-        return try {
-            firestoreTripsRef.document(tripId).update(updateFields).await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+    suspend fun updateTrip(tripId: String, updateFields: Map<String, Any?>): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("updateTrip")
+                    .call(
+                        hashMapOf(
+                            "trip_id" to tripId,
+                            "update_fields" to updateFields
+                        )
+                    ).await().data as Map<*, *>
+
+                Result.success(result["result"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
     /**
      * 특정 여행을 삭제하는 함수
      *
-     * @param tripId
-     * @return
+     * @param tripId 삭제할 여행 ID
+     * @return 여행 삭제 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
      */
-    suspend fun deleteTrip(tripId: String): Result<Unit> {
-        return try {
-            firestoreTripsRef.document(tripId).delete().await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+    suspend fun deleteTrip(tripId: String): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("deleteTrip")
+                    .call(hashMapOf("trip_id" to tripId)).await().data as Map<*, *>
+
+                Result.success(result["result"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
@@ -656,27 +656,48 @@ object FirebaseManager {
      *
      * @param tripId 초대를 수락할 여행 ID
      * @param userId 수락하는 사용자 ID
-     * @return 성공 시 Unit 반환, 실패 시 Exception 반환
+     * @return 초대 수락 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
      */
-    suspend fun acceptTripInvitation(tripId: String, userId: String): Result<Unit> {
-        return try {
-            val tripRef = firestoreTripsRef.document(tripId)
+    suspend fun acceptTripInvitation(tripId: String, userId: String): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("acceptTripInvitation")
+                    .call(
+                        hashMapOf(
+                            "trip_id" to tripId,
+                            "user_id" to userId
+                        )
+                    ).await().data as Map<*, *>
 
-            tripRef.update("members.$userId", true).await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+                Result.success(result["result"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
-    suspend fun rejectTripInvitation(tripId: String, userId: String): Result<Unit> {
-        return try {
-            val tripRef = firestoreTripsRef.document(tripId)
+    /**
+     * 여행 초대를 거절하는 함수
+     *
+     * @param tripId 초대를 거절할 여행 ID
+     * @param userId 거절하는 사용자 ID
+     * @return 초대 거절 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
+     */
+    suspend fun rejectTripInvitation(tripId: String, userId: String): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("rejectTripInvitation")
+                    .call(
+                        hashMapOf(
+                            "trip_id" to tripId,
+                            "user_id" to userId
+                        )
+                    ).await().data as Map<*, *>
 
-            tripRef.update("members.$userId", FieldValue.delete()).await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+                Result.success(result["result"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
@@ -686,30 +707,24 @@ object FirebaseManager {
      * @param userId 이벤트를 추가한 사용자 ID
      * @param tripId 이벤트를 추가할 여행 ID
      * @param event 추가할 이벤트 객체
-     * @return 성공 시 추가된 이벤트 ID 반환, 실패 시 Exception 반환
+     * @return 이벤트 추가 결과(EVENT_ID, UNKNOWN_ERROR)
      */
     suspend fun addEventToTrip(userId: String, tripId: String, event: Event): Result<String> {
-        return try {
-            val newEventRef =
-                firestoreEventsRef.document(tripId).collection("trip_events").document()
-            val tripUpdateRef = firestoreTripUpdateRef.document(tripId)
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("addEventToTrip")
+                    .call(
+                        hashMapOf(
+                            "trip_id" to tripId,
+                            "event" to event.toMapWithoutEventId(),
+                            "user_id" to userId
+                        )
+                    ).await().data as Map<*, *>
 
-            val batch = FirebaseFirestore.getInstance().batch()
-            batch.set(newEventRef, event.toMapWithoutEventId())
-            batch.set(
-                tripUpdateRef,
-                TripUpdateInfo(
-                    userId,
-                    "events/${tripId}/trip_events/${newEventRef.id}",
-                    TripUpdate.UpdateType.ADD,
-                    Timestamp.now().seconds
-                )
-            )
-
-            batch.commit().await()
-            Result.success(newEventRef.id)
-        } catch (e: Exception) {
-            Result.failure(e)
+                Result.success(result["event_id"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
@@ -719,30 +734,28 @@ object FirebaseManager {
      * @param userId 이벤트를 제거한 사용자 ID
      * @param tripId 이벤트를 제거할 여행 ID
      * @param eventId 제거할 이벤트 ID
-     * @return 성공 시 Unit, 실패 시 Exception 반환
+     * @return 이벤트 제거 결과(SUCCESS, UNKNOWN_ERROR)
      */
-    suspend fun removeEventFromTrip(userId: String, tripId: String, eventId: String): Result<Unit> {
-        return try {
-            val eventRef =
-                firestoreEventsRef.document(tripId).collection("trip_events").document(eventId)
-            val tripUpdateRef = firestoreTripUpdateRef.document(tripId)
+    suspend fun removeEventFromTrip(
+        userId: String,
+        tripId: String,
+        eventId: String
+    ): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("removeEventFromTrip")
+                    .call(
+                        hashMapOf(
+                            "trip_id" to tripId,
+                            "event_id" to eventId,
+                            "user_id" to userId
+                        )
+                    ).await().data as Map<*, *>
 
-            val batch = FirebaseFirestore.getInstance().batch()
-            batch.delete(eventRef)
-            batch.set(
-                tripUpdateRef,
-                TripUpdateInfo(
-                    userId,
-                    "events/${tripId}/trip_events/${eventId}",
-                    TripUpdate.UpdateType.REMOVE,
-                    Timestamp.now().seconds
-                )
-            )
-
-            batch.commit().await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+                Result.success(result["result"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 }
