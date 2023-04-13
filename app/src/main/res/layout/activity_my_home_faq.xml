@@ -1,9 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true"
     tools:context=".activity.MyHomeFaqActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/layout01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="@color/app_personal_red"
+        app:strokeWidth="1dp"
+        app:cardCornerRadius="3dp"
+        app:strokeColor="@color/black">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/myhome_faq_questions_1"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+        <ImageButton
+            android:id="@+id/layoutBtn01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:src="@drawable/arrow_up"
+            android:clickable="false"
+            android:background="@android:color/transparent"
+            android:layout_gravity="end"
+            android:contentDescription="@null"
+            android:textSize="22sp" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/layoutDetail01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="#ccc"
+        android:visibility="gone"
+        app:strokeWidth="1dp"
+        app:strokeColor="#aaa">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/myhome_faq_answer_1"
+            android:textSize="18sp" />
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>
