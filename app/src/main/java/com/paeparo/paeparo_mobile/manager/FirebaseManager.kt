@@ -197,7 +197,7 @@ object FirebaseManager {
      * 로그인 요청을 보내는 함수
      *
      * @param idToken 발급받은 idToken
-     * @return 등록 및 세부정보 입력 상태에 대한 확인 결과값
+     * @return 로그인 결과(SUCCESS, NICKNAME_NOT_SET, DETAIL_INFO_NOT_SET, UNKNOWN_ERROR)
      */
     private suspend fun login(idToken: String): Result<String> {
         return try {
@@ -346,7 +346,7 @@ object FirebaseManager {
      *
      * @param userId 사용자 ID
      * @param nickname 업데이트할 닉네임
-     * @return 성공 시 업데이트된 닉네임, 실패 시 에러 종류 반환
+     * @return 닉네임 설정 결과((SUCCESS, NICKNAME_ALREADY_IN_USE, UNKNOWN_ERROR)
      */
     suspend fun updateUserNickname(
         userId: String,
@@ -374,17 +374,26 @@ object FirebaseManager {
      *
      * @param userId 사용자 ID
      * @param updateFields 업데이트할 정보
-     * @return 성공 시 Unit, 실패 시 Exception 반환
+     * @return 세부정보 설정 결과(SUCCESS, UNKNOWN_ERROR)
      */
     suspend fun updateUserDetailInfo(
         userId: String,
         updateFields: Map<String, Any?>
-    ): Result<Unit> {
-        return try {
-            firestoreUsersRef.document(userId).update(updateFields).await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+    ): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("updateUserDetailInfo")
+                    .call(
+                        hashMapOf(
+                            "user_id" to userId,
+                            "update_fields" to updateFields
+                        )
+                    ).await().data as Map<*, *>
+
+                Result.success(result["result"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
@@ -441,23 +450,23 @@ object FirebaseManager {
      *
      * @param postId
      * @param userId
-     * @return 성공 시 Unit, 실패 시 Exception 반환
+     * @return 좋아요 결과(SUCCESS, POST_NOT_FOUND, UNKNOWN_ERROR)
      */
     suspend fun likePost(postId: String, userId: String): Result<Unit> {
-        return try {
-            val postRef = firestorePostsRef.document(postId)
-            val userRef = firestoreUsersRef.document(userId)
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("likePost")
+                    .call(
+                        hashMapOf(
+                            "post_id" to postId,
+                            "user_id" to userId
+                        )
+                    ).await().data as Map<*, *>
 
-            val batch = firestore.batch()
-
-            batch.update(postRef, "likes", FieldValue.increment(1))
-            batch.update(userRef, "liked_posts", FieldValue.arrayUnion(postId))
-
-            batch.commit().await()
-
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+                Result.success(result["result"] as Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
@@ -466,23 +475,23 @@ object FirebaseManager {
      *
      * @param postId
      * @param userId
-     * @return 성공 시 Unit, 실패 시 Exception 반환
+     * @return 좋아요 취소 결과(SUCCESS, POST_NOT_FOUND, UNKNOWN_ERROR)
      */
     suspend fun cancelLikePost(postId: String, userId: String): Result<Unit> {
-        return try {
-            val postRef = firestorePostsRef.document(postId)
-            val userRef = firestoreUsersRef.document(userId)
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("cancelLikePost")
+                    .call(
+                        hashMapOf(
+                            "post_id" to postId,
+                            "user_id" to userId
+                        )
+                    ).await().data as Map<*, *>
 
-            val batch = firestore.batch()
-
-            batch.update(postRef, "likes", FieldValue.increment(-1))
-            batch.update(userRef, "liked_posts", FieldValue.arrayRemove(postId))
-
-            batch.commit().await()
-
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+                Result.success(result["result"] as Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 
