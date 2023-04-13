@@ -14,4 +14,6 @@
     <color name="indian_red_700">#FFC0282C</color>
     <color name="indian_red_900">#FFA4151A</color>
     <color name="app_personal_red">#DD4C4C</color>
+    <color name="trip_item_background_unselect">#FF0F0F0F</color>
+    <color name="trip_item_text_unselect">#FFA0A0A0</color>
 </resources>

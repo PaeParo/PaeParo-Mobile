@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.paeparo.paeparo_mobile.R
@@ -22,7 +23,6 @@ class PlanStyleFragment : Fragment() {
         _binding = FragmentPlanStyleBinding.inflate(inflater, container, false) //set binding
         return binding.root
     }
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

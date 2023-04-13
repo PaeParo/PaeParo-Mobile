@@ -6,6 +6,7 @@ import com.google.android.material.navigation.NavigationBarView
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.fragment.MyHomeFragment
 import com.paeparo.paeparo_mobile.fragment.PlanFragment
+import com.paeparo.paeparo_mobile.fragment.TripDashBoardFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +27,8 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.plan_fragment -> {
-                    ft.replace(R.id.frameLayout,PlanFragment()).commit()
+                    ft.replace(R.id.frameLayout,TripDashBoardFragment()).commit()
+                    //ft.replace(R.id.frameLayout,PlanFragment()).commit()
                     true
                 }
                 R.id.mypage_fragment -> {
