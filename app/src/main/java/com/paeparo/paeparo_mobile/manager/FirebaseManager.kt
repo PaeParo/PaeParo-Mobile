@@ -758,4 +758,30 @@ object FirebaseManager {
             }
         }
     }
+
+    /**
+     * 특정 여행에 속한 특정 사용자의 위치를 업데이트하는 함수
+     *
+     * @param tripId 업데이트할 여행 ID
+     * @param locationUpdateInfo 업데이트할 위치 정보
+     * @return 위치 업데이트 결과(SUCCESS, UNKNOWN_ERROR)
+     */
+    suspend fun updateUserLocation(tripId: String, locationUpdateInfo: LocationUpdateInfo): Result<String>{
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("updateUserLocation")
+                    .call(
+                        hashMapOf(
+                            "trip_id" to tripId,
+                            "user_id" to locationUpdateInfo.userId,
+                            "location_update_info" to locationUpdateInfo.toMapWithouUserId()
+                        )
+                    ).await().data as Map<*, *>
+
+                Result.success(result["result"] as String)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
 }
