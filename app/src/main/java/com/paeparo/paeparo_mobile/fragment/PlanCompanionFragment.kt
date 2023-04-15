@@ -78,13 +78,12 @@ class PlanCompanionFragment : Fragment() {
             val result = FirebaseManager.getUsersStartWith(nickname!!)
            if(result.isSuccess){
                withContext(Dispatchers.Main) {
-                   binding.rvPlanCompanion.adapter = SearchViewAdapter(result.getOrNull() as List<User>)
+                   binding.rvPlanCompanion.adapter = SearchViewAdapter(result.data as List<User>)
                    Log.d(TAG,"Main :"+Thread.currentThread().name)
                }
-               result.getOrNull()
-           }
-           if(result.isFailure){
-               Log.e(TAG,result.exceptionOrNull().toString())
+               result.data
+           } else {
+               Log.e(TAG,result.error.toString())
            }
             Log.d(TAG,"IO :"+Thread.currentThread().name)
         }

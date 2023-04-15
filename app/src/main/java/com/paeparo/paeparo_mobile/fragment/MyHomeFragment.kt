@@ -5,37 +5,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.paeparo.paeparo_mobile.activity.*
+import com.paeparo.paeparo_mobile.activity.MyHomeCommentActivity
+import com.paeparo.paeparo_mobile.activity.MyHomeFaqActivity
+import com.paeparo.paeparo_mobile.activity.MyHomeLikeActivity
+import com.paeparo.paeparo_mobile.activity.MyHomeProfileActivity
+import com.paeparo.paeparo_mobile.activity.MyHomeSettingsActivity
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.FragmentMyHomeBinding
-import com.paeparo.paeparo_mobile.manager.FirebaseManager
-import com.paeparo.paeparo_mobile.model.User
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 
 
 class MyHomeFragment : Fragment() {
     private var _binding: FragmentMyHomeBinding? = null
     private val binding get() = _binding!!
     private val networkScope = CoroutineScope(Dispatchers.IO)
-    private lateinit var user: User
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        lifecycleScope.launch {
-            val result = FirebaseManager.getUser(this@MyHomeFragment.requireContext().getPaeParo().userId)
-            if (result.isSuccess){
-                user = result.data!!
-            }
-            else{
-                Toast.makeText(this@MyHomeFragment.requireContext(), "사용자 정보를 불러오지 못했습니다", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +29,7 @@ class MyHomeFragment : Fragment() {
     ): View? {
         _binding = FragmentMyHomeBinding.inflate(inflater)
 
-        binding.name.text = user.nickname
+        binding.name.text = requireContext().getPaeParo().nickname
 
         binding.fixhome.setOnClickListener {
             val intent = Intent(activity, MyHomeProfileActivity::class.java)

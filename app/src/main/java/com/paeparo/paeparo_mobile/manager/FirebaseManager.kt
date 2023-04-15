@@ -171,7 +171,7 @@ object FirebaseManager {
 
                     if (loginResult.isSuccess) {
                         context.getPaeParo().userId = authResult.user!!.uid
-                        if (loginResult.type == FirebaseConstants.ResponseCodes.ALL_DATA_SET) {
+                        if (loginResult.type != FirebaseConstants.ResponseCodes.NICKNAME_NOT_SET) {
                             context.getPaeParo().nickname = loginResult.data!!
                         }
                         onSuccess(loginResult)
@@ -180,7 +180,7 @@ object FirebaseManager {
                     }
                 }
             } catch (e: Exception) {
-                onFailure(FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR))
+                onFailure(FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e))
             }
         }
     }
@@ -201,12 +201,14 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS && result["type"] == FirebaseConstants.ResponseCodes.ALL_DATA_SET)
-                    FirebaseResult.success(data = result["data"] as String)
-                else
+                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS
+                    && (result["type"] == FirebaseConstants.ResponseCodes.ALL_DATA_SET || result["type"] == FirebaseConstants.ResponseCodes.DETAIL_INFO_NOT_SET)) {
+                    FirebaseResult.success(result["type"] as String, result["data"] as String)
+                } else {
                     FirebaseResult.make(result)
+                }
             } catch (e: Exception) {
-                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -334,7 +336,7 @@ object FirebaseManager {
             user!!.userId = userRef.id
             FirebaseResult.success(data = user)
         } catch (e: Exception) {
-            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR)
+            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -361,7 +363,7 @@ object FirebaseManager {
 
                 FirebaseResult.make(result)
             } catch (e: Exception) {
-                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -376,7 +378,7 @@ object FirebaseManager {
     suspend fun updateUserDetailInfo(
         userId: String,
         updateFields: Map<String, Any?>
-    ): Result<String> {
+    ): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("updateUserDetailInfo")
@@ -387,9 +389,9 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["result"] as String)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -400,7 +402,7 @@ object FirebaseManager {
      * @param userId 사용자 ID
      * @return 성공 시 여행 목록 반환, 실패 시 Exception 반환
      */
-    suspend fun getUserTrips(userId: String): Result<List<Trip>> {
+    suspend fun getUserTrips(userId: String): FirebaseResult<List<Trip>> {
         return try {
             val tripsRef =
                 firestoreTripsRef.whereArrayContains("members", userId).get()
@@ -412,9 +414,10 @@ object FirebaseManager {
                 trip.tripId = tripRef.id
                 trips.add(trip)
             }
-            Result.success(trips)
+
+            FirebaseResult.success(data = trips)
         } catch (e: Exception) {
-            Result.failure(e)
+            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -424,7 +427,7 @@ object FirebaseManager {
      * @param userId 사용자 ID
      * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
      */
-    suspend fun getUserPosts(userId: String): Result<List<Post>> {
+    suspend fun getUserPosts(userId: String): FirebaseResult<List<Post>> {
         return try {
             val postsRef =
                 firestorePostsRef.whereEqualTo("userId", userId).get()
@@ -436,9 +439,9 @@ object FirebaseManager {
                 post.postId = postRef.id
                 posts.add(post)
             }
-            Result.success(posts)
+            FirebaseResult.success(data = posts)
         } catch (e: Exception) {
-            Result.failure(e)
+            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -449,7 +452,7 @@ object FirebaseManager {
      * @param userId
      * @return 좋아요 결과(SUCCESS, POST_NOT_FOUND, UNKNOWN_ERROR)
      */
-    suspend fun likePost(postId: String, userId: String): Result<Unit> {
+    suspend fun likePost(postId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("likePost")
@@ -460,9 +463,9 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["result"] as Unit)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -474,7 +477,7 @@ object FirebaseManager {
      * @param userId
      * @return 좋아요 취소 결과(SUCCESS, POST_NOT_FOUND, UNKNOWN_ERROR)
      */
-    suspend fun cancelLikePost(postId: String, userId: String): Result<Unit> {
+    suspend fun cancelLikePost(postId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("cancelLikePost")
@@ -485,9 +488,9 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["result"] as Unit)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -498,7 +501,7 @@ object FirebaseManager {
      * @param userId 사용자 ID
      * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
      */
-    suspend fun getUserLikedPosts(userId: String): Result<List<Post>> {
+    suspend fun getUserLikedPosts(userId: String): FirebaseResult<List<Post>> {
         return try {
             val userRef = firestoreUsersRef.document(userId).get().await()
             val user = userRef.toObject(PaeParoUser::class.java)!!
@@ -511,9 +514,9 @@ object FirebaseManager {
                 posts.add(post)
             }
 
-            Result.success(posts)
+            FirebaseResult.success(data = posts)
         } catch (e: Exception) {
-            Result.failure(e)
+            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -523,7 +526,7 @@ object FirebaseManager {
      * @param userId 사용자 ID
      * @return 성공 시 댓글 목록 반환, 실패 시 Exception 반환
      */
-    suspend fun getUserComments(userId: String): Result<List<Comment>> {
+    suspend fun getUserComments(userId: String): FirebaseResult<List<Comment>> {
         return try {
             val commentsRef = firestoreCommentsRef.whereEqualTo("userId", userId).get().await()
 
@@ -534,9 +537,9 @@ object FirebaseManager {
                 comments.add(comment)
             }
 
-            Result.success(comments)
+            FirebaseResult.success(data = comments)
         } catch (e: Exception) {
-            Result.failure(e)
+            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -546,7 +549,7 @@ object FirebaseManager {
      * @param startWith 닉네임 시작 문자열
      * @return 성공 시 사용자 목록 반환, 실패 시 Exception 반환
      */
-    suspend fun getUsersStartWith(startWith: String): Result<List<PaeParoUser>> {
+    suspend fun getUsersStartWith(startWith: String): FirebaseResult<List<PaeParoUser>> {
         return try {
             val usersList = mutableListOf<PaeParoUser>()
             val usersListRef =
@@ -557,9 +560,9 @@ object FirebaseManager {
                 usersList.add(PaeParoUser(it.id, it.getString("nickname")!!))
             }
 
-            Result.success(usersList)
+            FirebaseResult.success(data = usersList)
         } catch (e: Exception) {
-            Result.failure(e)
+            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -570,7 +573,7 @@ object FirebaseManager {
      * @param userId 여행을 생성한 사용자 ID
      * @return 여행 생성 결과(TRIP_ID, UNKNOWN_ERROR)
      */
-    suspend fun createTrip(trip: Trip, userId: String): Result<String> {
+    suspend fun createTrip(trip: Trip, userId: String): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("createTrip")
@@ -581,9 +584,13 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["trip_id"] as String)
+                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS) {
+                    FirebaseResult.success(data = result["trip_id"] as String)
+                } else {
+                    FirebaseResult.make(result)
+                }
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -594,15 +601,15 @@ object FirebaseManager {
      * @param tripId 가져올 여행 ID
      * @return 성공 시 여행 객체 반환, 실패 시 Exception 반환
      */
-    suspend fun getTrip(tripId: String): Result<Trip> {
+    suspend fun getTrip(tripId: String): FirebaseResult<Trip> {
         return try {
             val tripRef = firestoreTripsRef.document(tripId).get().await()
             val trip = tripRef.toObject(Trip::class.java)!!
             trip.tripId = tripRef.id
 
-            Result.success(trip)
+            FirebaseResult.success(data = trip)
         } catch (e: Exception) {
-            Result.failure(e)
+            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -613,7 +620,10 @@ object FirebaseManager {
      * @param updateFields 수정할 요소의 이름과 값이 담긴 Map
      * @return 여행 수정 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
      */
-    suspend fun updateTrip(tripId: String, updateFields: Map<String, Any?>): Result<String> {
+    suspend fun updateTrip(
+        tripId: String,
+        updateFields: Map<String, Any?>
+    ): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("updateTrip")
@@ -624,9 +634,9 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["result"] as String)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -637,15 +647,15 @@ object FirebaseManager {
      * @param tripId 삭제할 여행 ID
      * @return 여행 삭제 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
      */
-    suspend fun deleteTrip(tripId: String): Result<String> {
+    suspend fun deleteTrip(tripId: String): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("deleteTrip")
                     .call(hashMapOf("trip_id" to tripId)).await().data as Map<*, *>
 
-                Result.success(result["result"] as String)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -657,7 +667,7 @@ object FirebaseManager {
      * @param userId 수락하는 사용자 ID
      * @return 초대 수락 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
      */
-    suspend fun acceptTripInvitation(tripId: String, userId: String): Result<String> {
+    suspend fun acceptTripInvitation(tripId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("acceptTripInvitation")
@@ -668,9 +678,9 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["result"] as String)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -682,7 +692,7 @@ object FirebaseManager {
      * @param userId 거절하는 사용자 ID
      * @return 초대 거절 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
      */
-    suspend fun rejectTripInvitation(tripId: String, userId: String): Result<String> {
+    suspend fun rejectTripInvitation(tripId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("rejectTripInvitation")
@@ -693,9 +703,9 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["result"] as String)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -708,7 +718,11 @@ object FirebaseManager {
      * @param event 추가할 이벤트 객체
      * @return 이벤트 추가 결과(EVENT_ID, UNKNOWN_ERROR)
      */
-    suspend fun addEventToTrip(userId: String, tripId: String, event: Event): Result<String> {
+    suspend fun addEventToTrip(
+        userId: String,
+        tripId: String,
+        event: Event
+    ): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("addEventToTrip")
@@ -720,9 +734,13 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["event_id"] as String)
+                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS) {
+                    FirebaseResult.success(data = result["event_id"] as String)
+                } else {
+                    FirebaseResult.make(result)
+                }
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -739,7 +757,7 @@ object FirebaseManager {
         userId: String,
         tripId: String,
         eventId: String
-    ): Result<String> {
+    ): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("removeEventFromTrip")
@@ -751,9 +769,9 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["result"] as String)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
@@ -768,7 +786,7 @@ object FirebaseManager {
     suspend fun updateUserLocation(
         tripId: String,
         locationUpdateInfo: LocationUpdateInfo
-    ): Result<String> {
+    ): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("updateUserLocation")
@@ -780,9 +798,9 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["result"] as String)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
         }
     }
