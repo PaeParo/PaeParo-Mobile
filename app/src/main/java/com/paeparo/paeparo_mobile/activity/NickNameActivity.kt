@@ -56,7 +56,7 @@ class NickNameActivity : AppCompatActivity() {
                     Toast.makeText(
                         this@NickNameActivity, "반갑습니다 ${nickname}님", Toast.LENGTH_SHORT
                     ).show()
-                    val intent = Intent(this@NickNameActivity, MainActivity::class.java)
+                    val intent = Intent(this@NickNameActivity, PersonalActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {

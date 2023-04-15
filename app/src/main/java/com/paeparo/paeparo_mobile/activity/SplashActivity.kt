@@ -36,7 +36,7 @@ class SplashActivity : AppCompatActivity() {
                             finish()
                         }
                         FirebaseConstants.ResponseCodes.DETAIL_INFO_NOT_SET -> {
-                            val intent = Intent(this@SplashActivity, MainActivity::class.java)
+                            val intent = Intent(this@SplashActivity, PersonalActivity::class.java)
                             startActivity(intent)
                             finish()
                         }
