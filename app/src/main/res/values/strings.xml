@@ -24,6 +24,7 @@
     <string name="age_forty">40대</string>
     <string name="age_fifty">50대</string>
     <string name="sample_text_tv_personal_style">취향</string>
+    <string name="sample_text_tv_personal_style_explain">본인의 여행에서 우선순위를 골라주세요!</string>
     <string name="sample_text_tv_personal_style_style1">명소</string>
     <string name="sample_text_tv_personal_style_style2">쇼핑</string>
     <string name="sample_text_tv_personal_style_style3">먹거리</string>
