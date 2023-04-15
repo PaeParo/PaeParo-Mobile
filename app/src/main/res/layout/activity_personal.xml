@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <!--버튼에 로고사진입력?-->
-    <!--연령대, 취향 라디오그룹 두개를 묶는 코딩이 필요함-->
+    android:layout_height="match_parent"
+    tools:context=".activity.PersonalActivity">
+    <!--연령대, 취향 버튼형식 변경?-->
 
     <TextView
         android:id="@+id/tv_personal_title1"
@@ -31,8 +31,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_personal_title1"
         app:layout_constraintTop_toBottomOf="@id/tv_personal_title1" />
 
     <TextView
@@ -40,14 +39,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:paddingEnd="60dp"
         android:text="@string/sample_text_tv_personal_title3"
         android:textColor="#999999"
         android:textSize="15sp"
         android:textStyle="bold"
-
-        app:layout_constraintEnd_toEndOf="@id/tv_personal_title2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
         app:layout_constraintTop_toBottomOf="@id/tv_personal_title2" />
 
@@ -78,7 +76,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_personal_gender">
 
         <RadioButton
-            android:id="@+id/btn_personal_gender_man"
+            android:id="@+id/btn_personal_gender_male"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
@@ -86,19 +84,19 @@
             android:button="@null"
             android:paddingStart="75dp"
             android:paddingEnd="75dp"
-            android:text="@string/gender_man"
+            android:text="@string/gender_male"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
         <RadioButton
-            android:id="@+id/btn_personal_gender_woman"
+            android:id="@+id/btn_personal_gender_female"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
             android:paddingStart="75dp"
             android:paddingEnd="75dp"
-            android:text="@string/gender_woman"
+            android:text="@string/gender_female"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
     </RadioGroup>
@@ -108,7 +106,7 @@
         android:id="@+id/tv_personal_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:text="@string/sample_text_tv_personal_age"
         android:textColor="#FFFFFF"
         android:textSize="23sp"
@@ -210,7 +208,7 @@
         android:id="@+id/tv_personal_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:text="@string/sample_text_tv_personal_style"
         android:textColor="#FFFFFF"
         android:textSize="23sp"
@@ -221,45 +219,63 @@
         app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
         app:layout_constraintTop_toBottomOf="@id/rg_personal_age2" />
 
-    <RadioGroup
-        android:id="@+id/rg_personal_style1"
+    <TextView
+        android:id="@+id/tv_personal_style_explain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:text="@string/sample_text_tv_personal_style_explain"
+        android:textColor="#999999"
+        android:textSize="15sp"
+        android:textStyle="bold"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_style" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_personal_style1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_personal_style">
+        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_style_explain">
+
 
         <RadioButton
             android:id="@+id/btn_personal_style_style1"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
             android:text="@string/sample_text_tv_personal_style_style1"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
         <RadioButton
             android:id="@+id/btn_personal_style_style2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
             android:text="@string/sample_text_tv_personal_style_style2"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
         <RadioButton
             android:id="@+id/btn_personal_style_style3"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
@@ -272,26 +288,26 @@
 
         <RadioButton
             android:id="@+id/btn_personal_style_style4"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
             android:text="@string/sample_text_tv_personal_style_style4"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
-    </RadioGroup>
+    </LinearLayout>
 
-    <RadioGroup
-        android:id="@+id/rg_personal_style2"
+    <LinearLayout
+        android:id="@+id/ll_personal_style2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rg_personal_style1">
+        app:layout_constraintTop_toBottomOf="@id/ll_personal_style1">
 
         <RadioButton
             android:id="@+id/btn_personal_style_style5"
@@ -325,13 +341,13 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
             android:text="@string/sample_text_tv_personal_style_style7"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
-    </RadioGroup>
+    </LinearLayout>
 
     <Button
         android:id="@+id/nextButton"
