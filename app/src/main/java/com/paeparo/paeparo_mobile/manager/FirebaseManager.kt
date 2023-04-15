@@ -14,6 +14,7 @@ import com.google.firebase.auth.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
@@ -295,10 +296,10 @@ object FirebaseManager {
     }
 
     /**
-     * 1-01) 로그인 요청을 보내는 함수
+     * 1-01. 로그인 요청을 보내는 함수
      *
      * @param idToken 발급받은 idToken
-     * @return 로그인 결과(SUCCESS, NICKNAME_NOT_SET, DETAIL_INFO_NOT_SET, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success Type: NICKNAME_NOT_SET, DETAIL_INFO_NOT_SET, ALL_DATA_SET / Failure Type: SERVER_ERROR. CLIENT_ERROR & Error Object
      */
     private suspend fun login(idToken: String): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
@@ -324,10 +325,10 @@ object FirebaseManager {
     }
 
     /**
-     * 1-02) 특정 사용자를 가져오는 함수
+     * 1-02. 특정 사용자를 가져오는 함수
      *
      * @param userId 사용자 ID
-     * @return 성공 시 사용자 정보, 실패 시 Exception 반환
+     * @return Success Data: User Object / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUser(userId: String): FirebaseResult<PaeParoUser> {
         return try {
@@ -342,11 +343,11 @@ object FirebaseManager {
     }
 
     /**
-     * 1-03) 특정 사용자 닉네임을 설정하는 함수
+     * 1-03. 특정 사용자 닉네임을 설정하는 함수
      *
      * @param userId 사용자 ID
      * @param nickname 업데이트할 닉네임
-     * @return 닉네임 설정 결과((SUCCESS, NICKNAME_ALREADY_IN_USE, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success / Failure Type: NICKNAME_ALREADY_IN_USE, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun updateUserNickname(
         userId: String,
@@ -370,11 +371,11 @@ object FirebaseManager {
     }
 
     /**
-     * 1-04) 특정 사용자 세부정보를 설정하는 함수
+     * 1-04. 특정 사용자 세부정보를 설정하는 함수
      *
      * @param userId 사용자 ID
      * @param updateFields 업데이트할 정보
-     * @return 세부정보 설정 결과(SUCCESS, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success / Failure Type: SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun updateUserDetailInfo(
         userId: String,
@@ -398,10 +399,10 @@ object FirebaseManager {
     }
 
     /**
-     * 1-05)특정 사용자가 포함된 여행 목록을 가져오는 함수
+     * 1-05. 특정 사용자가 포함된 여행 목록을 가져오는 함수
      *
      * @param userId 사용자 ID
-     * @return 성공 시 여행 목록 반환, 실패 시 Exception 반환
+     * @return Success Data: Trip Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUserTrips(userId: String): FirebaseResult<List<Trip>> {
         return try {
@@ -423,10 +424,10 @@ object FirebaseManager {
     }
 
     /**
-     * 1-06) 특정 사용자가 작성한 게시물 목록을 가져오는 함수
+     * 1-06. 특정 사용자가 작성한 게시물 목록을 가져오는 함수
      *
      * @param userId 사용자 ID
-     * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
+     * @return Success Data: Post Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUserPosts(userId: String): FirebaseResult<List<Post>> {
         return try {
@@ -447,11 +448,11 @@ object FirebaseManager {
     }
 
     /**
-     * 1-07) 특정 게시글에 특정 사용자가 좋아요를 추가하는 함수
+     * 1-07. 특정 게시글에 특정 사용자가 좋아요를 추가하는 함수
      *
-     * @param postId
-     * @param userId
-     * @return 좋아요 결과(SUCCESS, POST_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
+     * @param postId 게시글 ID
+     * @param userId 사용자 ID
+     * @return Success / Failure Type: POST_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun likePost(postId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
@@ -472,11 +473,11 @@ object FirebaseManager {
     }
 
     /**
-     * 1-08) 특정 게시글에 특정 사용자가 좋아요를 취소하는 함수
+     * 1-08. 특정 게시글에 특정 사용자가 좋아요를 취소하는 함수
      *
-     * @param postId
-     * @param userId
-     * @return 좋아요 취소 결과(SUCCESS, POST_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
+     * @param postId 게시글 ID
+     * @param userId 사용자 ID
+     * @return Success / Failure Type: POST_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun cancelLikePost(postId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
@@ -497,10 +498,10 @@ object FirebaseManager {
     }
 
     /**
-     * 1-09) 특정 사용자가 좋아요한 게시물 목록을 가져오는 함수
+     * 1-09. 특정 사용자가 좋아요한 게시물 목록을 가져오는 함수
      *
      * @param userId 사용자 ID
-     * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
+     * @return Success Data: Post Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUserLikedPosts(userId: String): FirebaseResult<List<Post>> {
         return try {
@@ -522,10 +523,10 @@ object FirebaseManager {
     }
 
     /**
-     * 1-10) 특정 사용자 취향에 맞는 게시글을 가져오는 함수
+     * 1-10. 특정 사용자 취향에 맞는 게시글을 가져오는 함수
      *
      * @param userId 사용자 ID
-     * @return 성공 시 게시물 반환, 실패 시 Exception 반환
+     * @return Success Data: Post Object / Failure Type: SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun getPostByUserPreference(userId: String): FirebaseResult<Post> {
         return try {
@@ -536,10 +537,10 @@ object FirebaseManager {
     }
 
     /**
-     * 1-11) 특정 사용자가 작성한 댓글 목록을 불러오는 함수
+     * 1-11. 특정 사용자가 작성한 댓글 목록을 불러오는 함수
      *
      * @param userId 사용자 ID
-     * @return 성공 시 댓글 목록 반환, 실패 시 Exception 반환
+     * @return Success Data: Comment Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUserComments(userId: String): FirebaseResult<List<Comment>> {
         return try {
@@ -559,10 +560,10 @@ object FirebaseManager {
     }
 
     /**
-     * 1-12) 특정 닉네임으로 시작하는 사용자 5명을 불러오는 함수
+     * 1-12. 특정 닉네임으로 시작하는 사용자 5명을 불러오는 함수
      *
      * @param startWith 닉네임 시작 문자열
-     * @return 성공 시 사용자 목록 반환, 실패 시 Exception 반환
+     * @return Success Data: User Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUsersStartWith(startWith: String): FirebaseResult<List<PaeParoUser>> {
         return try {
@@ -582,11 +583,11 @@ object FirebaseManager {
     }
 
     /**
-     * 2-01) 새로운 여행을 생성하는 함수
+     * 2-01. 새로운 여행을 생성하는 함수
      *
      * @param trip 생성할 여행 객체
      * @param userId 여행을 생성한 사용자 ID
-     * @return 여행 생성 결과(TRIP_ID, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success Data: Trip ID / Failure Type: SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun createTrip(trip: Trip, userId: String): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
@@ -611,10 +612,10 @@ object FirebaseManager {
     }
 
     /**
-     * 2-02) 특정 여행을 가져오는 함수
+     * 2-02. 특정 여행을 가져오는 함수
      *
      * @param tripId 가져올 여행 ID
-     * @return 성공 시 여행 객체 반환, 실패 시 Exception 반환
+     * @return Success Data: Trip Object / Failure Type: TRIP_NOT_FOUND, CLIENT_ERROR & Error Object
      */
     suspend fun getTrip(tripId: String): FirebaseResult<Trip> {
         return try {
@@ -629,11 +630,11 @@ object FirebaseManager {
     }
 
     /**
-     * 2-03) 특정 여행을 수정하는 함수
+     * 2-03. 특정 여행을 수정하는 함수
      *
      * @param tripId 수정할 여행 ID
      * @param updateFields 수정할 요소의 이름과 값이 담긴 Map
-     * @return 여행 수정 결과(SUCCESS, TRIP_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun updateTrip(
         tripId: String,
@@ -657,10 +658,10 @@ object FirebaseManager {
     }
 
     /**
-     * 2-04) 특정 여행을 삭제하는 함수
+     * 2-04. 특정 여행을 삭제하는 함수
      *
      * @param tripId 삭제할 여행 ID
-     * @return 여행 삭제 결과(SUCCESS, TRIP_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun deleteTrip(tripId: String): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
@@ -676,11 +677,11 @@ object FirebaseManager {
     }
 
     /**
-     * 2-05) 여행 초대를 수락하는 함수
+     * 2-05. 여행 초대를 수락하는 함수
      *
      * @param tripId 초대를 수락할 여행 ID
      * @param userId 수락하는 사용자 ID
-     * @return 초대 수락 결과(SUCCESS, TRIP_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun acceptTripInvitation(tripId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
@@ -701,11 +702,11 @@ object FirebaseManager {
     }
 
     /**
-     * 2-06) 여행 초대를 거절하는 함수
+     * 2-06. 여행 초대를 거절하는 함수
      *
      * @param tripId 초대를 거절할 여행 ID
      * @param userId 거절하는 사용자 ID
-     * @return 초대 거절 결과(SUCCESS, TRIP_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun rejectTripInvitation(tripId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
@@ -726,12 +727,12 @@ object FirebaseManager {
     }
 
     /**
-     * 2-07) 특정 여행에 이벤트를 추가하는 함수
+     * 2-07. 특정 여행에 이벤트를 추가하는 함수
      *
      * @param userId 이벤트를 추가한 사용자 ID
      * @param tripId 이벤트를 추가할 여행 ID
      * @param event 추가할 이벤트 객체
-     * @return 이벤트 추가 결과(EVENT_ID, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success Data: Event ID / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun addEventToTrip(
         userId: String,
@@ -761,12 +762,12 @@ object FirebaseManager {
     }
 
     /**
-     * 2-08) 특정 여행에서 이벤트를 제거하는 함수
+     * 2-08. 특정 여행에서 이벤트를 제거하는 함수
      *
      * @param userId 이벤트를 제거한 사용자 ID
      * @param tripId 이벤트를 제거할 여행 ID
      * @param eventId 제거할 이벤트 ID
-     * @return 이벤트 제거 결과(SUCCESS, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun removeEventFromTrip(
         userId: String,
@@ -792,10 +793,10 @@ object FirebaseManager {
     }
 
     /**
-     * 2-09) 특정 여행에 속한 모든 이벤트를 불러오는 함수
+     * 2-09. 특정 여행에 속한 모든 이벤트를 불러오는 함수
      *
      * @param tripId 이벤트를 불러올 여행 ID
-     * @return 이벤트 불러오기 결과(EVENT_LIST, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success Data: Event List / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun getTripEvents(tripId: String): FirebaseResult<List<Event>> {
         return withContext(Dispatchers.IO) {
@@ -817,11 +818,11 @@ object FirebaseManager {
     }
 
     /**
-     * 2-10) 특정 여행에 속한 특정 사용자의 위치를 업데이트하는 함수
+     * 2-10. 특정 여행에 속한 특정 사용자의 위치를 업데이트하는 함수
      *
      * @param tripId 업데이트할 여행 ID
      * @param locationUpdateInfo 업데이트할 위치 정보
-     * @return 위치 업데이트 결과(SUCCESS, CLIENT_ERROR, SERVER_ERROR)
+     * @return Success / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun updateUserLocation(
         tripId: String,
@@ -835,6 +836,299 @@ object FirebaseManager {
                             "trip_id" to tripId,
                             "user_id" to locationUpdateInfo.userId,
                             "location_update_info" to locationUpdateInfo.toMapWithouUserId()
+                        )
+                    ).await().data as Map<*, *>
+
+                FirebaseResult.make(result)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 3-01. 특정 이벤트 세부정보를 불러오는 함수
+     *
+     * @param eventId 이벤트 ID
+     * @return Success Data: Event Object / Failure Type: SERVER_ERROR, CLIENT_ERROR & Error Object
+     */
+    suspend fun getEvent(eventId: String): FirebaseResult<Event> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val eventRef = firestoreEventsRef.document(eventId).get().await()
+                val event = eventRef.toObject(Event::class.java)!!
+                event.eventId = eventRef.id
+
+                FirebaseResult.success(data = event)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 특정 게시물을 추가하는 함수
+     *
+     * @param post 추가할 게시물
+     * @return Success Data: Post ID / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     */
+    suspend fun createPost(post: Post): FirebaseResult<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("createPost")
+                    .call(
+                        hashMapOf(
+                            "post" to post.toMapWithoutPostId()
+                        )
+                    ).await().data as Map<*, *>
+
+                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS) {
+                    FirebaseResult.success(data = result["post_id"] as String)
+                } else {
+                    FirebaseResult.make(result)
+                }
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 게시글 목록을 불러오는 함수
+     *
+     * @param startPostId 시작 게시물 ID (null일 경우 가장 최신 게시물이 시작)
+     * @param limit 불러올 게시물 수
+     * @return Success Data: Post List / Failure Type: CLIENT_ERROR & Error Object
+     */
+    suspend fun getPostsInRange(startPostId: String?, limit: Int): FirebaseResult<List<Post>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val postList = mutableListOf<Post>()
+
+                val postListRef = if (startPostId == null) {
+                    firestorePostsRef.orderBy("created_at", Query.Direction.DESCENDING)
+                        .limit(limit.toLong()).get().await()
+                } else {
+                    firestorePostsRef.orderBy("created_at", Query.Direction.DESCENDING)
+                        .startAfter(startPostId).limit(limit.toLong()).get().await()
+                }
+
+                postListRef.documents.forEach {
+                    val post = it.toObject(Post::class.java)!!
+                    post.postId = it.id
+                    postList.add(post)
+                }
+
+                FirebaseResult.success(data = postList)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 좋아요가 가장 많은 게시물 5개를 불러옴
+     *
+     * @return Success Data: Post List / Failure Type: CLIENT_ERROR & Error Object
+     */
+    suspend fun getTop5LikedPosts(): FirebaseResult<List<Post>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val postList = mutableListOf<Post>()
+                val postListRef =
+                    firestorePostsRef.orderBy("like_count", Query.Direction.DESCENDING).limit(5)
+                        .get().await()
+
+                postListRef.documents.forEach {
+                    val post = it.toObject(Post::class.java)!!
+                    post.postId = it.id
+                    postList.add(post)
+                }
+
+                FirebaseResult.success(data = postList)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 특정 게시물을 수정하는 함수
+     *
+     * @param postId 수정할 게시물 ID
+     * @param updateFields 수정할 필드
+     * @return Success / Failure Type: POST_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     */
+    suspend fun updatePost(postId: String, updateFields: Map<String, Any?>): FirebaseResult<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("updatePost")
+                    .call(
+                        hashMapOf(
+                            "post_id" to postId,
+                            "update_fields" to updateFields
+                        )
+                    ).await().data as Map<*, *>
+
+                FirebaseResult.make(result)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 특정 게시물을 삭제하는 함수
+     *
+     * @param postId 삭제할 게시물 ID
+     * @return Success / Failure Type: POST_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     */
+    suspend fun deletePost(postId: String): FirebaseResult<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("deletePost")
+                    .call(
+                        hashMapOf(
+                            "post_id" to postId
+                        )
+                    ).await().data as Map<*, *>
+
+                FirebaseResult.make(result)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 특정 게시물을 불러오는 함수
+     *
+     * @param postId 불러올 게시물 ID
+     * @return Success Data: Post / Failure Type: POST_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     */
+    suspend fun getPost(postId: String): FirebaseResult<Post> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val postRef = firestorePostsRef.document(postId).get().await()
+                val post = postRef.toObject(Post::class.java)!!
+                post.postId = postRef.id
+
+                FirebaseResult.success(data = post)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 특정 게시물의 댓글 목록을 불러오는 함수
+     *
+     * @param postId 댓글을 불러올 게시물 ID
+     * @param startCommentId 시작 댓글 ID (null일 경우 가장 최신 댓글이 시작)
+     * @param limit 불러올 댓글 수
+     * @return Success Data: Comment List / Failure Type: CLIENT_ERROR & Error Object
+     */
+    suspend fun getPostcommentsInRange(
+        postId: String,
+        startCommentId: String?,
+        limit: Int
+    ): FirebaseResult<List<Comment>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val commentList = mutableListOf<Comment>()
+
+                val commentListRef = if (startCommentId == null) {
+                    firestoreCommentsRef.whereEqualTo("post_id", postId)
+                        .orderBy("created_at", Query.Direction.DESCENDING).limit(limit.toLong())
+                        .get().await()
+                } else {
+                    firestoreCommentsRef.whereEqualTo("post_id", postId)
+                        .orderBy("created_at", Query.Direction.DESCENDING)
+                        .startAfter(startCommentId)
+                        .limit(limit.toLong()).get().await()
+                }
+
+                commentListRef.documents.forEach {
+                    val comment = it.toObject(Comment::class.java)!!
+                    comment.commentId = it.id
+                    commentList.add(comment)
+                }
+
+                FirebaseResult.success(data = commentList)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 특정 게시물에 댓글을 추가하는 함수
+     *
+     * @param comment 추가할 댓글 객체
+     * @return Success Data: Comment ID / Failure Type: POST_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     */
+    suspend fun addComment(comment: Comment): FirebaseResult<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("addComment")
+                    .call(
+                        hashMapOf(
+                            "comment" to comment.toMapWithoutCommentId()
+                        )
+                    ).await().data as Map<*, *>
+
+                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS) {
+                    FirebaseResult.success(data = result["comment_id"] as String)
+                } else {
+                    FirebaseResult.make(result)
+                }
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 특정 댓글을 수정하는 함수
+     *
+     * @param commentId 수정할 댓글 ID
+     * @param updateFields 수정할 필드
+     * @return Success / Failure Type: COMMENT_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     */
+    suspend fun updateComment(
+        commentId: String,
+        updateFields: Map<String, Any?>
+    ): FirebaseResult<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("updateComment")
+                    .call(
+                        hashMapOf(
+                            "comment_id" to commentId,
+                            "update_fields" to updateFields
+                        )
+                    ).await().data as Map<*, *>
+
+                FirebaseResult.make(result)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 특정 댓글을 삭제하는 함수
+     *
+     * @param commentId 삭제할 댓글 ID
+     * @return Success / Failure Type: COMMENT_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     */
+    suspend fun deleteComment(commentId: String): FirebaseResult<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("deleteComment")
+                    .call(
+                        hashMapOf(
+                            "comment_id" to commentId
                         )
                     ).await().data as Map<*, *>
 
