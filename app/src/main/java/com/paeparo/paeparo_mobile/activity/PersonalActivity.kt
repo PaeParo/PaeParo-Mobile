@@ -11,8 +11,8 @@ import com.paeparo.paeparo_mobile.databinding.ActivityPersonalBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import kotlinx.coroutines.launch
 
-//수정중(여러분->닉네임, 버튼그룹(연령대), 취향3순위(3개버튼만 선택, 3개 배열로 넘기기))
-
+//수정중(버튼그룹(연령대), 취향3순위(3개버튼만 선택, 3개 배열로 넘기기))
+//연령대 버튼그룹 리니어레이아웃 안에 레디오그룹으로 작성하기
 class PersonalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPersonalBinding
 
@@ -20,6 +20,11 @@ class PersonalActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPersonalBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //personal title에 닉네임 추가
+        val nickname = getPaeParo().nickname
+        binding.tvPersonalTitle3.text= String.format(getString(R.string.sample_text_tv_personal_title3),nickname)
+
 
         binding.nextButton.setOnClickListener {
 

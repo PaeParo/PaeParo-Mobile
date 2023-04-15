@@ -13,7 +13,7 @@
 
     <string name="sample_text_tv_personal_title1">잠깐!</string>
     <string name="sample_text_tv_personal_title2">나만의 맞춤 서비스를 이용해보세요</string>
-    <string name="sample_text_tv_personal_title3">아래의 항목에 대해 알려주시면 여러분님에게 더 관련 있는 여행 일정들을 제공받으실 수 있습니다</string>
+    <string name="sample_text_tv_personal_title3">아래의 항목에 대해 알려주시면 %s님에게 더 관련 있는 여행 일정들을 제공받으실 수 있습니다</string>
     <string name="sample_text_tv_personal_gender">성별</string>
     <string name="gender_male">남성</string>
     <string name="gender_female">여성</string>
