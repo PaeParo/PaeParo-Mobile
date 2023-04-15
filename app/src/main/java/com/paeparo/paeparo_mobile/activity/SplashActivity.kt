@@ -23,9 +23,9 @@ class SplashActivity : AppCompatActivity() {
         googleSignInLauncher =
             FirebaseManager.createGoogleLoginLauncher(
                 this@SplashActivity,
-                onSuccess = { responseCode ->
-                    when (responseCode) {
-                        FirebaseConstants.ResponseCodes.SUCCESS -> {
+                onSuccess = {
+                    when (it.type) {
+                        FirebaseConstants.ResponseCodes.ALL_DATA_SET -> {
                             val intent = Intent(this@SplashActivity, MainActivity::class.java)
                             startActivity(intent)
                             finish()
@@ -40,19 +40,9 @@ class SplashActivity : AppCompatActivity() {
                             startActivity(intent)
                             finish()
                         }
-                        FirebaseConstants.ResponseCodes.UNKNOWN_ERROR -> {
-                            Toast.makeText(
-                                this@SplashActivity,
-                                "알 수 없는 문제가 발생했습니다. 나중에 다시 시도해주세요.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            val intent = Intent(this@SplashActivity, LoginActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
                     }
                 },
-                onFailure = { responseCode ->
+                onFailure = {
                     Toast.makeText(
                         this@SplashActivity,
                         "자동 로그인 실패했습니다. 다시 로그인해주세요.",

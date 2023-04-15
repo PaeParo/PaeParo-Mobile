@@ -151,8 +151,8 @@ object FirebaseManager {
      */
     fun createGoogleLoginLauncher(
         context: Context,
-        onSuccess: (responseCode: String) -> Unit,
-        onFailure: (responseCode: String) -> Unit
+        onSuccess: (result: FirebaseResult<String>) -> Unit,
+        onFailure: (result: FirebaseResult<String>) -> Unit
     ): ActivityResultLauncher<Intent> {
         return (context as AppCompatActivity).registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val googleSignInTask = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -167,26 +167,20 @@ object FirebaseManager {
                     }
                     val idTokenResult: GetTokenResult =
                         withContext(Dispatchers.IO) { authResult.user!!.getIdToken(true).await() }
-                    val loginResult: Result<String> =
-                        withContext(Dispatchers.IO) { login(idTokenResult.token!!) }
+                    val loginResult: FirebaseResult<String> = login(idTokenResult.token!!)
 
-                    if (loginResult.getOrNull()!! == FirebaseConstants.ResponseCodes.UNKNOWN_ERROR)
-                        onFailure(FirebaseConstants.ResponseCodes.UNKNOWN_ERROR)
-                    else {
-                        val userResult: Result<PaeParoUser> =
-                            withContext(Dispatchers.IO) { getUser(authResult.user!!.uid) }
-
-                        if (userResult.isFailure) {
-                            onFailure(FirebaseConstants.ResponseCodes.USER_NOT_FOUND)
-                        } else {
-                            context.getPaeParo().userId = authResult.user!!.uid
-                            context.getPaeParo().nickname = userResult.getOrNull()!!.nickname
-                            onSuccess(loginResult.getOrNull()!!)
+                    if (loginResult.isSuccess) {
+                        context.getPaeParo().userId = authResult.user!!.uid
+                        if (loginResult.type == FirebaseConstants.ResponseCodes.ALL_DATA_SET) {
+                            context.getPaeParo().nickname = loginResult.data!!
                         }
+                        onSuccess(loginResult)
+                    } else {
+                        onFailure(loginResult)
                     }
                 }
             } catch (e: Exception) {
-                onFailure(FirebaseConstants.ResponseCodes.UNKNOWN_ERROR)
+                onFailure(FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR))
             }
         }
     }
@@ -197,18 +191,23 @@ object FirebaseManager {
      * @param idToken 발급받은 idToken
      * @return 로그인 결과(SUCCESS, NICKNAME_NOT_SET, DETAIL_INFO_NOT_SET, UNKNOWN_ERROR)
      */
-    private suspend fun login(idToken: String): Result<String> {
-        return try {
-            val result = functions.getHttpsCallable("login")
-                .call(
-                    hashMapOf(
-                        "id_token" to idToken
-                    )
-                ).await().data as Map<*, *>
+    private suspend fun login(idToken: String): FirebaseResult<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("login")
+                    .call(
+                        hashMapOf(
+                            "id_token" to idToken
+                        )
+                    ).await().data as Map<*, *>
 
-            Result.success(result["result"] as String)
-        } catch (e: Exception) {
-            Result.failure(e)
+                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS && result["type"] == FirebaseConstants.ResponseCodes.ALL_DATA_SET)
+                    FirebaseResult.success(data = result["data"] as String)
+                else
+                    FirebaseResult.make(result)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR)
+            }
         }
     }
 
@@ -327,15 +326,15 @@ object FirebaseManager {
      * @param userId 사용자 ID
      * @return 성공 시 사용자 정보, 실패 시 Exception 반환
      */
-    suspend fun getUser(userId: String): Result<PaeParoUser> {
+    suspend fun getUser(userId: String): FirebaseResult<PaeParoUser> {
         return try {
             val userRef = firestoreUsersRef.document(userId).get().await()
 
             val user = userRef.toObject(PaeParoUser::class.java)
             user!!.userId = userRef.id
-            Result.success(user)
+            FirebaseResult.success(data = user)
         } catch (e: Exception) {
-            Result.failure(e)
+            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR)
         }
     }
 
@@ -349,7 +348,7 @@ object FirebaseManager {
     suspend fun updateUserNickname(
         userId: String,
         nickname: String
-    ): Result<String> {
+    ): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("updateUserNickname")
@@ -360,9 +359,9 @@ object FirebaseManager {
                         )
                     ).await().data as Map<*, *>
 
-                Result.success(result["result"] as String)
+                FirebaseResult.make(result)
             } catch (e: Exception) {
-                Result.failure(e)
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR)
             }
         }
     }
@@ -766,7 +765,10 @@ object FirebaseManager {
      * @param locationUpdateInfo 업데이트할 위치 정보
      * @return 위치 업데이트 결과(SUCCESS, UNKNOWN_ERROR)
      */
-    suspend fun updateUserLocation(tripId: String, locationUpdateInfo: LocationUpdateInfo): Result<String>{
+    suspend fun updateUserLocation(
+        tripId: String,
+        locationUpdateInfo: LocationUpdateInfo
+    ): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("updateUserLocation")

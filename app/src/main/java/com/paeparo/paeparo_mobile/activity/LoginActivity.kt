@@ -38,9 +38,9 @@ class LoginActivity : AppCompatActivity() {
         googleSignInLauncher =
             FirebaseManager.createGoogleLoginLauncher(
                 this@LoginActivity,
-                onSuccess = { responseCode ->
-                    when (responseCode) {
-                        FirebaseConstants.ResponseCodes.SUCCESS -> {
+                onSuccess = {
+                    when (it.type) {
+                        FirebaseConstants.ResponseCodes.ALL_DATA_SET -> {
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             startActivity(intent)
                             finish()
@@ -55,19 +55,12 @@ class LoginActivity : AppCompatActivity() {
                             startActivity(intent)
                             finish()
                         }
-                        FirebaseConstants.ResponseCodes.UNKNOWN_ERROR -> {
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "알 수 없는 문제가 발생했습니다. 나중에 다시 시도해주세요.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
                     }
                 },
                 onFailure = {
                     Toast.makeText(
                         this@LoginActivity,
-                        "로그인 실패했습니다. 계정 확인 후 다시 시도해주세요.",
+                        "로그인 실패했습니다. 나중에 다시 시도해주세요.",
                         Toast.LENGTH_SHORT
                     )
                         .show()

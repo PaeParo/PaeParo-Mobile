@@ -3,12 +3,14 @@ package com.paeparo.paeparo_mobile.constant
 object FirebaseConstants {
     object ResponseCodes {
         const val INVALID_ID_TOKEN = "auth/invalid-id-token"
-        const val UNKNOWN_ERROR = "functions/unknown-error"
 
         const val SUCCESS = "success"
         const val FAILURE = "failure"
+        const val SERVER_ERROR = "server-error"
+        const val CLIENT_ERROR = "client-error"
 
         const val USER_NOT_FOUND = "user/user-not-found"
+        const val ALL_DATA_SET = "user/all-data-set"
         const val NICKNAME_NOT_SET = "user/nickname-not-set"
         const val NICKNAME_ALREADY_IN_USE = "user/nickname-already-in-use"
         const val DETAIL_INFO_NOT_SET = "user/detail-info-not-set"
