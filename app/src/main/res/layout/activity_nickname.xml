@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.NickNameActivity">
 
-    <!--layout_constraintVertical_bias 으로? -->
-    <!--가변적용, DB이름 출력하도록 변경-->
+    <!--가변적용-->
     <TextView
         android:id="@+id/tv_nickname_name_left"
         android:layout_width="wrap_content"
@@ -55,26 +54,24 @@
 
     <EditText
         android:id="@+id/edt_nickname"
-
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginTop="130dp"
         android:background="@drawable/bg_edt_nickname"
         android:hint="@string/sample_text_edt_nickname"
         android:inputType="text"
+        android:maxLength="15"
         android:paddingStart="20dp"
         android:paddingEnd="0dp"
-        android:maxLength="15"
         android:textColor="#B4B4B4"
         android:textColorHint="#B4B4B4"
         android:textSize="20sp"
         android:textStyle="bold"
-
+        
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_nickname_title"
-
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.9" />
 
