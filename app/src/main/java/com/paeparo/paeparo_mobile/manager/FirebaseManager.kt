@@ -186,34 +186,6 @@ object FirebaseManager {
     }
 
     /**
-     * 로그인 요청을 보내는 함수
-     *
-     * @param idToken 발급받은 idToken
-     * @return 로그인 결과(SUCCESS, NICKNAME_NOT_SET, DETAIL_INFO_NOT_SET, UNKNOWN_ERROR)
-     */
-    private suspend fun login(idToken: String): FirebaseResult<String> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val result = functions.getHttpsCallable("login")
-                    .call(
-                        hashMapOf(
-                            "id_token" to idToken
-                        )
-                    ).await().data as Map<*, *>
-
-                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS
-                    && (result["type"] == FirebaseConstants.ResponseCodes.ALL_DATA_SET || result["type"] == FirebaseConstants.ResponseCodes.DETAIL_INFO_NOT_SET)) {
-                    FirebaseResult.success(result["type"] as String, result["data"] as String)
-                } else {
-                    FirebaseResult.make(result)
-                }
-            } catch (e: Exception) {
-                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
-            }
-        }
-    }
-
-    /**
      * Google 계정을 이용하여 로그인하는 함수
      *
      * @param context 해당 로그인 함수를 실행할 Activity의 Context
@@ -323,7 +295,36 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 사용자를 가져오는 함수
+     * 1-01) 로그인 요청을 보내는 함수
+     *
+     * @param idToken 발급받은 idToken
+     * @return 로그인 결과(SUCCESS, NICKNAME_NOT_SET, DETAIL_INFO_NOT_SET, CLIENT_ERROR, SERVER_ERROR)
+     */
+    private suspend fun login(idToken: String): FirebaseResult<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = functions.getHttpsCallable("login")
+                    .call(
+                        hashMapOf(
+                            "id_token" to idToken
+                        )
+                    ).await().data as Map<*, *>
+
+                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS
+                    && (result["type"] == FirebaseConstants.ResponseCodes.ALL_DATA_SET || result["type"] == FirebaseConstants.ResponseCodes.DETAIL_INFO_NOT_SET)
+                ) {
+                    FirebaseResult.success(result["type"] as String, result["data"] as String)
+                } else {
+                    FirebaseResult.make(result)
+                }
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 1-02) 특정 사용자를 가져오는 함수
      *
      * @param userId 사용자 ID
      * @return 성공 시 사용자 정보, 실패 시 Exception 반환
@@ -341,11 +342,11 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 사용자 닉네임을 설정하는 함수
+     * 1-03) 특정 사용자 닉네임을 설정하는 함수
      *
      * @param userId 사용자 ID
      * @param nickname 업데이트할 닉네임
-     * @return 닉네임 설정 결과((SUCCESS, NICKNAME_ALREADY_IN_USE, UNKNOWN_ERROR)
+     * @return 닉네임 설정 결과((SUCCESS, NICKNAME_ALREADY_IN_USE, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun updateUserNickname(
         userId: String,
@@ -369,11 +370,11 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 사용자 세부정보를 설정하는 함수
+     * 1-04) 특정 사용자 세부정보를 설정하는 함수
      *
      * @param userId 사용자 ID
      * @param updateFields 업데이트할 정보
-     * @return 세부정보 설정 결과(SUCCESS, UNKNOWN_ERROR)
+     * @return 세부정보 설정 결과(SUCCESS, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun updateUserDetailInfo(
         userId: String,
@@ -397,7 +398,7 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 사용자가 포함된 여행 목록을 가져오는 함수
+     * 1-05)특정 사용자가 포함된 여행 목록을 가져오는 함수
      *
      * @param userId 사용자 ID
      * @return 성공 시 여행 목록 반환, 실패 시 Exception 반환
@@ -422,7 +423,7 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 사용자가 작성한 게시물 목록을 가져오는 함수
+     * 1-06) 특정 사용자가 작성한 게시물 목록을 가져오는 함수
      *
      * @param userId 사용자 ID
      * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
@@ -446,11 +447,11 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 게시글에 특정 사용자가 좋아요를 추가하는 함수
+     * 1-07) 특정 게시글에 특정 사용자가 좋아요를 추가하는 함수
      *
      * @param postId
      * @param userId
-     * @return 좋아요 결과(SUCCESS, POST_NOT_FOUND, UNKNOWN_ERROR)
+     * @return 좋아요 결과(SUCCESS, POST_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun likePost(postId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
@@ -471,11 +472,11 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 게시글에 특정 사용자가 좋아요를 취소하는 함수
+     * 1-08) 특정 게시글에 특정 사용자가 좋아요를 취소하는 함수
      *
      * @param postId
      * @param userId
-     * @return 좋아요 취소 결과(SUCCESS, POST_NOT_FOUND, UNKNOWN_ERROR)
+     * @return 좋아요 취소 결과(SUCCESS, POST_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun cancelLikePost(postId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
@@ -496,7 +497,7 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 사용자가 좋아요한 게시물 목록을 가져오는 함수
+     * 1-09) 특정 사용자가 좋아요한 게시물 목록을 가져오는 함수
      *
      * @param userId 사용자 ID
      * @return 성공 시 게시물 목록 반환, 실패 시 Exception 반환
@@ -521,7 +522,21 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 사용자가 작성한 댓글 목록을 불러오는 함수
+     * 1-10) 특정 사용자 취향에 맞는 게시글을 가져오는 함수
+     *
+     * @param userId 사용자 ID
+     * @return 성공 시 게시물 반환, 실패 시 Exception 반환
+     */
+    suspend fun getPostByUserPreference(userId: String): FirebaseResult<Post> {
+        return try {
+            FirebaseResult.success()
+        } catch (e: Exception) {
+            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+        }
+    }
+
+    /**
+     * 1-11) 특정 사용자가 작성한 댓글 목록을 불러오는 함수
      *
      * @param userId 사용자 ID
      * @return 성공 시 댓글 목록 반환, 실패 시 Exception 반환
@@ -544,34 +559,34 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 닉네임으로 시작하는 사용자 5명을 불러오는 함수
+     * 1-12) 특정 닉네임으로 시작하는 사용자 5명을 불러오는 함수
      *
      * @param startWith 닉네임 시작 문자열
      * @return 성공 시 사용자 목록 반환, 실패 시 Exception 반환
      */
     suspend fun getUsersStartWith(startWith: String): FirebaseResult<List<PaeParoUser>> {
         return try {
-            val usersList = mutableListOf<PaeParoUser>()
-            val usersListRef =
+            val userList = mutableListOf<PaeParoUser>()
+            val userListRef =
                 firestoreUsersRef.orderBy("nickname").startAt(startWith).endAt(startWith + "\uf8ff")
                     .limit(5).get().await()
 
-            usersListRef.documents.forEach {
-                usersList.add(PaeParoUser(it.id, it.getString("nickname")!!))
+            userListRef.documents.forEach {
+                userList.add(PaeParoUser(it.id, it.getString("nickname")!!))
             }
 
-            FirebaseResult.success(data = usersList)
+            FirebaseResult.success(data = userList)
         } catch (e: Exception) {
             FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
     /**
-     * 새로운 여행을 생성하는 함수
+     * 2-01) 새로운 여행을 생성하는 함수
      *
      * @param trip 생성할 여행 객체
      * @param userId 여행을 생성한 사용자 ID
-     * @return 여행 생성 결과(TRIP_ID, UNKNOWN_ERROR)
+     * @return 여행 생성 결과(TRIP_ID, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun createTrip(trip: Trip, userId: String): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
@@ -596,7 +611,7 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 여행을 가져오는 함수
+     * 2-02) 특정 여행을 가져오는 함수
      *
      * @param tripId 가져올 여행 ID
      * @return 성공 시 여행 객체 반환, 실패 시 Exception 반환
@@ -614,11 +629,11 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 여행을 수정하는 함수
+     * 2-03) 특정 여행을 수정하는 함수
      *
      * @param tripId 수정할 여행 ID
      * @param updateFields 수정할 요소의 이름과 값이 담긴 Map
-     * @return 여행 수정 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
+     * @return 여행 수정 결과(SUCCESS, TRIP_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun updateTrip(
         tripId: String,
@@ -642,10 +657,10 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 여행을 삭제하는 함수
+     * 2-04) 특정 여행을 삭제하는 함수
      *
      * @param tripId 삭제할 여행 ID
-     * @return 여행 삭제 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
+     * @return 여행 삭제 결과(SUCCESS, TRIP_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun deleteTrip(tripId: String): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
@@ -661,11 +676,11 @@ object FirebaseManager {
     }
 
     /**
-     * 여행 초대를 수락하는 함수
+     * 2-05) 여행 초대를 수락하는 함수
      *
      * @param tripId 초대를 수락할 여행 ID
      * @param userId 수락하는 사용자 ID
-     * @return 초대 수락 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
+     * @return 초대 수락 결과(SUCCESS, TRIP_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun acceptTripInvitation(tripId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
@@ -686,11 +701,11 @@ object FirebaseManager {
     }
 
     /**
-     * 여행 초대를 거절하는 함수
+     * 2-06) 여행 초대를 거절하는 함수
      *
      * @param tripId 초대를 거절할 여행 ID
      * @param userId 거절하는 사용자 ID
-     * @return 초대 거절 결과(SUCCESS, TRIP_NOT_FOUND, UNKNOWN_ERROR)
+     * @return 초대 거절 결과(SUCCESS, TRIP_NOT_FOUND, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun rejectTripInvitation(tripId: String, userId: String): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
@@ -711,12 +726,12 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 여행에 이벤트를 추가하는 함수
+     * 2-07) 특정 여행에 이벤트를 추가하는 함수
      *
      * @param userId 이벤트를 추가한 사용자 ID
      * @param tripId 이벤트를 추가할 여행 ID
      * @param event 추가할 이벤트 객체
-     * @return 이벤트 추가 결과(EVENT_ID, UNKNOWN_ERROR)
+     * @return 이벤트 추가 결과(EVENT_ID, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun addEventToTrip(
         userId: String,
@@ -746,12 +761,12 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 여행에서 이벤트를 제거하는 함수
+     * 2-08) 특정 여행에서 이벤트를 제거하는 함수
      *
      * @param userId 이벤트를 제거한 사용자 ID
      * @param tripId 이벤트를 제거할 여행 ID
      * @param eventId 제거할 이벤트 ID
-     * @return 이벤트 제거 결과(SUCCESS, UNKNOWN_ERROR)
+     * @return 이벤트 제거 결과(SUCCESS, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun removeEventFromTrip(
         userId: String,
@@ -777,11 +792,36 @@ object FirebaseManager {
     }
 
     /**
-     * 특정 여행에 속한 특정 사용자의 위치를 업데이트하는 함수
+     * 2-09) 특정 여행에 속한 모든 이벤트를 불러오는 함수
+     *
+     * @param tripId 이벤트를 불러올 여행 ID
+     * @return 이벤트 불러오기 결과(EVENT_LIST, CLIENT_ERROR, SERVER_ERROR)
+     */
+    suspend fun getTripEvents(tripId: String): FirebaseResult<List<Event>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val eventList = mutableListOf<Event>()
+                val eventListRef = firestoreEventsRef.whereEqualTo("trip_id", tripId).get().await()
+
+                eventListRef.documents.forEach {
+                    val event = it.toObject(Event::class.java)!!
+                    event.eventId = it.id
+                    eventList.add(event)
+                }
+
+                FirebaseResult.success(data = eventList)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
+     * 2-10) 특정 여행에 속한 특정 사용자의 위치를 업데이트하는 함수
      *
      * @param tripId 업데이트할 여행 ID
      * @param locationUpdateInfo 업데이트할 위치 정보
-     * @return 위치 업데이트 결과(SUCCESS, UNKNOWN_ERROR)
+     * @return 위치 업데이트 결과(SUCCESS, CLIENT_ERROR, SERVER_ERROR)
      */
     suspend fun updateUserLocation(
         tripId: String,
