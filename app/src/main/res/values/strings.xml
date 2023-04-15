@@ -13,10 +13,10 @@
 
     <string name="sample_text_tv_personal_title1">잠깐!</string>
     <string name="sample_text_tv_personal_title2">나만의 맞춤 서비스를 이용해보세요</string>
-    <string name="sample_text_tv_personal_title3">아래의 항목에 대해 알려주시면 여러분께 더 관련 있는 여행 일정들을 제공받으실 수 있습니다</string>
+    <string name="sample_text_tv_personal_title3">아래의 항목에 대해 알려주시면 여러분님에게 더 관련 있는 여행 일정들을 제공받으실 수 있습니다</string>
     <string name="sample_text_tv_personal_gender">성별</string>
-    <string name="gender_man">남성</string>
-    <string name="gender_woman">여성</string>
+    <string name="gender_male">남성</string>
+    <string name="gender_female">여성</string>
     <string name="sample_text_tv_personal_age">연령대</string>
     <string name="age_teens">10대</string>
     <string name="age_twenty">20대</string>
@@ -24,16 +24,16 @@
     <string name="age_forty">40대</string>
     <string name="age_fifty">50대</string>
     <string name="sample_text_tv_personal_style">취향</string>
-    <string name="sample_text_tv_personal_style_style1">액티비티</string>
-    <string name="sample_text_tv_personal_style_style2">명소</string>
-    <string name="sample_text_tv_personal_style_style3">문화/예술</string>
-    <string name="sample_text_tv_personal_style_style4">쇼핑</string>
-    <string name="sample_text_tv_personal_style_style5">힐링</string>
-    <string name="sample_text_tv_personal_style_style6">먹거리</string>
+    <string name="sample_text_tv_personal_style_style1">명소</string>
+    <string name="sample_text_tv_personal_style_style2">쇼핑</string>
+    <string name="sample_text_tv_personal_style_style3">먹거리</string>
+    <string name="sample_text_tv_personal_style_style4">힐링</string>
+    <string name="sample_text_tv_personal_style_style5">액티비티</string>
+    <string name="sample_text_tv_personal_style_style6">문화/예술</string>
     <string name="sample_text_tv_personal_style_style7">숙소</string>
     <string name="sample_text_tv_personal_nextButton">Paeparo와 함께 여행 시작</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="myhome_text_nickname">닉네임</string>
@@ -46,4 +46,6 @@
     <string name="myhome_text_faq">자주 묻는 질문(FAQ)</string>
     <string name="btn_next">다음</string>
 
+    <string name="myhome_faq_questions_1">로그인이안돼요</string>
+    <string name="myhome_faq_answer_1">어플을 종료한 뒤 다시 로그인하세요. 그리고 로그인이 안된다면 이걸 볼 수 없겠죠 ?</string>
 </resources>
