@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,8 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.applikeysolutions.cosmocalendar.model.Day
+import com.applikeysolutions.cosmocalendar.selection.OnDaySelectedListener
+import com.applikeysolutions.cosmocalendar.selection.RangeSelectionManager
+import com.google.android.material.snackbar.Snackbar
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanDateBinding
 import com.prolificinteractive.materialcalendarview.CalendarDay
 
@@ -16,42 +23,37 @@ class PlanDateFragment : Fragment() {
     private var _binding: FragmentPlanDateBinding? = null
     private val binding get() = _binding!!
     private val isChecked = false
-    private lateinit var startDate : CalendarDay
-    private lateinit var endDate : CalendarDay
+    private var dates: List<Day> = emptyList()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentPlanDateBinding.inflate(inflater, container, false) //set binding
 
-        binding.btnFragmentname.apply {
+        // 버튼
+        binding.btnCalNext.apply {
+            // 리스너
             setOnClickListener {
-                val vp = activity?.findViewById<ViewPager2>(R.id.vp_plan_generate)
-                vp?.setCurrentItem(1, true)
+                // 날짜를 고르지 않았을 경우,
+                if(dates.isEmpty()) {
+                    Snackbar.make(it, "여행 날짜를 선택해주세요", Snackbar.LENGTH_SHORT).show();
+                    return@setOnClickListener
+                }
+                // 다음페이지로 이동
+                nextPage()
             }
         }
 
         binding.cvPlan.apply {
-            //TODO: 여행 최대날짜
-            //TODO: 여행 최소날짜
-            //TODO: 날짜 하얀색
-            //TODO: 과거 날짜 클릭 금지
+            isShowDaysOfWeekTitle = false
+            selectionManager = RangeSelectionManager(OnDaySelectedListener {
+                if (this.selectedDates.size <= 0) return@OnDaySelectedListener
+                Log.d("PlanDateFragment", "btnclicked")
+                dates = selectedDays
+            })
 
-
-
-            //TODO: 날짜 가져오기
-            setOnRangeSelectedListener { widget, dates ->
-                // 시작 날짜와 마지막 날짜 가져오기
-                startDate = dates[0]
-                endDate = dates[dates.size - 1]
-                val message = "Selected range: $startDate - $endDate"
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-
-            }
         }
-
-
-
         return binding.root
     }
 
@@ -60,5 +62,11 @@ class PlanDateFragment : Fragment() {
         super.onDestroyView()
     }
 
-
+    private fun nextPage(){
+        val t = activity as? PlanGenerateActivity
+        t?.settestData("dates",dates.toString())
+        Log.d("PlanDateFragment","Get Intent dates :"+t?.testDataPrint("dates"))
+        val vp = activity?.findViewById<ViewPager2>(R.id.vp_plan_generate)
+        vp?.setCurrentItem(1, true)
+    }
 }

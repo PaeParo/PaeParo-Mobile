@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,13 @@ class PlanGenerateActivity : AppCompatActivity() {
         viewPager.currentItem-=1
         if(num==0) finish()
         }
+    fun testDataPrint(tag : String) : String{
+      return intent.getStringExtra(tag)!!
+    }
+    fun settestData(tag : String, obj: String){
+        if(intent==null) intent = Intent()
+        intent.putExtra(tag,obj)
+    }
 
         //super.onBackPressed()
 

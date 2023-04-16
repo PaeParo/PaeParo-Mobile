@@ -17,21 +17,38 @@
         app:subtitle="취향과 위치, 그리고 금액을 설정해주세요."
         app:title="여행 스타일" />
 
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+    <com.applikeysolutions.cosmocalendar.view.CalendarView
         android:id="@+id/cv_plan"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_fragmentname"
+        app:layout_constraintBottom_toTopOf="@+id/btn_cal_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/plan_date_header"
-        app:mcv_selectionColor="@color/app_personal_red"
-        app:mcv_selectionMode="range"
-        app:mcv_showOtherDates="all"
-        />
+        app:calendarBackgroundColor="@color/brand_color"
 
-    <TextView
-        android:id="@+id/btn_fragmentname"
+        app:currentDayIconRes="@drawable/ic_weather_sun"
+        app:connectedDayIconPosition="bottom"
+
+        app:currentDayTextColor="@color/app_personal_red"
+        app:firstDayOfTheWeek="sunday"
+        app:orientation="horizontal"
+        app:selectedDayBackgroundColor="@color/app_personal_red"
+        app:selectedDayBackgroundEndColor="@color/app_personal_red"
+        app:selectedDayBackgroundStartColor="@color/app_personal_red"
+
+        app:dayTextColor="@color/white"
+        app:selectedDayTextColor="@color/white"
+        app:monthTextColor="@color/white"
+        app:weekDayTitleTextColor="@color/white"
+
+
+
+        app:selectionType="range"
+        app:weekendDayTextColor="#ef4550" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_cal_next"
         android:layout_width="0dp"
         android:layout_height="47dp"
         android:background="@color/app_personal_red"

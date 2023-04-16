@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanCompanionBinding
 import com.paeparo.paeparo_mobile.databinding.ItemAddCompanionBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
@@ -34,6 +35,11 @@ class PlanCompanionFragment : Fragment() {
         _binding = FragmentPlanCompanionBinding.inflate(inflater, container, false)
         Log.d(TAG,"OnCreate :"+Thread.currentThread().name)
         val searchView = binding.svPlanCompanion
+
+        val t = activity as? PlanGenerateActivity
+        Log.d("PlanCompanionFragment","dates :"+t?.testDataPrint("dates"))
+
+        Log.d("Intent","Get Intent dates :"+activity?.intent?.getStringExtra("dates"))
 
         searchView.apply {
             // 검색후 엔터 누를시,
@@ -66,6 +72,8 @@ class PlanCompanionFragment : Fragment() {
 
         binding.btnFragmentname.setOnClickListener {
             Log.d(TAG, "버튼 누름" + users.toString())
+            Log.d("Intent","Get Intent dates :"+activity?.intent?.getStringExtra("dates"))
+
         }
 
 

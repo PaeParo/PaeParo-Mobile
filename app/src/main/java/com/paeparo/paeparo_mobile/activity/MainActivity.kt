@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.plan_fragment -> {
-                    ft.replace(R.id.frameLayout,TripDashBoardFragment()).commit()
-                    //ft.replace(R.id.frameLayout,PlanFragment()).commit()
+                    //ft.replace(R.id.frameLayout,TripDashBoardFragment()).commit()
+                    ft.replace(R.id.frameLayout,PlanFragment()).commit()
                     true
                 }
                 R.id.mypage_fragment -> {
