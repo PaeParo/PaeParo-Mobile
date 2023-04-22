@@ -43,10 +43,10 @@
     <string name="myhome_text_like">찜한 일정</string>
     <string name="myhome_text_comment">댓글 단 글</string>
     <string name="myhome_text_plan">내가 만든 일정</string>
-    <string name="myhome_teext_settings">설정</string>
+    <string name="myhome_text_settings">설정</string>
     <string name="myhome_text_faq">자주 묻는 질문(FAQ)</string>
+    <string name="myhome_settings_logout">로그아웃</string>
     <string name="btn_next">다음</string>
 
-    <string name="myhome_faq_questions_1">로그인이안돼요</string>
-    <string name="myhome_faq_answer_1">어플을 종료한 뒤 다시 로그인하세요. 그리고 로그인이 안된다면 이걸 볼 수 없겠죠 ?</string>
+
 </resources>
