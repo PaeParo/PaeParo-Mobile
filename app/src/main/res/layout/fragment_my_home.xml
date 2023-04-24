@@ -30,7 +30,7 @@
                 app:civ_border_width="5dp" />
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
                 android:gravity="center|left"
@@ -41,9 +41,9 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30sp"
+                    android:text="@string/myhome_text_nickname"
                     android:textColor="@color/white"
-                    android:text="@string/myhome_text_nickname" />
+                    android:textSize="30sp" />
 
                 <TextView
                     android:id="@+id/fixhome"
