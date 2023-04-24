@@ -6,27 +6,25 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.TestMyHomeData
 
-class MyHomeLikeAdapter:RecyclerView.Adapter<MyHomeLikeAdapter.MyHomeLikeViewHoloder>() {
-    //테스트 list
-    var list = listOf(1,2,3,4,5,6,7,8,9,10)
+class MyHomeLikeAdapter(var datas: MutableList<TestMyHomeData>):RecyclerView.Adapter<MyHomeLikeAdapter.MyHomeLikeViewHoloder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHomeLikeViewHoloder {
         return MyHomeLikeViewHoloder(LayoutInflater.from(parent.context).inflate(R.layout.item_myhome_like,parent,false))
     }
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
+    override fun getItemCount(): Int = datas.size
 
     override fun onBindViewHolder(holder: MyHomeLikeViewHoloder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(datas[position])
     }
 
     class MyHomeLikeViewHoloder(view: View):RecyclerView.ViewHolder(view) {
         val button:TextView =view.findViewById(R.id.button)
-        fun bind(position: Int){
-            button.text="$position"
+        fun bind(position: TestMyHomeData){
+            button.text= position.num.toString()
             button.setOnClickListener(){
                 button.text="클릭했다!"
             }
