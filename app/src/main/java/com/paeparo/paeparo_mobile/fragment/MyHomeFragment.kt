@@ -31,34 +31,42 @@ class MyHomeFragment : Fragment() {
 
         binding.name.text = requireContext().getPaeParo().nickname
 
+        //프로필 수정
         binding.fixhome.setOnClickListener {
             val intent = Intent(activity, MyHomeProfileActivity::class.java)
             startActivity(intent)
         }
 
+        //설정
         binding.settings.setOnClickListener {
             val intent = Intent(activity, MyHomeSettingsActivity::class.java)
             startActivity(intent)
         }
 
+        //내가 만든 일정
         binding.plan.setOnClickListener {
             binding.name.text = "plan"
         }
 
+        //프로필
         binding.profile.setOnClickListener {
             val intent = Intent(activity, MyHomeProfileActivity::class.java)
             startActivity(intent)
         }
 
+        //자주듣는질문(FAQ)
         binding.faq.setOnClickListener {
             val intent = Intent(activity, MyHomeFaqActivity::class.java)
             startActivity(intent)
         }
+
+        //댓글 단 글
         binding.comment.setOnClickListener {
             val intent = Intent(activity, MyHomeCommentActivity::class.java)
             startActivity(intent)
         }
 
+        //찜한 일정
         binding.like.setOnClickListener {
             val intent = Intent(activity, MyHomeLikeActivity::class.java)
             startActivity(intent)
