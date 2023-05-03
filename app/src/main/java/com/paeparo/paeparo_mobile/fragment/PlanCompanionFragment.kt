@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanCompanionBinding
 import com.paeparo.paeparo_mobile.databinding.ItemAddCompanionBinding
@@ -41,6 +43,10 @@ class PlanCompanionFragment : Fragment() {
 
         Log.d("Intent","Get Intent dates :"+activity?.intent?.getStringExtra("dates"))
 
+        binding.btnCompanionNext.setOnClickListener{
+            nextPage()
+        }
+
         searchView.apply {
             // 검색후 엔터 누를시,
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -69,13 +75,6 @@ class PlanCompanionFragment : Fragment() {
             binding.rvPlanCompanion.layoutManager = LinearLayoutManager(context)
             binding.rvPlanCompanion.adapter = SearchViewAdapter(users)
         }
-
-        binding.btnFragmentname.setOnClickListener {
-            Log.d(TAG, "버튼 누름" + users.toString())
-            Log.d("Intent","Get Intent dates :"+activity?.intent?.getStringExtra("dates"))
-
-        }
-
 
         return binding.root
     }
@@ -128,7 +127,10 @@ class PlanCompanionFragment : Fragment() {
             binding.tvAddCompanion.text = user.nickname.toString() + "\nthumbnail :"+ user.thumbnail.toString()
         }
     }
-
+    private fun nextPage(){
+        val vp = activity?.findViewById<ViewPager2>(R.id.vp_plan_generate)
+        vp?.setCurrentItem(2, true)
+    }
 
 }
 
