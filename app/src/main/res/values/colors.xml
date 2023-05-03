@@ -17,4 +17,5 @@
     <color name="brand_color">#18171C</color>
     <color name="trip_item_background_unselect">#FF0F0F0F</color>
     <color name="trip_item_text_unselect">#FFA0A0A0</color>
+    <color name="setting_detail_color">#808080</color>
 </resources>
