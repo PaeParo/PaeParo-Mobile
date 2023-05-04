@@ -4,9 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.navigation.NavigationBarView
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.fragment.HomeFragment
 import com.paeparo.paeparo_mobile.fragment.MyHomeFragment
 import com.paeparo.paeparo_mobile.fragment.PlanFragment
-import com.paeparo.paeparo_mobile.fragment.TripDashBoardFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,31 +15,34 @@ class MainActivity : AppCompatActivity() {
         val navbar = findViewById<NavigationBarView>(R.id.bottomNavigationView)
 
         // Navigation 선택 이벤트
-        navbar.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item ->
+        navbar.setOnItemSelectedListener { item ->
             val ft = supportFragmentManager.beginTransaction()
-            when(item.itemId) {
+            when (item.itemId) {
                 R.id.home_fragment -> {
-                    //ft.replace(R.id.frameLayout,MyHomeFragment()).commit()
+                    ft.replace(R.id.frameLayout, HomeFragment()).commit()
                     true
                 }
+
                 R.id.community_fragment -> {
                     //ft.replace(R.id.frameLayout,MyHomeFragment()).commit()
                     true
                 }
+
                 R.id.plan_fragment -> {
                     //ft.replace(R.id.frameLayout,TripDashBoardFragment()).commit()
-                    ft.replace(R.id.frameLayout,PlanFragment()).commit()
+                    ft.replace(R.id.frameLayout, PlanFragment()).commit()
                     true
                 }
+
                 R.id.mypage_fragment -> {
-                    ft.replace(R.id.frameLayout,MyHomeFragment()).commit()
+                    ft.replace(R.id.frameLayout, MyHomeFragment()).commit()
                     true
                 }
+
                 else -> false
-
             }
-        });
+        }
+
+        navbar.selectedItemId = R.id.home_fragment
     }
-
-
 }
