@@ -15,9 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PaeParoMobile"
         tools:targetApi="31">
-        <meta-data
-            android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="1z30te7f8m" />
 
         <activity
             android:name=".activity.MyHomeCommentActivity"
