@@ -17,8 +17,8 @@
         app:subtitle="링크를 공유해 동행자를 추가하세요."
         app:title="동행자 추가하기" />
 
-    <TextView
-        android:id="@+id/btn_fragmentname"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_companion_next"
         android:layout_width="0dp"
         android:layout_height="47dp"
         android:text="@string/btn_next"

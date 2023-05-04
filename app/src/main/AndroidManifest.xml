@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PaeParoMobile"
         tools:targetApi="31">
+
         <activity
             android:name=".activity.MyHomeCommentActivity"
             android:exported="false" />

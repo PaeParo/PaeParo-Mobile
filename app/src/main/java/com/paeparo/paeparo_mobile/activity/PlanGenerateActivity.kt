@@ -2,10 +2,12 @@ package com.paeparo.paeparo_mobile.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanGenerateAdapter
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanGenerateBinding
 
@@ -39,8 +41,9 @@ class PlanGenerateActivity : AppCompatActivity() {
         if(intent==null) intent = Intent()
         intent.putExtra(tag,obj)
     }
-
-        //super.onBackPressed()
+//    fun nextPage(currentpage : Int){
+//        viewPager.setCurrentItem(++currentpage, true)
+//    }
 
 }
 

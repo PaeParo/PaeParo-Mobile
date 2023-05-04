@@ -3,8 +3,11 @@ package com.paeparo.paeparo_mobile.application
 import android.app.Application
 import android.content.Context
 import com.google.firebase.FirebaseApp
+import com.naver.maps.map.NaverMapSdk
+import com.paeparo.paeparo_mobile.BuildConfig
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.manager.SharedPreferencesManager
+import timber.log.Timber
 
 /**
  * PaeParo class
@@ -35,6 +38,15 @@ class PaeParo : Application() {
         // Manager 초기화
         SharedPreferencesManager.initializeManager(this)
         FirebaseManager.initializeManager(this)
+
+        // Timber 초기화
+        if(BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree()) // DebugTree : Tag를 ClassName으로 사용
+        }
+
+        // NaverMapSDK 클라이언트 ID 지정
+        NaverMapSdk.getInstance(this).client =  NaverMapSdk.NaverCloudPlatformClient(BuildConfig.NAVER_CLIENT_ID)
+
     }
 
     fun clearUserInfo() {

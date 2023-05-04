@@ -10,8 +10,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven {url 'https://jitpack.io'}
         jcenter() //cosmo celenderview
+        maven { url 'https://naver.jfrog.io/artifactory/maven/' } //naver map sdk
     }
 }
 rootProject.name = "PaeParo-Mobile"
