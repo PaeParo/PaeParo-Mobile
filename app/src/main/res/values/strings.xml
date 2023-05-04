@@ -11,6 +11,14 @@
     <string name="sample_text_nickname_warning">• 닉네임에는 특수문자와 공백을 포함할 수 없습니다\n• 닉네임 길이는 최소 2자리, 최대 12자리까지 가능합니다\n• 설정한 닉네임은 추후 변경이 불가능합니다</string>
     <string name="sample_text_btn_nickname_next">다음</string>
 
+    <string name="sample_text_tv_home_nickname">___님,</string>
+    <string name="sample_text_tv_home_welcome">새로운 여행을 시작해보세요</string>
+    <string name="sample_text_tv_home_create_plan">와 여행 떠나기</string>
+    <string name="sample_text_tv_home_paeparo_recommend"> 추천 픽</string>
+    <string name="sample_text_tv_home_recommend_desc">PaeParo가 딱 맞는 여행을 만들어봤어요!</string>
+    <string name="sample_text_tv_home_recommend_info">#휴식 #바다 #가족\n3명 ~ 4명\n4박 5일</string>
+    <string name="sample_text_tv_home_recommend_price">₩ 1,200,000</string>
+
     <string name="sample_text_tv_personal_title1">잠깐!</string>
     <string name="sample_text_tv_personal_title2">나만의 맞춤 서비스를 이용해보세요</string>
     <string name="sample_text_tv_personal_title3">아래의 항목에 대해 알려주시면 %s님에게 더 관련 있는 여행 일정들을 제공받으실 수 있습니다</string>
