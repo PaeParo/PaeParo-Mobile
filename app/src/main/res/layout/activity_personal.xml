@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.PersonalActivity">
-    <!--연령대, 취향 버튼형식 변경?-->
 
     <TextView
         android:id="@+id/tv_personal_title1"
@@ -117,8 +116,8 @@
         app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
         app:layout_constraintTop_toBottomOf="@+id/rg_personal_gender" />
 
-    <RadioGroup
-        android:id="@+id/rg_personal_age1"
+    <LinearLayout
+        android:id="@+id/ll_personal_age1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -127,9 +126,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_personal_age">
 
-        <RadioButton
-            android:id="@+id/btn_personal_age_teens"
-            android:layout_width="match_parent"
+        <CheckBox
+            android:id="@+id/cb_personal_age_teens"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
@@ -140,9 +139,9 @@
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
-        <RadioButton
-            android:id="@+id/btn_personal_age_twenty"
-            android:layout_width="match_parent"
+        <CheckBox
+            android:id="@+id/cb_personal_age_twenty"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
@@ -153,9 +152,9 @@
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
-        <RadioButton
-            android:id="@+id/btn_personal_age_thirty"
-            android:layout_width="match_parent"
+        <CheckBox
+            android:id="@+id/cb_personal_age_thirty"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
@@ -164,21 +163,21 @@
             android:text="@string/age_thirty"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
-    </RadioGroup>
+    </LinearLayout>
 
-    <RadioGroup
-        android:id="@+id/rg_personal_age2"
+    <LinearLayout
+        android:id="@+id/ll_personal_age2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rg_personal_age1">
+        app:layout_constraintTop_toBottomOf="@id/ll_personal_age1">
 
-        <RadioButton
-            android:id="@+id/btn_personal_age_forty"
-            android:layout_width="match_parent"
+        <CheckBox
+            android:id="@+id/cb_personal_age_forty"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
@@ -187,22 +186,21 @@
             android:paddingEnd="40dp"
             android:text="@string/age_forty"
             android:textAlignment="center"
-            android:textColor="@drawable/tc_btn_personal"
-            app:layout_constraintTop_toBottomOf="@id/btn_personal_age_twenty" />
+            android:textColor="@drawable/tc_btn_personal" />
 
-        <RadioButton
-            android:id="@+id/btn_personal_age_fifty"
-            android:layout_width="match_parent"
+        <CheckBox
+            android:id="@+id/cb_personal_age_fifty"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
             android:paddingStart="40dp"
             android:paddingEnd="40dp"
-            android:text="@string/age_fifty"
+            android:text="@string/age_twenty"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
-    </RadioGroup>
 
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_personal_style"
@@ -217,7 +215,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
-        app:layout_constraintTop_toBottomOf="@id/rg_personal_age2" />
+        app:layout_constraintTop_toBottomOf="@id/ll_personal_age2" />
 
     <TextView
         android:id="@+id/tv_personal_style_explain"
@@ -247,8 +245,8 @@
         app:layout_constraintTop_toBottomOf="@id/tv_personal_style_explain">
 
 
-        <RadioButton
-            android:id="@+id/btn_personal_style_style1"
+        <CheckBox
+            android:id="@+id/cb_personal_style_style1"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginEnd="20dp"
@@ -256,12 +254,12 @@
             android:button="@null"
             android:paddingStart="28dp"
             android:paddingEnd="28dp"
-            android:text="@string/sample_text_tv_personal_style_style1"
+            android:text="@string/style_style1"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
-        <RadioButton
-            android:id="@+id/btn_personal_style_style2"
+        <CheckBox
+            android:id="@+id/cb_personal_style_style2"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginEnd="20dp"
@@ -269,12 +267,12 @@
             android:button="@null"
             android:paddingStart="28dp"
             android:paddingEnd="28dp"
-            android:text="@string/sample_text_tv_personal_style_style2"
+            android:text="@string/style_style2"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
-        <RadioButton
-            android:id="@+id/btn_personal_style_style3"
+        <CheckBox
+            android:id="@+id/cb_personal_style_style3"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginEnd="20dp"
@@ -282,19 +280,19 @@
             android:button="@null"
             android:paddingStart="25dp"
             android:paddingEnd="25dp"
-            android:text="@string/sample_text_tv_personal_style_style3"
+            android:text="@string/style_style3"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
-        <RadioButton
-            android:id="@+id/btn_personal_style_style4"
+        <CheckBox
+            android:id="@+id/cb_personal_style_style4"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
             android:paddingStart="28dp"
             android:paddingEnd="28dp"
-            android:text="@string/sample_text_tv_personal_style_style4"
+            android:text="@string/style_style4"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
     </LinearLayout>
@@ -309,8 +307,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_personal_style1">
 
-        <RadioButton
-            android:id="@+id/btn_personal_style_style5"
+        <CheckBox
+            android:id="@+id/cb_personal_style_style5"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginEnd="20dp"
@@ -318,12 +316,12 @@
             android:button="@null"
             android:paddingStart="25dp"
             android:paddingEnd="25dp"
-            android:text="@string/sample_text_tv_personal_style_style5"
+            android:text="@string/style_style5"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
-        <RadioButton
-            android:id="@+id/btn_personal_style_style6"
+        <CheckBox
+            android:id="@+id/cb_personal_style_style6"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginEnd="20dp"
@@ -331,19 +329,19 @@
             android:button="@null"
             android:paddingStart="25dp"
             android:paddingEnd="25dp"
-            android:text="@string/sample_text_tv_personal_style_style6"
+            android:text="@string/style_style6"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
-        <RadioButton
-            android:id="@+id/btn_personal_style_style7"
+        <CheckBox
+            android:id="@+id/cb_personal_style_style7"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
             android:paddingStart="28dp"
             android:paddingEnd="28dp"
-            android:text="@string/sample_text_tv_personal_style_style7"
+            android:text="@string/style_style7"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
