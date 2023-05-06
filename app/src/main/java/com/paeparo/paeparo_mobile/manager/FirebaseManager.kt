@@ -222,6 +222,15 @@ object FirebaseManager {
     }
 
     /**
+     * 현재 로그인된 사용자의 프로필 URL을 가져오는 함수
+     *
+     * @return 로그인된 사용자가 존재할 경우 프로필 URL 반환, 아닐 경우 null 반환
+     */
+    fun getCurrentUserProfileUrl(): String? {
+        return auth.currentUser?.photoUrl?.toString()
+    }
+
+    /**
      * TripUpdate에 대한 업데이트 리스너를 시작하는 함수
      *
      * @param tripId 업데이트를 감지할 여행 ID
