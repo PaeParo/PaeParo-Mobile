@@ -13,6 +13,8 @@ import com.paeparo.paeparo_mobile.activity.MyHomeProfileActivity
 import com.paeparo.paeparo_mobile.activity.MyHomeSettingsActivity
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.FragmentMyHomeBinding
+import com.paeparo.paeparo_mobile.manager.FirebaseManager
+import com.paeparo.paeparo_mobile.util.ImageUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -71,6 +73,11 @@ class MyHomeFragment : Fragment() {
             val intent = Intent(activity, MyHomeLikeActivity::class.java)
             startActivity(intent)
         }
+
+        ImageUtil.displayImageFromUrl(
+            binding.profileImageView,
+            FirebaseManager.getCurrentUserProfileUrl()
+        )
 
         return binding.root
     }
