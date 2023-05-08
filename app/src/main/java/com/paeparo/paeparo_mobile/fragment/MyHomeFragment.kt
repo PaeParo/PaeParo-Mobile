@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.paeparo.paeparo_mobile.activity.MyHomeCommentActivity
 import com.paeparo.paeparo_mobile.activity.MyHomeFaqActivity
 import com.paeparo.paeparo_mobile.activity.MyHomeLikeActivity
+import com.paeparo.paeparo_mobile.activity.MyHomePlanActivity
 import com.paeparo.paeparo_mobile.activity.MyHomeProfileActivity
 import com.paeparo.paeparo_mobile.activity.MyHomeSettingsActivity
 import com.paeparo.paeparo_mobile.application.getPaeParo
@@ -47,7 +48,8 @@ class MyHomeFragment : Fragment() {
 
         //내가 만든 일정
         binding.plan.setOnClickListener {
-            binding.name.text = "plan"
+            val intent = Intent(activity, MyHomePlanActivity::class.java)
+            startActivity(intent)
         }
 
         //프로필
