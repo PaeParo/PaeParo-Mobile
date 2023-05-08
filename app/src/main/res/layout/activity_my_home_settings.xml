@@ -36,7 +36,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center|start"
-                android:text="@string/myhome_settings_version"
+                android:text="@string/home_settings_version"
                 android:textColor="@color/white" />
 
             <TextView
@@ -65,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/myhome_settings_alarm"
+                    android:text="@string/home_settings_alarm"
                     android:textColor="@color/white" />
 
                 <TextView
@@ -91,7 +91,7 @@
             android:id="@+id/logout_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/myhome_settings_logout" />
+            android:text="@string/home_settings_logout" />
 
     </LinearLayout>
 

@@ -20,6 +20,6 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:text="@string/myhome_text_like" />
+            android:text="@string/home_text_like" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
