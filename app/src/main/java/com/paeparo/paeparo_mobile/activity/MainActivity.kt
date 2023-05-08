@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.navigation.NavigationBarView
 import com.paeparo.paeparo_mobile.R
-import com.paeparo.paeparo_mobile.fragment.HomeFragment
 import com.paeparo.paeparo_mobile.fragment.MyHomeFragment
 import com.paeparo.paeparo_mobile.fragment.PlanFragment
 
@@ -18,11 +17,6 @@ class MainActivity : AppCompatActivity() {
         navbar.setOnItemSelectedListener { item ->
             val ft = supportFragmentManager.beginTransaction()
             when (item.itemId) {
-                R.id.home_fragment -> {
-                    ft.replace(R.id.frameLayout, HomeFragment()).commit()
-                    true
-                }
-
                 R.id.community_fragment -> {
                     //ft.replace(R.id.frameLayout,MyHomeFragment()).commit()
                     true
@@ -43,6 +37,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        navbar.selectedItemId = R.id.home_fragment
+        navbar.selectedItemId = R.id.plan_fragment
     }
 }
