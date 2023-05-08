@@ -57,6 +57,7 @@
     <string name="profile_text_plan">내가 만든 일정</string>
     <string name="profile_text_comment">내가 작성한 댓글</string>
     <string name="profile_text_like">좋아요한 일정</string>
+    <string name="profile_number_zero">0</string>
 
     <string name="home_settings_alarm">알람</string>
     <string name="home_settings_version">버전</string>
