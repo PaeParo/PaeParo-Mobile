@@ -10,7 +10,7 @@
         android:id="@+id/iv_plan_empty"
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:contentDescription="@string/sample_text_tv_plan_empty_no_trip"
+        android:contentDescription="@string/sample_text_plan_empty_no_trip"
         android:src="@drawable/ic_plan_empty" />
 
     <TextView
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:letterSpacing="0.05"
-        android:text="@string/sample_text_tv_plan_empty_no_trip"
+        android:text="@string/sample_text_plan_empty_no_trip"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:letterSpacing="0.05"
-        android:text="@string/sample_text_tv_plan_empty_no_trip_desc"
+        android:text="@string/sample_text_plan_empty_no_trip_desc"
         android:textAlignment="center"
         android:textColor="#E1E1E1"
         android:textSize="14sp" />
@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sample_text_tv_plan_empty_go_trip"
+            android:text="@string/sample_text_plan_empty_go_trip"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             android:textStyle="bold" />
