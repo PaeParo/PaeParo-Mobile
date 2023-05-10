@@ -30,8 +30,16 @@ class PlanFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.ciPlanEmptyLoadTrips.visibility = View.VISIBLE
+        binding.layoutPlanEmptyView.root.visibility =
+            View.INVISIBLE
+        binding.layoutPlanEmptyTripList.root.visibility =
+            View.INVISIBLE
+
         lifecycleScope.launch {
             val userTripsResult = FirebaseManager.getUserTrips(view.context.getPaeParo().userId)
+
+            binding.ciPlanEmptyLoadTrips.visibility = View.GONE
 
             if (userTripsResult.isSuccess) {
                 val userTrips = userTripsResult.data
