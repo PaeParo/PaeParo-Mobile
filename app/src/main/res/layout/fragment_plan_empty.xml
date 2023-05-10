@@ -9,6 +9,7 @@
     tools:context=".fragment.PlanFragment">
 
     <include
+        android:id="@+id/layout_plan_empty_view"
         layout="@layout/layout_plan_empty_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
+        android:id="@+id/layout_plan_empty_trip_list"
         layout="@layout/layout_plan_empty_trip_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

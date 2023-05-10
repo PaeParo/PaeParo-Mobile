@@ -7,24 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.application.getPaeParo
+import com.paeparo.paeparo_mobile.databinding.FragmentPlanEmptyBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import kotlinx.coroutines.launch
 
 
 class PlanFragment : Fragment() {
+    private var _binding: FragmentPlanEmptyBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_plan_empty, container, false)
+    ): View {
+        _binding = FragmentPlanEmptyBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,14 +38,14 @@ class PlanFragment : Fragment() {
             if (userTripsResult.isSuccess) {
                 val userTrips = userTripsResult.data
                 if (userTrips!!.isEmpty()) { // 내가 속한 여행이 없을 경우
-                    view.findViewById<LinearLayoutCompat>(R.id.ll_plan_empty_view).visibility =
+                    binding.layoutPlanEmptyView.root.visibility =
                         View.VISIBLE
-                    view.findViewById<ConstraintLayout>(R.id.cl_plan_empty_trip_list).visibility =
+                    binding.layoutPlanEmptyTripList.root.visibility =
                         View.GONE
                 } else { // 내가 속한 여행이 있을 경우
-                    view.findViewById<LinearLayoutCompat>(R.id.ll_plan_empty_view).visibility =
+                    binding.layoutPlanEmptyView.root.visibility =
                         View.GONE
-                    view.findViewById<ConstraintLayout>(R.id.cl_plan_empty_trip_list).visibility =
+                    binding.layoutPlanEmptyTripList.root.visibility =
                         View.VISIBLE
                 }
             } else {
@@ -51,9 +53,21 @@ class PlanFragment : Fragment() {
             }
         }
 
-        view.findViewById<LinearLayoutCompat>(R.id.btn_plan_empty_create_trip).setOnClickListener {
-            val intent = Intent(context, PlanGenerateActivity::class.java)
-            startActivity(intent)
-        }
+        binding.layoutPlanEmptyView.root.findViewById<LinearLayoutCompat>(R.id.btn_plan_empty_create_trip)
+            .setOnClickListener {
+                val intent = Intent(context, PlanGenerateActivity::class.java)
+                startActivity(intent)
+            }
+
+        binding.layoutPlanEmptyTripList.root.findViewById<LinearLayoutCompat>(R.id.btn_plan_empty_create_trip)
+            .setOnClickListener {
+                val intent = Intent(context, PlanGenerateActivity::class.java)
+                startActivity(intent)
+            }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
