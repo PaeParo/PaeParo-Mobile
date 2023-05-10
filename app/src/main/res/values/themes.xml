@@ -17,4 +17,9 @@
         <item name="android:navigationBarColor">@color/charcoal</item>
         <item name="android:windowBackground">@color/charcoal</item>
     </style>
+
+    <style name="RoundView4dp" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
 </resources>
