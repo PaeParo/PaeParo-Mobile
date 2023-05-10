@@ -12,13 +12,13 @@
         android:id="@+id/ci_plan_empty_load_trips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:indicatorColor="?attr/colorPrimary"
-        app:trackColor="#ffffff"
         android:indeterminate="true"
+        app:indicatorColor="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="#2A292F" />
 
     <include
         android:id="@+id/layout_plan_empty_view"

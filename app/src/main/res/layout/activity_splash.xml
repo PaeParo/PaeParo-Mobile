@@ -7,6 +7,18 @@
     android:background="@color/charcoal"
     tools:context=".activity.SplashActivity">
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:indicatorColor="?attr/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.75"
+        app:trackColor="#2A292F" />
+
     <ImageView
         android:id="@+id/iv_splash_logo"
         android:layout_width="113dp"
