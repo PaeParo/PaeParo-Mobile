@@ -9,7 +9,7 @@
     tools:context=".fragment.PlanFragment">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/ci_plan_empty_load_trips"
+        android:id="@+id/ci_trip_load_trips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
@@ -21,8 +21,8 @@
         app:trackColor="#2A292F" />
 
     <include
-        android:id="@+id/layout_plan_empty_view"
-        layout="@layout/layout_plan_empty_view"
+        android:id="@+id/layout_trip_view"
+        layout="@layout/layout_trip_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,8 +31,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/layout_plan_empty_trip_list"
-        layout="@layout/layout_plan_empty_trip_list"
+        android:id="@+id/layout_trip_trip_list"
+        layout="@layout/layout_trip_trip_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

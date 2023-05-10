@@ -6,18 +6,18 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/iv_plan_empty"
+        android:id="@+id/iv_trip"
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:contentDescription="@string/sample_text_plan_empty_no_trip"
-        android:src="@drawable/ic_plan_empty" />
+        android:contentDescription="@string/sample_text_trip_no_trip"
+        android:src="@drawable/ic_trip_empty" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:letterSpacing="0.05"
-        android:text="@string/sample_text_plan_empty_no_trip"
+        android:text="@string/sample_text_trip_no_trip"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -27,13 +27,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:letterSpacing="0.05"
-        android:text="@string/sample_text_plan_empty_no_trip_desc"
+        android:text="@string/sample_text_trip_no_trip_desc"
         android:textAlignment="center"
         android:textColor="#E1E1E1"
         android:textSize="14sp" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/btn_plan_empty_create_trip"
+        android:id="@+id/btn_trip_create_trip"
         android:layout_width="288dp"
         android:layout_height="48dp"
         android:layout_marginTop="80dp"
@@ -54,7 +54,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sample_text_plan_empty_go_trip"
+            android:text="@string/sample_text_trip_go_trip"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             android:textStyle="bold" />

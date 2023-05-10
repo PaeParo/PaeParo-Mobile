@@ -10,46 +10,46 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.application.getPaeParo
-import com.paeparo.paeparo_mobile.databinding.FragmentPlanEmptyBinding
+import com.paeparo.paeparo_mobile.databinding.FragmentTripBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import kotlinx.coroutines.launch
 
 
 class PlanFragment : Fragment() {
-    private var _binding: FragmentPlanEmptyBinding? = null
+    private var _binding: FragmentTripBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPlanEmptyBinding.inflate(inflater, container, false)
+        _binding = FragmentTripBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.ciPlanEmptyLoadTrips.visibility = View.VISIBLE
-        binding.layoutPlanEmptyView.root.visibility =
+        binding.ciTripLoadTrips.visibility = View.VISIBLE
+        binding.layoutTripView.root.visibility =
             View.INVISIBLE
-        binding.layoutPlanEmptyTripList.root.visibility =
+        binding.layoutTripTripList.root.visibility =
             View.INVISIBLE
 
         lifecycleScope.launch {
             val userTripsResult = FirebaseManager.getUserTrips(view.context.getPaeParo().userId)
 
-            binding.ciPlanEmptyLoadTrips.visibility = View.GONE
+            binding.ciTripLoadTrips.visibility = View.GONE
 
             if (userTripsResult.isSuccess) {
                 val userTrips = userTripsResult.data
                 if (userTrips!!.isEmpty()) { // 내가 속한 여행이 없을 경우
-                    binding.layoutPlanEmptyView.root.visibility =
+                    binding.layoutTripView.root.visibility =
                         View.VISIBLE
-                    binding.layoutPlanEmptyTripList.root.visibility =
+                    binding.layoutTripTripList.root.visibility =
                         View.GONE
-                    binding.layoutPlanEmptyView.root.findViewById<LinearLayoutCompat>(
-                        R.id.btn_plan_empty_create_trip
+                    binding.layoutTripView.root.findViewById<LinearLayoutCompat>(
+                        R.id.btn_trip_create_trip
                     )
                         .setOnClickListener {
                             val intent = android.content.Intent(
@@ -59,12 +59,12 @@ class PlanFragment : Fragment() {
                             startActivity(intent)
                         }
                 } else { // 내가 속한 여행이 있을 경우
-                    binding.layoutPlanEmptyView.root.visibility =
+                    binding.layoutTripView.root.visibility =
                         View.GONE
-                    binding.layoutPlanEmptyTripList.root.visibility =
+                    binding.layoutTripTripList.root.visibility =
                         View.VISIBLE
-                    binding.layoutPlanEmptyTripList.root.findViewById<LinearLayoutCompat>(
-                        R.id.btn_plan_empty_create_trip
+                    binding.layoutTripTripList.root.findViewById<LinearLayoutCompat>(
+                        R.id.btn_trip_create_trip
                     )
                         .setOnClickListener {
                             val intent = android.content.Intent(

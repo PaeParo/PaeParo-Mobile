@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sample_text_plan_empty_ongoing_trip"
+        android:text="@string/sample_text_trip_ongoing_trip"
         android:textColor="#ffffff"
         android:textSize="24sp"
         android:textStyle="bold" />
