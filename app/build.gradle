@@ -21,6 +21,7 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField("String", "NAVER_CLIENT_ID", localProperties.getProperty('naver.map.clientID'))
+        buildConfigField("String", "KAKAO_API_KEY", localProperties.getProperty('kakao.api.key'))
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
