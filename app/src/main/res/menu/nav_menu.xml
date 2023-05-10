@@ -2,17 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/community_fragment"
-        android:title="커뮤니티"
-        android:icon="@drawable/ic_nav_community"/>
-
+        android:icon="@drawable/ic_nav_community"
+        android:title="@string/tab_menu_community" />
     <item
-        android:id="@+id/plan_fragment"
-        android:title="계획"
-        android:icon="@drawable/ic_nav_plan"/>
-        />
+        android:id="@+id/trip_fragment"
+        android:icon="@drawable/ic_nav_trip"
+        android:title="@string/tab_menu_trip" />
     <item
         android:id="@+id/mypage_fragment"
-        android:title="내 정보"
-        android:icon="@drawable/ic_nav_mypage"/>
-    />
+        android:icon="@drawable/ic_nav_mypage"
+        android:title="@string/tab_menu_myinfo" />
 </menu>

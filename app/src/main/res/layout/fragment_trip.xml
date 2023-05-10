@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_plan"
+    android:id="@+id/fragment_trip"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_insetEdge="none"
-    tools:context=".fragment.PlanFragment">
+    tools:context=".fragment.TripFragment">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/ci_trip_load_trips"

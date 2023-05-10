@@ -15,7 +15,7 @@ import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import kotlinx.coroutines.launch
 
 
-class PlanFragment : Fragment() {
+class TripFragment : Fragment() {
     private var _binding: FragmentTripBinding? = null
     private val binding get() = _binding!!
 
