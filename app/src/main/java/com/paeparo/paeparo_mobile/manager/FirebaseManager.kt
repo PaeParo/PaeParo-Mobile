@@ -340,14 +340,16 @@ object FirebaseManager {
      * @return Success Data: User Object / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUser(userId: String): FirebaseResult<PaeParoUser> {
-        return try {
-            val userRef = firestoreUsersRef.document(userId).get().await()
+        return withContext(Dispatchers.IO) {
+            try {
+                val userRef = firestoreUsersRef.document(userId).get().await()
 
-            val user = userRef.toObject(PaeParoUser::class.java)
-            user!!.userId = userRef.id
-            FirebaseResult.success(data = user)
-        } catch (e: Exception) {
-            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+                val user = userRef.toObject(PaeParoUser::class.java)
+                user!!.userId = userRef.id
+                FirebaseResult.success(data = user)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
         }
     }
 
@@ -414,21 +416,23 @@ object FirebaseManager {
      * @return Success Data: Trip Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUserTrips(userId: String): FirebaseResult<List<Trip>> {
-        return try {
-            val tripsRef =
-                firestoreTripsRef.whereArrayContains("members", userId).get()
-                    .await()
+        return withContext(Dispatchers.IO) {
+            try {
+                val tripsRef =
+                    firestoreTripsRef.whereArrayContains("members", userId).get()
+                        .await()
 
-            val trips = mutableListOf<Trip>()
-            for (tripRef in tripsRef) {
-                val trip = tripRef.toObject(Trip::class.java)
-                trip.tripId = tripRef.id
-                trips.add(trip)
+                val trips = mutableListOf<Trip>()
+                for (tripRef in tripsRef) {
+                    val trip = tripRef.toObject(Trip::class.java)
+                    trip.tripId = tripRef.id
+                    trips.add(trip)
+                }
+
+                FirebaseResult.success(data = trips)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
-
-            FirebaseResult.success(data = trips)
-        } catch (e: Exception) {
-            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -439,20 +443,22 @@ object FirebaseManager {
      * @return Success Data: Post Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUserPosts(userId: String): FirebaseResult<List<Post>> {
-        return try {
-            val postsRef =
-                firestorePostsRef.whereEqualTo("userId", userId).get()
-                    .await()
+        return withContext(Dispatchers.IO) {
+            try {
+                val postsRef =
+                    firestorePostsRef.whereEqualTo("userId", userId).get()
+                        .await()
 
-            val posts = mutableListOf<Post>()
-            for (postRef in postsRef) {
-                val post = postRef.toObject(Post::class.java)
-                post.postId = postRef.id
-                posts.add(post)
+                val posts = mutableListOf<Post>()
+                for (postRef in postsRef) {
+                    val post = postRef.toObject(Post::class.java)
+                    post.postId = postRef.id
+                    posts.add(post)
+                }
+                FirebaseResult.success(data = posts)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
-            FirebaseResult.success(data = posts)
-        } catch (e: Exception) {
-            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -513,21 +519,23 @@ object FirebaseManager {
      * @return Success Data: Post Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUserLikedPosts(userId: String): FirebaseResult<List<Post>> {
-        return try {
-            val userRef = firestoreUsersRef.document(userId).get().await()
-            val user = userRef.toObject(PaeParoUser::class.java)!!
+        return withContext(Dispatchers.IO) {
+            try {
+                val userRef = firestoreUsersRef.document(userId).get().await()
+                val user = userRef.toObject(PaeParoUser::class.java)!!
 
-            val posts = mutableListOf<Post>()
-            for (postId in user.likedPosts) {
-                val postRef = firestorePostsRef.document(postId).get().await()
-                val post = postRef.toObject(Post::class.java)!!
-                post.postId = postRef.id
-                posts.add(post)
+                val posts = mutableListOf<Post>()
+                for (postId in user.likedPosts) {
+                    val postRef = firestorePostsRef.document(postId).get().await()
+                    val post = postRef.toObject(Post::class.java)!!
+                    post.postId = postRef.id
+                    posts.add(post)
+                }
+
+                FirebaseResult.success(data = posts)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
-
-            FirebaseResult.success(data = posts)
-        } catch (e: Exception) {
-            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -538,10 +546,12 @@ object FirebaseManager {
      * @return Success Data: Post Object / Failure Type: SERVER_ERROR, CLIENT_ERROR & Error Object
      */
     suspend fun getPostByUserPreference(userId: String): FirebaseResult<Post> {
-        return try {
-            FirebaseResult.success()
-        } catch (e: Exception) {
-            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+        return withContext(Dispatchers.IO) {
+            try {
+                FirebaseResult.success()
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
         }
     }
 
@@ -552,19 +562,21 @@ object FirebaseManager {
      * @return Success Data: Comment Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUserComments(userId: String): FirebaseResult<List<Comment>> {
-        return try {
-            val commentsRef = firestoreCommentsRef.whereEqualTo("userId", userId).get().await()
+        return withContext(Dispatchers.IO) {
+            try {
+                val commentsRef = firestoreCommentsRef.whereEqualTo("userId", userId).get().await()
 
-            val comments = mutableListOf<Comment>()
-            for (commentRef in commentsRef) {
-                val comment = commentRef.toObject(Comment::class.java)
-                comment.commentId = commentRef.id
-                comments.add(comment)
+                val comments = mutableListOf<Comment>()
+                for (commentRef in commentsRef) {
+                    val comment = commentRef.toObject(Comment::class.java)
+                    comment.commentId = commentRef.id
+                    comments.add(comment)
+                }
+
+                FirebaseResult.success(data = comments)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
-
-            FirebaseResult.success(data = comments)
-        } catch (e: Exception) {
-            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -575,19 +587,22 @@ object FirebaseManager {
      * @return Success Data: User Object List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getUsersStartWith(startWith: String): FirebaseResult<List<PaeParoUser>> {
-        return try {
-            val userList = mutableListOf<PaeParoUser>()
-            val userListRef =
-                firestoreUsersRef.orderBy("nickname").startAt(startWith).endAt(startWith + "\uf8ff")
-                    .limit(5).get().await()
+        return withContext(Dispatchers.IO) {
+            try {
+                val userList = mutableListOf<PaeParoUser>()
+                val userListRef =
+                    firestoreUsersRef.orderBy("nickname").startAt(startWith)
+                        .endAt(startWith + "\uf8ff")
+                        .limit(5).get().await()
 
-            userListRef.documents.forEach {
-                userList.add(PaeParoUser(it.id, it.getString("nickname")!!))
+                userListRef.documents.forEach {
+                    userList.add(PaeParoUser(it.id, it.getString("nickname")!!))
+                }
+
+                FirebaseResult.success(data = userList)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
-
-            FirebaseResult.success(data = userList)
-        } catch (e: Exception) {
-            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
         }
     }
 
@@ -627,14 +642,16 @@ object FirebaseManager {
      * @return Success Data: Trip Object / Failure Type: TRIP_NOT_FOUND, CLIENT_ERROR & Error Object
      */
     suspend fun getTrip(tripId: String): FirebaseResult<Trip> {
-        return try {
-            val tripRef = firestoreTripsRef.document(tripId).get().await()
-            val trip = tripRef.toObject(Trip::class.java)!!
-            trip.tripId = tripRef.id
+        return withContext(Dispatchers.IO) {
+            try {
+                val tripRef = firestoreTripsRef.document(tripId).get().await()
+                val trip = tripRef.toObject(Trip::class.java)!!
+                trip.tripId = tripRef.id
 
-            FirebaseResult.success(data = trip)
-        } catch (e: Exception) {
-            FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+                FirebaseResult.success(data = trip)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
         }
     }
 
