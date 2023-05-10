@@ -32,14 +32,14 @@
     <string name="age_forty">40대</string>
     <string name="age_fifty">50대</string>
     <string name="sample_text_tv_personal_style">취향</string>
-    <string name="sample_text_tv_personal_style_explain">본인의 여행에서 우선순위를 골라주세요!</string>
-    <string name="sample_text_tv_personal_style_style1">명소</string>
-    <string name="sample_text_tv_personal_style_style2">쇼핑</string>
-    <string name="sample_text_tv_personal_style_style3">먹거리</string>
-    <string name="sample_text_tv_personal_style_style4">힐링</string>
-    <string name="sample_text_tv_personal_style_style5">액티비티</string>
-    <string name="sample_text_tv_personal_style_style6">문화/예술</string>
-    <string name="sample_text_tv_personal_style_style7">숙소</string>
+    <string name="sample_text_tv_personal_style_explain">본인의 여행에서 우선순위를 순서대로 골라주세요!</string>
+    <string name="style_style1">명소</string>
+    <string name="style_style2">쇼핑</string>
+    <string name="style_style3">먹거리</string>
+    <string name="style_style4">힐링</string>
+    <string name="style_style5">액티비티</string>
+    <string name="style_style6">문화/예술</string>
+    <string name="style_style7">숙소</string>
     <string name="sample_text_tv_personal_nextButton">Paeparo와 함께 여행 시작</string>
 
     <string name="sample_text_trip_no_trip">생성된 여행 없음</string>
@@ -54,18 +54,23 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="myhome_text_nickname">닉네임</string>
-    <string name="myhome_text_nickname_show">프로필 정보 보기</string>
-    <string name="myhome_text_profile">프로필</string>
-    <string name="myhome_text_like">찜한 일정</string>
-    <string name="myhome_text_comment">댓글 단 글</string>
-    <string name="myhome_text_plan">내가 만든 일정</string>
-    <string name="myhome_text_settings">설정</string>
-    <string name="myhome_text_faq">자주 묻는 질문(FAQ)</string>
+    <string name="home_text_nickname">닉네임</string>
+    <string name="home_text_nickname_show">프로필 정보 보기</string>
+    <string name="home_text_profile">프로필</string>
+    <string name="home_text_like">찜한 일정</string>
+    <string name="home_text_comment">댓글 단 글</string>
+    <string name="home_text_plan">내가 만든 일정</string>
+    <string name="home_text_settings">설정</string>
+    <string name="home_text_faq">자주 묻는 질문(FAQ)</string>
 
-    <string name="myhome_settings_alarm">알람</string>
-    <string name="myhome_settings_version">버전</string>
-    <string name="myhome_settings_logout">로그아웃</string>
+    <string name="profile_text_plan">내가 만든 일정</string>
+    <string name="profile_text_comment">내가 작성한 댓글</string>
+    <string name="profile_text_like">좋아요한 일정</string>
+    <string name="profile_number_zero">0</string>
+
+    <string name="home_settings_alarm">알람</string>
+    <string name="home_settings_version">버전</string>
+    <string name="home_settings_logout">로그아웃</string>
     <string name="btn_next">다음</string>
 
     <string name="tab_menu_community">커뮤니티</string>

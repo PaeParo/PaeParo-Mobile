@@ -1,0 +1,15 @@
+package com.paeparo.paeparo_mobile.activity
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.databinding.ActivityMyHomePlanBinding
+
+class MyHomePlanActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMyHomePlanBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_my_home_plan)
+    }
+}

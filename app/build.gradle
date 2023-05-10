@@ -21,6 +21,7 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField("String", "NAVER_CLIENT_ID", localProperties.getProperty('naver.map.clientID'))
+        buildConfigField("String", "KAKAO_API_KEY", localProperties.getProperty('kakao.api.key'))
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -97,5 +98,12 @@ dependencies {
 
     // 네이버 지도 SDK
     implementation 'com.naver.maps:map-sdk:3.16.0'
+
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'  //json converter
+    //Interprinter
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0' //레트로핏 통신간 로그를 찍기 위해서
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
 }

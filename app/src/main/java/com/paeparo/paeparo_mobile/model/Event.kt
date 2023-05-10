@@ -18,7 +18,6 @@ open class Event(
         MOVE,
         MEAL
     }
-
     fun toMapWithoutEventId(): Map<String, Any?> {
         val serializedMap = FirestoreNamingUtil.toSerializedMap(this)
         return serializedMap.filterKeys { it != "event_id" }
