@@ -6,6 +6,7 @@ import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 data class Trip(
     @SerializedName("trip_id") var tripId: String = "",
     @SerializedName("name") var name: String = "",
+    @SerializedName("region") var region: String = "",
     @SerializedName("status") var status: TripStatus = TripStatus.NONE,
     @SerializedName("start_date") var startDate: Long = 0L,
     @SerializedName("end_date") var endDate: Long = 0L,
