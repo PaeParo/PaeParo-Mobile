@@ -3,7 +3,7 @@ package com.paeparo.paeparo_mobile.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.CompoundButton
+import androidx.core.app.ActivityCompat
 import com.paeparo.paeparo_mobile.constant.SharedPreferencesKey
 import com.paeparo.paeparo_mobile.databinding.ActivityMyHomeSettingsBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
@@ -41,6 +41,7 @@ class MyHomeSettingsActivity : AppCompatActivity() {
         binding.logoutButton.setOnClickListener(){
             FirebaseManager.logoutWithGoogle(this)
             startActivity(Intent(this, LoginActivity::class.java))
+            ActivityCompat.finishAffinity(this)
         }
     }
 
