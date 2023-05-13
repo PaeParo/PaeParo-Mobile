@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#1D1D1D"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="16dp">
 
     <TextView
         android:id="@+id/tv_item_trips_content_name"
@@ -78,6 +79,10 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_item_trips_content_members"
         android:layout_width="match_parent"
-        android:layout_height="48dp" />
+        android:layout_height="40dp"
+        android:gravity="start|center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
