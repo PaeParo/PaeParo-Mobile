@@ -59,12 +59,16 @@ class TripAdapter(private var tripList: List<Any>) :
     inner class ContentViewHolder(private val binding: ItemTripsContentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: Trip) {
+            binding.tvItemTripsContentName.text = trip.name
             binding.tvItemTripsContentPlace.text = "장소명"
             binding.tvItemTripsContentDate.text = itemView.context.getString(
                 R.string.date_range,
-                DateUtil.getDateFromLong(trip.startDate, DateUtil.yyyyMMddFormat),
-                DateUtil.getDateFromLong(trip.endDate, DateUtil.yyyyMMddFormat)
+                DateUtil.getDateFromTimestamp(trip.startDate, DateUtil.yyyyMMddFormat),
+                DateUtil.getDateFromTimestamp(trip.endDate, DateUtil.yyyyMMddFormat)
             )
+            binding.clItemTripsContentInfo.setOnClickListener {
+                // TODO(서윤오): 여행 누를 경우 해당 여행 일정으로 이동
+            }
         }
     }
 

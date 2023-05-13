@@ -8,7 +8,9 @@ import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.adapter.TripAdapter
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.FragmentTripBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
@@ -73,6 +75,10 @@ class TripFragment : Fragment() {
                             )
                             startActivity(intent)
                         }
+                    val tripAdapter = TripAdapter(userTrips)
+                    binding.layoutTripTrips.rvTripsTripList.adapter = tripAdapter
+                    binding.layoutTripTrips.rvTripsTripList.layoutManager =
+                        LinearLayoutManager(context)
                 }
             } else {
                 Toast.makeText(view.context, "여행 목록을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
