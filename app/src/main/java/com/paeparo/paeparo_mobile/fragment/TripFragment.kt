@@ -30,25 +30,25 @@ class TripFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.ciTripLoadTrips.visibility = View.VISIBLE
-        binding.layoutTripView.root.visibility =
+        binding.ciTripLoading.visibility = View.VISIBLE
+        binding.layoutTripEmpty.root.visibility =
             View.INVISIBLE
-        binding.layoutTripTripList.root.visibility =
+        binding.layoutTripTrips.root.visibility =
             View.INVISIBLE
 
         lifecycleScope.launch {
             val userTripsResult = FirebaseManager.getUserTrips(view.context.getPaeParo().userId)
 
-            binding.ciTripLoadTrips.visibility = View.GONE
+            binding.ciTripLoading.visibility = View.GONE
 
             if (userTripsResult.isSuccess) {
                 val userTrips = userTripsResult.data
                 if (userTrips!!.isEmpty()) { // 내가 속한 여행이 없을 경우
-                    binding.layoutTripView.root.visibility =
+                    binding.layoutTripEmpty.root.visibility =
                         View.VISIBLE
-                    binding.layoutTripTripList.root.visibility =
+                    binding.layoutTripTrips.root.visibility =
                         View.GONE
-                    binding.layoutTripView.root.findViewById<LinearLayoutCompat>(
+                    binding.layoutTripEmpty.root.findViewById<LinearLayoutCompat>(
                         R.id.btn_trip_create_trip
                     )
                         .setOnClickListener {
@@ -59,11 +59,11 @@ class TripFragment : Fragment() {
                             startActivity(intent)
                         }
                 } else { // 내가 속한 여행이 있을 경우
-                    binding.layoutTripView.root.visibility =
+                    binding.layoutTripEmpty.root.visibility =
                         View.GONE
-                    binding.layoutTripTripList.root.visibility =
+                    binding.layoutTripTrips.root.visibility =
                         View.VISIBLE
-                    binding.layoutTripTripList.root.findViewById<LinearLayoutCompat>(
+                    binding.layoutTripTrips.root.findViewById<LinearLayoutCompat>(
                         R.id.btn_trip_create_trip
                     )
                         .setOnClickListener {

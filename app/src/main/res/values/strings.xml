@@ -42,9 +42,9 @@
     <string name="style_style7">숙소</string>
     <string name="sample_text_tv_personal_nextButton">Paeparo와 함께 여행 시작</string>
 
-    <string name="sample_text_trip_no_trip">생성된 여행 없음</string>
-    <string name="sample_text_trip_no_trip_desc">아래 버튼을 눌러 새로운 여행 일정을\n만들어보세요</string>
-    <string name="sample_text_trip_go_trip">와 여행 떠나기</string>
+    <string name="sample_text_no_trip">생성된 여행 없음</string>
+    <string name="sample_text_create_trip_desc">아래 버튼을 눌러 새로운 여행 일정을\n만들어보세요</string>
+    <string name="sample_text_trips_go_trip">와 여행 떠나기</string>
     <string name="sample_text_item_trip_place_icon_desc">위치</string>
     <string name="sample_text_trip_ongoing_trip">진행 중인 여행</string>
     <string name="sample_text_trip_planning_trip">계획 중인 여행</string>
