@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.firebase.Timestamp
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
@@ -9,7 +10,7 @@ data class Post(
     @SerializedName("description") var description: String = "",
     @SerializedName("user_id") var userId: String = "",
     @SerializedName("trip_id") var tripId: String = "",
-    @SerializedName("created_at") var createdAt: Long = 0L,
+    @SerializedName("created_at") var createdAt: Timestamp = Timestamp.now(),
     @SerializedName("likes") var likes: Int = 0,
     @SerializedName("tags") var tags: List<String> = listOf(),
     @SerializedName("images") var images: List<String> = listOf(),

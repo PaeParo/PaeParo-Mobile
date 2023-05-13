@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
@@ -16,7 +17,7 @@ data class LocationUpdate(
 
 data class LocationUpdateInfo(
     @SerializedName("user_id") var userId: String = "",
-    @SerializedName("timestamp") var timestamp: Long = 0L,
+    @SerializedName("timestamp") var timestamp: Timestamp = Timestamp.now(),
     @SerializedName("location") var location: GeoPoint = GeoPoint(0.0, 0.0)
 ) {
     fun toMapWithouUserId(): Map<String, Any?> {

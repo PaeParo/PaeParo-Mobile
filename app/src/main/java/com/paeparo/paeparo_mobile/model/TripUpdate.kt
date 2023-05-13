@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.firebase.Timestamp
 import com.google.gson.annotations.SerializedName
 
 data class TripUpdate(
@@ -19,5 +20,5 @@ data class TripUpdateInfo(
     @SerializedName("user_id") var userId: String = "",
     @SerializedName("event_reference") var eventReference: String = "",
     @SerializedName("update_type") var updateType: TripUpdate.UpdateType = TripUpdate.UpdateType.NONE,
-    @SerializedName("timestamp") var timestamp: Long = 0L
+    @SerializedName("timestamp") var timestamp: Timestamp = Timestamp.now()
 )
