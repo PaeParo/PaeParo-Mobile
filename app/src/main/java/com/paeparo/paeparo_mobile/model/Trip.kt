@@ -3,6 +3,7 @@ package com.paeparo.paeparo_mobile.model
 import com.google.firebase.Timestamp
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
+import java.io.Serializable
 
 data class Trip(
     @SerializedName("trip_id") var tripId: String = "",
@@ -18,7 +19,7 @@ data class Trip(
     @SerializedName("gender_distribution") var genderDistribution: GenderDistribution = GenderDistribution(),
     @SerializedName("age_distribution") var ageDistribution: AgeDistribution = AgeDistribution(),
     @SerializedName("travel_preferences") var travelPreferences: TravelPreferences = TravelPreferences()
-) {
+): Serializable {
     enum class TripStatus {
         NONE,
         PLANNING,

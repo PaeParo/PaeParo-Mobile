@@ -53,6 +53,7 @@
     <string name="date_range">%1$s ~ %2$s</string>
     <string name="members_count">%1$d명과 함께하고 있습니다</string>
     <string name="desc_invitation">초대</string>
+    <string name="sample_text_invitations_title">초대받은 여행</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

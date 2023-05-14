@@ -1,10 +1,16 @@
 package com.paeparo.paeparo_mobile.adapter
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.paeparo.paeparo_mobile.fragment.MyHomeFragment
-
-class TripDashBoardPagerAdapter(fa : Fragment) : FragmentStateAdapter(fa) {
+/*
+PlanActivity의 ViewPager용 어뎁터
+ */
+class PlanAdapter(fa : FragmentActivity) : FragmentStateAdapter(fa) {
     override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {

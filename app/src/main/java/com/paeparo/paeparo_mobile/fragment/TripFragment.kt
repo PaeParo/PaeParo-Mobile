@@ -9,11 +9,14 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.TripAdapter
 import com.paeparo.paeparo_mobile.application.getPaeParo
+import com.paeparo.paeparo_mobile.databinding.DialogInvitationsBinding
 import com.paeparo.paeparo_mobile.databinding.FragmentTripBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
+import com.paeparo.paeparo_mobile.model.Trip
 import kotlinx.coroutines.launch
 
 
@@ -87,12 +90,26 @@ class TripFragment : Fragment() {
                     binding.clTripInvitation.visibility = View.VISIBLE
                     binding.tvTripInvitationCount.text = userTrips.second.size.toString()
                     binding.clTripInvitation.setOnClickListener {
+                        showInvitationDialog(userTrips.second)
                     }
                 }
             } else {
                 Toast.makeText(view.context, "여행 목록을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showInvitationDialog(invitations: List<Trip>) {
+        val invitationsDialog = BottomSheetDialog(requireContext())
+        val invitationsDialogBinding = DialogInvitationsBinding.inflate(layoutInflater)
+        invitationsDialog.setContentView(invitationsDialogBinding.root)
+
+        invitationsDialogBinding.rvInvitations.layoutManager = LinearLayoutManager(context)
+        val invitationsAdapter = TripAdapter(invitations)
+        invitationsDialogBinding.rvInvitations.adapter = invitationsAdapter
+        invitationsDialogBinding.rvInvitations.layoutManager =
+            LinearLayoutManager(context)
+        invitationsDialog.show()
     }
 
     override fun onDestroyView() {
