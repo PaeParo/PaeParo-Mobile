@@ -32,6 +32,7 @@ class TripFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.clTripInvitation.visibility = View.INVISIBLE
         binding.ciTripLoading.visibility = View.VISIBLE
         binding.layoutTripEmpty.root.visibility =
             View.INVISIBLE
@@ -45,7 +46,7 @@ class TripFragment : Fragment() {
 
             if (userTripsResult.isSuccess) {
                 val userTrips = userTripsResult.data
-                if (userTrips!!.isEmpty()) { // 내가 속한 여행이 없을 경우
+                if (userTrips!!.first.isEmpty()) { // 내가 속한 여행이 없을 경우
                     binding.layoutTripEmpty.root.visibility =
                         View.VISIBLE
                     binding.layoutTripTrips.root.visibility =
@@ -75,10 +76,18 @@ class TripFragment : Fragment() {
                             )
                             startActivity(intent)
                         }
-                    val tripAdapter = TripAdapter(userTrips)
+                    val tripAdapter = TripAdapter(userTrips.first)
                     binding.layoutTripTrips.rvTripsTripList.adapter = tripAdapter
                     binding.layoutTripTrips.rvTripsTripList.layoutManager =
                         LinearLayoutManager(context)
+                }
+                if (userTrips.second.isEmpty()) {
+                    binding.clTripInvitation.visibility = View.GONE
+                } else {
+                    binding.clTripInvitation.visibility = View.VISIBLE
+                    binding.tvTripInvitationCount.text = userTrips.second.size.toString()
+                    binding.clTripInvitation.setOnClickListener {
+                    }
                 }
             } else {
                 Toast.makeText(view.context, "여행 목록을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
