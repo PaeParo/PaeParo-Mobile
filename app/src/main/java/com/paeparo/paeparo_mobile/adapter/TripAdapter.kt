@@ -79,10 +79,12 @@ class TripAdapter(private var triplist: List<Any>) :
                     DateUtil.yyyyMdFormat
                 )
             )
-            binding.tvItemTripsContentMembers.text = itemView.context.resources.getString(
-                R.string.members_count,
-                trip.members.size
-            )
+            if (trip.members.size > 1) {
+                binding.tvItemTripsContentMembers.text = itemView.context.resources.getString(
+                    R.string.members_count,
+                    trip.members.size - 1
+                )
+            }
 
             binding.clItemTripsContentInfo.setOnClickListener {
                 // TODO(서윤오): 여행 누를 경우 해당 여행 일정으로 이동
