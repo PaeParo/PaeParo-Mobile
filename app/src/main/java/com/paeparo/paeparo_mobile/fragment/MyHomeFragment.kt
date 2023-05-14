@@ -34,27 +34,9 @@ class MyHomeFragment : Fragment() {
 
         binding.name.text = requireContext().getPaeParo().nickname
 
-        //프로필 수정
-        binding.fixhome.setOnClickListener {
-            val intent = Intent(activity, MyHomeProfileActivity::class.java)
-            startActivity(intent)
-        }
-
         //설정
         binding.settings.setOnClickListener {
             val intent = Intent(activity, MyHomeSettingsActivity::class.java)
-            startActivity(intent)
-        }
-
-        //내가 만든 일정
-        binding.plan.setOnClickListener {
-            val intent = Intent(activity, MyHomePlanActivity::class.java)
-            startActivity(intent)
-        }
-
-        //프로필
-        binding.profile.setOnClickListener {
-            val intent = Intent(activity, MyHomeProfileActivity::class.java)
             startActivity(intent)
         }
 
