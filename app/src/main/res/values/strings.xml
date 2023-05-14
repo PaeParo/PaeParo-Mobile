@@ -62,11 +62,11 @@
     <string name="home_text_settings">설정</string>
     <string name="home_text_faq">자주 묻는 질문(FAQ)</string>
 
-    <string name="profile_text_plan">내가 만든 일정</string>
-    <string name="profile_text_comment">내가 작성한 댓글</string>
-    <string name="profile_text_like">좋아요한 일정</string>
-    <string name="profile_number_zero">0</string>
 
+    <string name="profile_text_like">좋아요한 일정</string>
+
+    <string name="home_settings_user">회원</string>
+    <string name="home_settings_user_delete">회원탈퇴</string>
     <string name="home_settings_alarm">알람</string>
     <string name="home_settings_version">버전</string>
     <string name="home_settings_logout">로그아웃</string>

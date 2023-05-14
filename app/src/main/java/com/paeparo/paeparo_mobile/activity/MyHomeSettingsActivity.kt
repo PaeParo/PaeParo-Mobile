@@ -37,6 +37,9 @@ class MyHomeSettingsActivity : AppCompatActivity() {
                 SharedPreferencesManager.set(SharedPreferencesKey.KEY_SETTINGS_ALARM,false)
             }
         }
+        binding.user.setOnClickListener {
+            startActivity(Intent(this, MyHomeSettingsUserActivity::class.java))
+        }
 
         binding.logoutButton.setOnClickListener(){
             FirebaseManager.logoutWithGoogle(this)
