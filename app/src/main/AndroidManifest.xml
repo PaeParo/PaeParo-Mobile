@@ -31,9 +31,6 @@
             android:name=".activity.MyHomeSettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.MyHomeProfileActivity"
-            android:exported="false" />
-        <activity
             android:name=".activity.PlanGenerateActivity"
             android:exported="false" />
         <activity

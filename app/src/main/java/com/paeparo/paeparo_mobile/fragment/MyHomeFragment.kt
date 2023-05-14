@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import com.paeparo.paeparo_mobile.activity.MyHomeCommentActivity
 import com.paeparo.paeparo_mobile.activity.MyHomeFaqActivity
 import com.paeparo.paeparo_mobile.activity.MyHomeLikeActivity
-import com.paeparo.paeparo_mobile.activity.MyHomePlanActivity
-import com.paeparo.paeparo_mobile.activity.MyHomeProfileActivity
 import com.paeparo.paeparo_mobile.activity.MyHomeSettingsActivity
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.FragmentMyHomeBinding
