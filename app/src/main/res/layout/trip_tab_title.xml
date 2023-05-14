@@ -6,7 +6,9 @@
     android:layout_height="wrap_content"
     android:padding = "16dp"
     tools:text="title"
-    android:background="@drawable/trip_tab_background_selector"
-    android:textColor="@drawable/trip_tap_text_selector"
+    android:background="@drawable/plan_tab_background_selector"
+    android:textColor="@drawable/plan_tap_text_selector"
     android:gravity="center"
     />
+
+<!-- TODO 삭제 예정 -->
