@@ -77,4 +77,5 @@
     <string name="tab_menu_community">커뮤니티</string>
     <string name="tab_menu_trip">여행</string>
     <string name="tab_menu_myinfo">내 정보</string>
+    <string name="tab_menu_invitation">초대</string>
 </resources>

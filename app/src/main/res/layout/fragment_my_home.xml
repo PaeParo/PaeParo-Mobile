@@ -24,7 +24,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_nav_mypage"
+                android:src="@drawable/ic_menu_mypage_filled"
                 app:civ_border_color="#000000"
                 app:civ_border_overlay="true"
                 app:civ_border_width="5dp" />
