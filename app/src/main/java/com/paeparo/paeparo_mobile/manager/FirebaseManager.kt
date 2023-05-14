@@ -415,21 +415,31 @@ object FirebaseManager {
      * @param userId 사용자 ID
      * @return Success Data: Trip Object List / Failure Type: CLIENT_ERROR & Error Object
      */
-    suspend fun getUserTrips(userId: String): FirebaseResult<List<Trip>> {
+    suspend fun getUserTrips(userId: String): FirebaseResult<Pair<List<Trip>, List<Trip>>> {
         return withContext(Dispatchers.IO) {
             try {
-                val tripsRef =
+                val tripsMemberRef =
                     firestoreTripsRef.whereArrayContains("members", userId).get()
                         .await()
 
-                val trips = mutableListOf<Trip>()
-                for (tripRef in tripsRef) {
+                val tripsInvitationRef =
+                    firestoreTripsRef.whereArrayContains("invitations", userId).get().await()
+
+                val tripsInMember = mutableListOf<Trip>()
+                for (tripRef in tripsMemberRef) {
                     val trip = tripRef.toObject(Trip::class.java)
                     trip.tripId = tripRef.id
-                    trips.add(trip)
+                    tripsInMember.add(trip)
                 }
 
-                FirebaseResult.success(data = trips)
+                val tripsInInvitation = mutableListOf<Trip>()
+                for (tripRef in tripsInvitationRef) {
+                    val trip = tripRef.toObject(Trip::class.java)
+                    trip.tripId = tripRef.id
+                    tripsInInvitation.add(trip)
+                }
+
+                FirebaseResult.success(data = Pair(tripsInMember, tripsInInvitation))
             } catch (e: Exception) {
                 FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }

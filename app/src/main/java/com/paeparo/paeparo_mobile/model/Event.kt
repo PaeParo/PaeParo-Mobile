@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
@@ -8,8 +9,8 @@ open class Event(
     @SerializedName("event_id") var eventId: String = "",
     @SerializedName("name") var name: String = "",
     @SerializedName("type") var type: EventType = EventType.NONE,
-    @SerializedName("start_time") var startTime: Long = 0L,
-    @SerializedName("end_time") var endTime: Long = 0L,
+    @SerializedName("start_time") var startTime: Timestamp = Timestamp.now(),
+    @SerializedName("end_time") var endTime: Timestamp = Timestamp.now(),
     @SerializedName("budget") var budget: Int = 0
 ) {
     enum class EventType {

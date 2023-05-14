@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.firebase.Timestamp
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
@@ -7,7 +8,7 @@ data class Comment(
     @SerializedName("comment_id") var commentId: String = "",
     @SerializedName("post_id") var postId: String = "",
     @SerializedName("nickname") var nickname: String = "",
-    @SerializedName("created_at") var createdAt: Long = 0L,
+    @SerializedName("created_at") var createdAt: Timestamp = Timestamp.now(),
     @SerializedName("content") var content: String = ""
 ) {
     fun toMapWithoutCommentId(): Map<String, Any?> {

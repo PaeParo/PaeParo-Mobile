@@ -3,10 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:background="#1D1D1D"
+    android:orientation="vertical"
+    android:paddingBottom="16dp">
 
     <TextView
+        android:id="@+id/tv_item_trips_content_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
@@ -16,14 +19,14 @@
         tools:text="제주도 맛집 탐방" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_item_trip_info"
+        android:id="@+id/cl_item_trips_content_info"
         android:layout_width="match_parent"
         android:layout_height="96dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_item_trip_main_image"
+            android:id="@+id/iv_item_trips_content_thumbnail"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:foreground="#22000000"
@@ -36,9 +39,9 @@
             tools:src="@drawable/sample_image_1" />
 
         <ImageView
-            android:id="@+id/iv_item_trip_place_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:id="@+id/iv_item_trips_content_place"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/sample_text_item_trip_place_icon_desc"
@@ -48,34 +51,38 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_item_trip_place"
+            android:id="@+id/tv_item_trips_content_place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_item_trip_place_icon"
-            app:layout_constraintStart_toEndOf="@id/iv_item_trip_place_icon"
-            app:layout_constraintTop_toTopOf="@id/iv_item_trip_place_icon"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_item_trips_content_place"
+            app:layout_constraintStart_toEndOf="@id/iv_item_trips_content_place"
+            app:layout_constraintTop_toTopOf="@id/iv_item_trips_content_place"
             tools:text="제주도" />
 
         <TextView
-            android:id="@+id/tv_item_trip_date"
+            android:id="@+id/tv_item_trips_content_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_item_trip_place_icon"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_item_trips_content_place"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/iv_item_trip_place_icon"
+            app:layout_constraintTop_toTopOf="@id/iv_item_trips_content_place"
             tools:text="2023.02.23 ~ 2023.02.27" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/ll_item_trip_members"
+    <TextView
+        android:id="@+id/tv_item_trips_content_members"
         android:layout_width="match_parent"
-        android:layout_height="48dp" />
+        android:layout_height="wrap_content"
+        android:textAlignment="textEnd"
+        android:textColor="#C5C5C5"
+        android:textSize="14sp"
+        tools:text="4명과 함께하고 있습니다" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

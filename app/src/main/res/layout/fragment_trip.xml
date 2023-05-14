@@ -9,7 +9,7 @@
     tools:context=".fragment.TripFragment">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/ci_trip_load_trips"
+        android:id="@+id/ci_trip_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
@@ -21,8 +21,8 @@
         app:trackColor="#2A292F" />
 
     <include
-        android:id="@+id/layout_trip_view"
-        layout="@layout/layout_trip_view"
+        android:id="@+id/layout_trip_empty"
+        layout="@layout/layout_trip_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,9 +31,42 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/layout_trip_trip_list"
-        layout="@layout/layout_trip_trip_list"
+        android:id="@+id/layout_trip_trips"
+        layout="@layout/layout_trip_trips"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_trip_invitation"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="@string/desc_invitation"
+            android:src="@drawable/ic_notification_filled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_trip_invitation_count"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/bg_invitation_count"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

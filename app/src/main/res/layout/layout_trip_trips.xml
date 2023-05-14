@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/iv_trip_background"
+        android:id="@+id/iv_trips_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#DD4C4C"
@@ -17,43 +17,43 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/v_trip"
+        android:id="@+id/v_trips_guideline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/iv_trip_background"
-        app:layout_constraintTop_toTopOf="@id/iv_trip_background" />
+        app:layout_constraintBottom_toBottomOf="@id/iv_trips_background"
+        app:layout_constraintTop_toTopOf="@id/iv_trips_background" />
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/trip_list_background"
+        android:background="@drawable/trips_background"
         android:elevation="8dp"
-        android:fillViewport="true"
         android:padding="16dp"
         android:translationZ="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/v_trip">
+        app:layout_constraintTop_toBottomOf="@id/v_trips_guideline">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:background="#1D1D1D"
+            android:gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:letterSpacing="0.05"
-                android:text="@string/sample_text_trip_no_trip_desc"
+                android:text="@string/sample_text_create_trip_desc"
                 android:textAlignment="center"
                 android:textColor="#E1E1E1"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                app:layout_scrollFlags="scroll|enterAlways" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/btn_trip_create_trip"
@@ -64,7 +64,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_scrollFlags="scroll|enterAlways">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -77,36 +78,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sample_text_trip_go_trip"
+                    android:text="@string/sample_text_trips_go_trip"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <include
-                android:id="@+id/layout_trip_ongoing_trip"
-                layout="@layout/layout_trip_ongoing_trip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-            <include
-                android:id="@+id/layout_trip_planning_trip"
-                layout="@layout/layout_trip_planning_trip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_trips_trip_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="32dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-            <include
-                android:id="@+id/layout_trip_past_trip"
-                layout="@layout/layout_trip_past_trip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-    </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

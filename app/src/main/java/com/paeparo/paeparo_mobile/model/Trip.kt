@@ -1,14 +1,16 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.firebase.Timestamp
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
 data class Trip(
     @SerializedName("trip_id") var tripId: String = "",
     @SerializedName("name") var name: String = "",
+    @SerializedName("region") var region: String = "",
     @SerializedName("status") var status: TripStatus = TripStatus.NONE,
-    @SerializedName("start_date") var startDate: Long = 0L,
-    @SerializedName("end_date") var endDate: Long = 0L,
+    @SerializedName("start_date") var startDate: Timestamp = Timestamp.now(),
+    @SerializedName("end_date") var endDate: Timestamp = Timestamp.now(),
     @SerializedName("budget") var budget: Int = 0,
     @SerializedName("members") var members: List<String> = listOf(),
     @SerializedName("invitations") var invitations: List<String> = listOf(),
