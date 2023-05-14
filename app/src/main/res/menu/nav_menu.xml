@@ -12,9 +12,4 @@
         android:id="@+id/mypage_fragment"
         android:icon="@drawable/ic_menu_mypage"
         android:title="@string/tab_menu_myinfo" />
-
-    <item
-        android:id="@+id/invitation_fragment"
-        android:icon="@drawable/ic_menu_invite"
-        android:title="@string/tab_menu_invitation" />
 </menu>
