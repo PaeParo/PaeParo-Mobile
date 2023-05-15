@@ -8,7 +8,9 @@ import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.InvitationAdapter
@@ -41,7 +43,7 @@ class TripFragment : Fragment() {
     /**
      * BottomSheetDialog for invitation list
      */
-    private lateinit var invitationsDialog: BottomSheetDialog
+    private lateinit var invitationListDialog: BottomSheetDialog
 
     /**
      * DialogInvitationListBinding
@@ -66,28 +68,23 @@ class TripFragment : Fragment() {
             View.INVISIBLE
         binding.layoutTripExists.root.visibility =
             View.INVISIBLE
+        dialogInvitationListBinding = DialogInvitationListBinding.inflate(layoutInflater)
 
+        setupTripViewModel()
+
+        setupAdapter()
+
+        setupSwipeGesture()
+
+        tripViewModel.loadTrips(requireContext().getPaeParo().userId)
+    }
+
+    /**
+     * TripVieModel 초기화 함수
+     */
+    private fun setupTripViewModel() {
         // TripViewModel 초기화
         tripViewModel = ViewModelProvider(this)[TripViewModel::class.java]
-
-        // TripAdapter, InvitationsAdapter/Dialog 초기화
-        tripAdapter = TripAdapter()
-        binding.layoutTripExists.rvTripExistsTripList.layoutManager =
-            LinearLayoutManager(context)
-        binding.layoutTripExists.rvTripExistsTripList.adapter = tripAdapter
-
-        invitationsDialog = BottomSheetDialog(requireContext())
-        invitationAdapter = InvitationAdapter(
-            { trip -> tripViewModel.acceptInvitation(trip, requireContext().getPaeParo().userId) },
-            { trip -> tripViewModel.declineInvitation(trip, requireContext().getPaeParo().userId) }
-        )
-        dialogInvitationListBinding = DialogInvitationListBinding.inflate(layoutInflater)
-        dialogInvitationListBinding.rvInvitationList.layoutManager = LinearLayoutManager(context)
-        dialogInvitationListBinding.rvInvitationList.adapter = invitationAdapter
-        invitationsDialog.setContentView(dialogInvitationListBinding.root)
-        binding.clTripInvitation.setOnClickListener {
-            invitationsDialog.show()
-        }
 
         // TripViewModel의 trips 변경사항 확인
         tripViewModel.tripList.observe(viewLifecycleOwner) { trips ->
@@ -128,7 +125,7 @@ class TripFragment : Fragment() {
         // TripViewModel의 invitations 변경사항 확인
         tripViewModel.invitationList.observe(viewLifecycleOwner) { invitations ->
             if (invitations.isEmpty()) { // 초대받은 여행이 없을 경우
-                invitationsDialog.hide()
+                invitationListDialog.hide()
                 binding.clTripInvitation.visibility = View.GONE
             } else { // 초대받은 여행이 있을 경우
                 binding.clTripInvitation.visibility = View.VISIBLE
@@ -140,8 +137,65 @@ class TripFragment : Fragment() {
         tripViewModel.error.observe(viewLifecycleOwner) { error ->
             Toast.makeText(context, "여행 목록을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
+    }
 
-        tripViewModel.loadTrips(requireContext().getPaeParo().userId)
+    /**
+     * TripAdapter, InvitationAdapter 및 Dialog 초기화 함수
+     */
+    private fun setupAdapter() {
+        // TripAdapter 초기화
+        tripAdapter = TripAdapter()
+        binding.layoutTripExists.rvTripExistsTripList.layoutManager =
+            LinearLayoutManager(context)
+        binding.layoutTripExists.rvTripExistsTripList.adapter = tripAdapter
+
+        // InvitationAdapter 초기화
+        invitationAdapter = InvitationAdapter(
+            { trip -> tripViewModel.acceptInvitation(trip, requireContext().getPaeParo().userId) },
+            { trip -> tripViewModel.declineInvitation(trip, requireContext().getPaeParo().userId) }
+        )
+        dialogInvitationListBinding.rvInvitationList.layoutManager = LinearLayoutManager(context)
+        dialogInvitationListBinding.rvInvitationList.adapter = invitationAdapter
+
+        // InvitationListDialog 초기화
+        invitationListDialog = BottomSheetDialog(requireContext())
+        invitationListDialog.setContentView(dialogInvitationListBinding.root)
+        binding.clTripInvitation.setOnClickListener {
+            invitationListDialog.show()
+        }
+    }
+
+    /**
+     * Invitation recycler view의 SwipeGesture 설정 함수
+     */
+    private fun setupSwipeGesture() {
+        val invitationItemTouchHelper = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val trip = invitationAdapter.currentList[position]
+
+                when (direction) {
+                    ItemTouchHelper.LEFT -> {
+                        tripViewModel.declineInvitation(trip, requireContext().getPaeParo().userId)
+                    }
+
+                    ItemTouchHelper.RIGHT -> {
+                        tripViewModel.acceptInvitation(trip, requireContext().getPaeParo().userId)
+                    }
+                }
+            }
+        }
+
+        ItemTouchHelper(invitationItemTouchHelper).attachToRecyclerView(dialogInvitationListBinding.rvInvitationList)
     }
 
     override fun onDestroyView() {
