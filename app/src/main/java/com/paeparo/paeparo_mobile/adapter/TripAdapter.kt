@@ -14,19 +14,29 @@ import com.paeparo.paeparo_mobile.util.DateUtil
  *
  * TripFragment의 여행 목록을 관리하는 Adapter 클래스
  *
- * @property triplist Trip 목록
+ * @property tripList Trip 목록
  */
-class TripAdapter(private var triplist: List<Any>) :
+class TripAdapter :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val ITEM_TYPE_HEADER = 0
-    private val ITEM_TYPE_CONTENT = 1
+    companion object {
+        /**
+         * Item Type Header
+         */
+        const val ITEM_TYPE_HEADER = 0
 
-    init {
-        updateTrips(triplist.filterIsInstance<Trip>())
+        /**
+         * Item Type Content
+         */
+        const val ITEM_TYPE_CONTENT = 1
     }
 
+    /**
+     * Header, Content로 구성된 Trip 목록
+     */
+    private var tripList: MutableList<Any> = mutableListOf()
+
     override fun getItemViewType(position: Int): Int {
-        return if (triplist[position] is String) {
+        return if (tripList[position] is String) {
             ITEM_TYPE_HEADER
         } else {
             ITEM_TYPE_CONTENT
@@ -49,12 +59,21 @@ class TripAdapter(private var triplist: List<Any>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is HeaderViewHolder) {
-            holder.bind(triplist[position] as String)
+            holder.bind(tripList[position] as String)
         } else if (holder is ContentViewHolder) {
-            holder.bind(triplist[position] as Trip)
+            holder.bind(tripList[position] as Trip)
         }
     }
 
+    override fun getItemCount(): Int {
+        return tripList.size
+    }
+
+    /**
+     * Header를 담고 있는 ViewHolder
+     *
+     * @property binding ItemTripsHeaderBinding
+     */
     inner class HeaderViewHolder(private val binding: ItemTripsHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(header: String) {
@@ -63,6 +82,11 @@ class TripAdapter(private var triplist: List<Any>) :
     }
 
 
+    /**
+     * Content를 담고 있는 ViewHolder
+     *
+     * @property binding ItemTripsContentBinding
+     */
     inner class ContentViewHolder(private val binding: ItemTripsContentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: Trip) {
@@ -92,12 +116,17 @@ class TripAdapter(private var triplist: List<Any>) :
         }
     }
 
-    fun updateTrips(tripsWithUsersThumbnail: List<Trip>) {
+    /**
+     * Trip 목록을 업데이트하는 함수
+     *
+     * @param tripList 새로운 Trip 목록
+     */
+    fun updateTrips(tripList: List<Trip>) {
         val sortedTrips =
-            tripsWithUsersThumbnail.sortedWith(compareByDescending<Trip> { trip -> trip.status.ordinal }.thenByDescending { trip -> trip.startDate })
+            tripList.sortedWith(compareByDescending<Trip> { trip -> trip.status.ordinal }.thenByDescending { trip -> trip.startDate })
         val groupedTrips = sortedTrips.groupBy { trip -> trip.status }
 
-        this.triplist = mutableListOf<Any>().apply {
+        this.tripList = mutableListOf<Any>().apply {
             groupedTrips[Trip.TripStatus.ONGOING]?.let { ongoingTrips ->
                 if (ongoingTrips.isNotEmpty()) {
                     add("진행 중인 여행")
@@ -119,9 +148,5 @@ class TripAdapter(private var triplist: List<Any>) :
         }
 
         notifyDataSetChanged()
-    }
-
-    override fun getItemCount(): Int {
-        return triplist.size
     }
 }
