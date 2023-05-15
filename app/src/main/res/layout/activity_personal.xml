@@ -15,9 +15,10 @@
         android:textColor="#FFFFFF"
         android:textSize="38sp"
         android:textStyle="bold"
+        android:layout_marginStart="30dp"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,8 +30,12 @@
         android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
 
-        app:layout_constraintStart_toStartOf="@id/tv_personal_title1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toBottomOf="@id/tv_personal_title1" />
 
     <TextView
@@ -69,6 +74,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,8 +88,8 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="75dp"
-            android:paddingEnd="75dp"
+            android:paddingStart="70dp"
+            android:paddingEnd="70dp"
             android:text="@string/gender_male"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -93,8 +100,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="75dp"
-            android:paddingEnd="75dp"
+            android:paddingStart="70dp"
+            android:paddingEnd="70dp"
             android:text="@string/gender_female"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -121,6 +128,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -196,7 +205,7 @@
             android:button="@null"
             android:paddingStart="40dp"
             android:paddingEnd="40dp"
-            android:text="@string/age_twenty"
+            android:text="@string/age_fifty"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
@@ -238,22 +247,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_personal_style_explain">
 
 
         <CheckBox
             android:id="@+id/cb_personal_style_style1"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="28dp"
-            android:paddingEnd="28dp"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
             android:text="@string/style_style1"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -261,12 +272,12 @@
         <CheckBox
             android:id="@+id/cb_personal_style_style2"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="28dp"
-            android:paddingEnd="28dp"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
             android:text="@string/style_style2"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -274,12 +285,12 @@
         <CheckBox
             android:id="@+id/cb_personal_style_style3"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="@string/style_style3"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -287,11 +298,11 @@
         <CheckBox
             android:id="@+id/cb_personal_style_style4"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="28dp"
-            android:paddingEnd="28dp"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
             android:text="@string/style_style4"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -302,6 +313,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -314,8 +327,8 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="@string/style_style5"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -327,8 +340,8 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="@string/style_style6"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -339,8 +352,8 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="28dp"
-            android:paddingEnd="28dp"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
             android:text="@string/style_style7"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -349,10 +362,11 @@
 
     <Button
         android:id="@+id/nextButton"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:backgroundTint="#DD4C4C"
         android:text="@string/sample_text_tv_personal_nextButton"
         android:textAllCaps="false"
