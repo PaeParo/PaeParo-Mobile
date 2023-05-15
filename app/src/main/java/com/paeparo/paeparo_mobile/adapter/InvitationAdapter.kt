@@ -2,6 +2,7 @@ package com.paeparo.paeparo_mobile.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.databinding.ItemInvitationBinding
 import com.paeparo.paeparo_mobile.model.Trip
@@ -13,16 +14,17 @@ import com.paeparo.paeparo_mobile.model.Trip
  *
  * @property accept 초대 수락 시 실행되는 함수
  * @property decline 초대 거절 시 실행되는 함수
- * @constructor Create empty Invitation adapter
  */
 class InvitationAdapter(private val accept: (Trip) -> Unit, private val decline: (Trip) -> Unit) :
-    RecyclerView.Adapter<InvitationAdapter.InvitationViewHolder>() {
-    /**
-     * 초대 목록
-     */
-    private var invitationList: MutableList<Trip> = mutableListOf()
+    ListAdapter<Trip, InvitationAdapter.InvitationViewHolder>(InvitationDiffCallback()) {
 
-    class InvitationViewHolder(private val binding: ItemInvitationBinding) :
+    /**
+     * InvitationViewHolder class
+     *
+     * @property binding
+     * @constructor Create empty Invitation view holder
+     */
+    inner class InvitationViewHolder(private val binding: ItemInvitationBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(invitation: Trip, accept: (Trip) -> Unit, decline: (Trip) -> Unit) {
             binding.tvItemInvitationTitle.text = invitation.name
@@ -30,7 +32,25 @@ class InvitationAdapter(private val accept: (Trip) -> Unit, private val decline:
             // decline(invitation)
 
             // TODO(손영진): 초대 수락 처리 구현
+            binding.tvItemInvitationTitle.setOnClickListener {
+                accept(invitation)
+            }
             // accept(invitation)
+        }
+    }
+
+    /**
+     * InvitationDiffCallback class
+     *
+     * Invitation 추가 및 삭제 시 사용되는 DiffUtil 클래스
+     */
+    class InvitationDiffCallback : androidx.recyclerview.widget.DiffUtil.ItemCallback<Trip>() {
+        override fun areItemsTheSame(oldItem: Trip, newItem: Trip): Boolean {
+            return oldItem.tripId == newItem.tripId
+        }
+
+        override fun areContentsTheSame(oldItem: Trip, newItem: Trip): Boolean {
+            return oldItem == newItem
         }
     }
 
@@ -45,10 +65,8 @@ class InvitationAdapter(private val accept: (Trip) -> Unit, private val decline:
     }
 
     override fun onBindViewHolder(holder: InvitationViewHolder, position: Int) {
-        holder.bind(invitationList[position], accept, decline)
+        holder.bind(getItem(position), accept, decline)
     }
-
-    override fun getItemCount(): Int = invitationList.size
 
     /**
      * 초대 목록을 업데이트하는 함수
@@ -56,8 +74,6 @@ class InvitationAdapter(private val accept: (Trip) -> Unit, private val decline:
      * @param invitationList 새로운 초대 목록
      */
     fun updateInvitationList(invitationList: List<Trip>) {
-        this.invitationList.clear()
-        this.invitationList.addAll(invitationList)
-        notifyDataSetChanged()
+        submitList(invitationList)
     }
 }

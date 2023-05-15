@@ -61,8 +61,12 @@ class TripViewModel : ViewModel() {
         viewModelScope.launch {
             val acceptInvitationResult = FirebaseManager.acceptTripInvitation(trip.tripId, userId)
             if (acceptInvitationResult.isSuccess) {
-                _tripList.value = _tripList.value?.toMutableList()?.apply { add(trip) }
-                _invitationList.value = _invitationList.value?.toMutableList()?.apply { remove(trip) }
+                // Make a copy of the list before modifying it
+                val newTripList = _tripList.value?.toMutableList()?.apply { add(trip) }
+                val newInvitationList = _invitationList.value?.toMutableList()?.apply { remove(trip) }
+
+                _tripList.value = newTripList
+                _invitationList.value = newInvitationList
             } else {
                 _error.value = acceptInvitationResult.error
             }
@@ -79,7 +83,10 @@ class TripViewModel : ViewModel() {
         viewModelScope.launch {
             val declineInvitationResult = FirebaseManager.rejectTripInvitation(trip.tripId, userId)
             if (declineInvitationResult.isSuccess) {
-                _invitationList.value = _invitationList.value?.toMutableList()?.apply { remove(trip) }
+                // Make a copy of the list before modifying it
+                val newInvitationList = _invitationList.value?.toMutableList()?.apply { remove(trip) }
+
+                _invitationList.value = newInvitationList
             } else {
                 _error.value = declineInvitationResult.error
             }
