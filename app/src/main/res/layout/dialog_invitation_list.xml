@@ -19,17 +19,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sample_text_invitations_title"
+        android:text="@string/sample_text_invitation_list_title"
         android:textColor="#FFFFFF"
         android:textSize="24sp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_invitations"
+        android:id="@+id/rv_invitation_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
         tools:itemCount="4"
-        tools:listitem="@layout/item_trips_content" />
+        tools:listitem="@layout/item_trip_content" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

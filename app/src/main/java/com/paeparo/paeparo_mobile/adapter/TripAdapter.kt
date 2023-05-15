@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.R
-import com.paeparo.paeparo_mobile.databinding.ItemTripsContentBinding
-import com.paeparo.paeparo_mobile.databinding.ItemTripsHeaderBinding
+import com.paeparo.paeparo_mobile.databinding.ItemTripContentBinding
+import com.paeparo.paeparo_mobile.databinding.ItemTripHeaderBinding
 import com.paeparo.paeparo_mobile.model.Trip
 import com.paeparo.paeparo_mobile.util.DateUtil
 
@@ -47,10 +47,10 @@ class TripAdapter :
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             ITEM_TYPE_HEADER ->
-                HeaderViewHolder(ItemTripsHeaderBinding.inflate(inflater, parent, false))
+                HeaderViewHolder(ItemTripHeaderBinding.inflate(inflater, parent, false))
 
             ITEM_TYPE_CONTENT ->
-                ContentViewHolder(ItemTripsContentBinding.inflate(inflater, parent, false))
+                ContentViewHolder(ItemTripContentBinding.inflate(inflater, parent, false))
 
             else ->
                 throw IllegalArgumentException("Invalid view type")
@@ -72,12 +72,12 @@ class TripAdapter :
     /**
      * Header를 담고 있는 ViewHolder
      *
-     * @property binding ItemTripsHeaderBinding
+     * @property binding ItemTripHeaderBinding
      */
-    inner class HeaderViewHolder(private val binding: ItemTripsHeaderBinding) :
+    inner class HeaderViewHolder(private val binding: ItemTripHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(header: String) {
-            binding.tvItemTripsHeaderTitle.text = header
+            binding.tvItemTripHeaderTitle.text = header
         }
     }
 
@@ -85,14 +85,14 @@ class TripAdapter :
     /**
      * Content를 담고 있는 ViewHolder
      *
-     * @property binding ItemTripsContentBinding
+     * @property binding ItemTripContentBinding
      */
-    inner class ContentViewHolder(private val binding: ItemTripsContentBinding) :
+    inner class ContentViewHolder(private val binding: ItemTripContentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: Trip) {
-            binding.tvItemTripsContentName.text = trip.name
-            binding.tvItemTripsContentPlace.text = trip.region
-            binding.tvItemTripsContentDate.text = itemView.context.getString(
+            binding.tvItemTripContentName.text = trip.name
+            binding.tvItemTripContentPlace.text = trip.region
+            binding.tvItemTripContentDate.text = itemView.context.getString(
                 R.string.date_range,
                 DateUtil.getDateFromTimestamp(
                     trip.startDate,
@@ -104,13 +104,13 @@ class TripAdapter :
                 )
             )
             if (trip.members.size > 1) {
-                binding.tvItemTripsContentMembers.text = itemView.context.resources.getString(
+                binding.tvItemTripContentMembers.text = itemView.context.resources.getString(
                     R.string.members_count,
                     trip.members.size - 1
                 )
             }
 
-            binding.clItemTripsContentInfo.setOnClickListener {
+            binding.clItemTripContentInfo.setOnClickListener {
                 // TODO(서윤오): 여행 누를 경우 해당 여행 일정으로 이동
             }
         }
@@ -121,28 +121,28 @@ class TripAdapter :
      *
      * @param tripList 새로운 Trip 목록
      */
-    fun updateTrips(tripList: List<Trip>) {
-        val sortedTrips =
+    fun updateTripList(tripList: List<Trip>) {
+        val sortedTrip =
             tripList.sortedWith(compareByDescending<Trip> { trip -> trip.status.ordinal }.thenByDescending { trip -> trip.startDate })
-        val groupedTrips = sortedTrips.groupBy { trip -> trip.status }
+        val groupedTrip = sortedTrip.groupBy { trip -> trip.status }
 
         this.tripList = mutableListOf<Any>().apply {
-            groupedTrips[Trip.TripStatus.ONGOING]?.let { ongoingTrips ->
-                if (ongoingTrips.isNotEmpty()) {
+            groupedTrip[Trip.TripStatus.ONGOING]?.let { ongoingTrip ->
+                if (ongoingTrip.isNotEmpty()) {
                     add("진행 중인 여행")
-                    addAll(ongoingTrips)
+                    addAll(ongoingTrip)
                 }
             }
-            groupedTrips[Trip.TripStatus.PLANNING]?.let { planningTrips ->
-                if (planningTrips.isNotEmpty()) {
+            groupedTrip[Trip.TripStatus.PLANNING]?.let { planningTrip ->
+                if (planningTrip.isNotEmpty()) {
                     add("계획 중인 여행")
-                    addAll(planningTrips)
+                    addAll(planningTrip)
                 }
             }
-            groupedTrips[Trip.TripStatus.FINISHED]?.let { finishedTrips ->
-                if (finishedTrips.isNotEmpty()) {
+            groupedTrip[Trip.TripStatus.FINISHED]?.let { finishedTrip ->
+                if (finishedTrip.isNotEmpty()) {
                     add("지난 여행")
-                    addAll(finishedTrips)
+                    addAll(finishedTrip)
                 }
             }
         }

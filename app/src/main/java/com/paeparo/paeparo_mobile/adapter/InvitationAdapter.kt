@@ -55,7 +55,7 @@ class InvitationAdapter(private val accept: (Trip) -> Unit, private val decline:
      *
      * @param invitationList 새로운 초대 목록
      */
-    fun updateInvitations(invitationList: List<Trip>) {
+    fun updateInvitationList(invitationList: List<Trip>) {
         this.invitationList.clear()
         this.invitationList.addAll(invitationList)
         notifyDataSetChanged()
