@@ -4,17 +4,76 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/tv_item_invitation_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="초대받은 여행 제목" />
+
+    <TextView
+        android:id="@+id/tv_item_invitation_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_item_invitation_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="2023.5.14 ~ 2023.5.16" />
+
+    <ImageView
+        android:id="@+id/iv_item_invitation_place_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/sample_text_item_trip_place_icon_desc"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_place"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_invitation_title" />
+
+    <TextView
+        android:id="@+id/tv_item_invitation_place"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_item_invitation_place_icon"
+        app:layout_constraintStart_toEndOf="@id/iv_item_invitation_place_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_item_invitation_place_icon"
+        tools:text="제주도" />
+
+    <ImageView
+        android:id="@+id/iv_item_invitation_member_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/sample_text_item_trip_place_icon_desc"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_group"
+        app:layout_constraintStart_toEndOf="@id/tv_item_invitation_place"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_invitation_title" />
+
+    <TextView
+        android:id="@+id/tv_item_invitation_member"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_item_invitation_member_icon"
+        app:layout_constraintStart_toEndOf="@id/iv_item_invitation_member_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_item_invitation_member_icon"
+        tools:text="3명" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

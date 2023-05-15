@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.databinding.ItemInvitationBinding
 import com.paeparo.paeparo_mobile.model.Trip
+import com.paeparo.paeparo_mobile.util.DateUtil
 
 /**
  * InvitationAdapter class
@@ -28,14 +30,22 @@ class InvitationAdapter(private val accept: (Trip) -> Unit, private val decline:
         RecyclerView.ViewHolder(binding.root) {
         fun bind(invitation: Trip, accept: (Trip) -> Unit, decline: (Trip) -> Unit) {
             binding.tvItemInvitationTitle.text = invitation.name
-            // TODO(손영진): 초대 거절 처리 구현
-            // decline(invitation)
-
-            // TODO(손영진): 초대 수락 처리 구현
-            binding.tvItemInvitationTitle.setOnClickListener {
-                accept(invitation)
-            }
-            // accept(invitation)
+            binding.tvItemInvitationDate.text = itemView.context.getString(
+                R.string.date_range,
+                DateUtil.getDateFromTimestamp(
+                    invitation.startDate,
+                    DateUtil.yyyyMdFormat
+                ),
+                DateUtil.getDateFromTimestamp(
+                    invitation.endDate,
+                    DateUtil.yyyyMdFormat
+                )
+            )
+            binding.tvItemInvitationPlace.text = invitation.region
+            binding.tvItemInvitationMember.text = itemView.context.getString(
+                R.string.invitation_members_count,
+                invitation.members.size
+            )
         }
     }
 
