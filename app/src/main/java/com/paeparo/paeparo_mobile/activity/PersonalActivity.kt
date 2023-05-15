@@ -34,14 +34,18 @@ class PersonalActivity : AppCompatActivity() {
         binding.tvPersonalTitle3.text =
             String.format(getString(R.string.sample_text_tv_personal_title3), nickname)
 
+        binding.rgPersonalGender.setOnCheckedChangeListener { _, _ ->
+            binding.nextButton.isEnabled = true
+        }
+
         ageCheckBoxes.forEach { checkBox ->
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     ageCheckBoxes.filterNot { it == checkBox }.forEach { it.isChecked = false }
+                    binding.nextButton.isEnabled = true
                 }
             }
         }
-
         val styleCheckboxList = listOf(
             findViewById<CheckBox>(R.id.cb_personal_style_style1),
             findViewById<CheckBox>(R.id.cb_personal_style_style2),
@@ -62,10 +66,13 @@ class PersonalActivity : AppCompatActivity() {
                         val lastCheckedCheckbox = checkedStyleCheckboxList.getOrNull(2)
                         lastCheckedCheckbox?.isChecked = false
                         checkedStyleCheckboxList.remove(lastCheckedCheckbox)
+                        binding.nextButton.isEnabled = true
                     }
                     checkedStyleCheckboxList.add(styleCheckbox)
+                    binding.nextButton.isEnabled = true
                 } else {
                     checkedStyleCheckboxList.remove(styleCheckbox)
+                    binding.nextButton.isEnabled = true
                 }
             }
         }
@@ -86,8 +93,7 @@ class PersonalActivity : AppCompatActivity() {
                     val selectedStyles =
                         checkedStyleCheckboxList.map { getStyleFromCheckBoxId(it.id) }
                     val updateFields = mapOf(
-                        "gender" to gender, "age" to age,
-                        "travel_style" to selectedStyles
+                        "gender" to gender, "age" to age, "travel_style" to selectedStyles
                     )
                     val result =
                         FirebaseManager.updateUserDetailInfo(getPaeParo().userId, updateFields)
@@ -104,10 +110,13 @@ class PersonalActivity : AppCompatActivity() {
                         ).show()
                     }
                 } else if (gender == null) {
+                    binding.nextButton.isEnabled = false
                     Toast.makeText(this@PersonalActivity, "성별을 선택해 주세요", Toast.LENGTH_SHORT).show()
                 } else if (selectedAge == null) {
+                    binding.nextButton.isEnabled = false
                     Toast.makeText(this@PersonalActivity, "연령대를 선택해 주세요", Toast.LENGTH_SHORT).show()
                 } else if (checkedStyleCheckboxList.size < maxCheckboxCount) {
+                    binding.nextButton.isEnabled = false
                     Toast.makeText(this@PersonalActivity, "취향 세 가지를 선택해 주세요", Toast.LENGTH_SHORT)
                         .show()
                 }
