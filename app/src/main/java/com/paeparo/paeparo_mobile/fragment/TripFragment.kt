@@ -1,5 +1,10 @@
 package com.paeparo.paeparo_mobile.fragment
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -198,6 +203,79 @@ class TripFragment : Fragment() {
 
                     ItemTouchHelper.RIGHT -> {
                         tripViewModel.acceptInvitation(trip, requireContext().getPaeParo().userId)
+                    }
+                }
+            }
+
+            override fun onChildDraw(
+                canvas: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                super.onChildDraw(
+                    canvas,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+                val itemView = viewHolder.itemView
+
+                if (dX > 0) { // 우측으로 스와이프할 경우
+                    // 배경색을 파란 계열로 설정
+                    val background = RectF(
+                        itemView.left.toFloat(),
+                        itemView.top.toFloat(),
+                        dX,
+                        itemView.bottom.toFloat()
+                    )
+                    val paint = Paint()
+                    paint.color = Color.parseColor("#87CEFA")
+                    canvas.drawRect(background, paint)
+
+                    // 텍스트 설정 및 실제 차지하는 크기 계산
+                    val text = "수락"
+                    paint.color = Color.WHITE
+                    paint.textSize = 48f
+                    paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                    val textWidth = paint.measureText(text)
+
+                    if (dX > textWidth) { // 텍스트보다 배경 너비가 더 길어질 경우에만 텍스트 표시
+                        val textX = (itemView.left + ((dX - textWidth) / 2))
+                        val textY =
+                            itemView.top + ((itemView.bottom - itemView.top) / 2) + (paint.textSize / 2)
+                        canvas.drawText(text, textX, textY, paint)
+                    }
+                } else if (dX < 0) { // 좌측으로 스와이프할 경우
+                    // 배경색을 파란 계열로 설정
+                    val background = RectF(
+                        itemView.right.toFloat() + dX,
+                        itemView.top.toFloat(),
+                        itemView.right.toFloat(),
+                        itemView.bottom.toFloat()
+                    )
+                    val paint = Paint()
+                    paint.color = Color.parseColor("#D32F2F")
+                    canvas.drawRect(background, paint)
+
+                    // 텍스트 설정 및 실제 차지하는 크기 계산
+                    val text = "거절"
+                    paint.color = Color.WHITE
+                    paint.textSize = 48f
+                    paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                    val textWidth = paint.measureText(text)
+
+                    if (-dX > textWidth) { // 텍스트보다 배경 너비가 더 길어질 경우에만 텍스트 표시
+                        val textX = (itemView.right + dX + ((-dX - textWidth) / 2))
+                        val textY =
+                            itemView.top + ((itemView.bottom - itemView.top) / 2) + (paint.textSize / 2)
+                        canvas.drawText(text, textX, textY, paint)
                     }
                 }
             }
