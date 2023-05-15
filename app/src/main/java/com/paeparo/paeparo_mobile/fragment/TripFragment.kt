@@ -61,13 +61,6 @@ class TripFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // UI 초기화
-        binding.clTripInvitation.visibility = View.INVISIBLE
-        binding.ciTripLoading.visibility = View.VISIBLE
-        binding.layoutTripNotExists.root.visibility =
-            View.INVISIBLE
-        binding.layoutTripExists.root.visibility =
-            View.INVISIBLE
         dialogInvitationListBinding = DialogInvitationListBinding.inflate(layoutInflater)
 
         setupTripViewModel()
@@ -85,6 +78,21 @@ class TripFragment : Fragment() {
     private fun setupTripViewModel() {
         // TripViewModel 초기화
         tripViewModel = ViewModelProvider(this)[TripViewModel::class.java]
+
+        // TripViewModel의 loading 변경사항 확인
+        tripViewModel.loading.observe(viewLifecycleOwner) { loading ->
+            if (loading) {
+                binding.clTripInvitation.visibility = View.INVISIBLE
+                binding.ciTripLoading.visibility = View.VISIBLE
+                binding.layoutTripNotExists.root.visibility =
+                    View.INVISIBLE
+                binding.layoutTripExists.root.visibility =
+                    View.INVISIBLE
+            } else {
+                binding.ciTripLoading.visibility =
+                    View.GONE
+            }
+        }
 
         // TripViewModel의 trips 변경사항 확인
         tripViewModel.tripList.observe(viewLifecycleOwner) { trips ->

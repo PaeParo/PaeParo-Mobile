@@ -14,6 +14,12 @@ import kotlinx.coroutines.launch
  */
 class TripViewModel : ViewModel() {
     /**
+     * Firebase 관련 처리 상태
+     */
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> = _loading
+
+    /**
      * 사용자가 멤버로 포함되어 있는 여행 목록
      */
     private val _tripList = MutableLiveData<List<Trip>>()
@@ -39,6 +45,7 @@ class TripViewModel : ViewModel() {
      */
     fun loadTrips(userId: String) {
         viewModelScope.launch {
+            _loading.value = true
             val userTripsResult = FirebaseManager.getUserTrips(userId)
 
             if (userTripsResult.isSuccess) {
@@ -48,6 +55,7 @@ class TripViewModel : ViewModel() {
             } else {
                 _error.value = userTripsResult.error
             }
+            _loading.value = false
         }
     }
 
@@ -63,7 +71,8 @@ class TripViewModel : ViewModel() {
             if (acceptInvitationResult.isSuccess) {
                 // Make a copy of the list before modifying it
                 val newTripList = _tripList.value?.toMutableList()?.apply { add(trip) }
-                val newInvitationList = _invitationList.value?.toMutableList()?.apply { remove(trip) }
+                val newInvitationList =
+                    _invitationList.value?.toMutableList()?.apply { remove(trip) }
 
                 _tripList.value = newTripList
                 _invitationList.value = newInvitationList
@@ -84,7 +93,8 @@ class TripViewModel : ViewModel() {
             val declineInvitationResult = FirebaseManager.rejectTripInvitation(trip.tripId, userId)
             if (declineInvitationResult.isSuccess) {
                 // Make a copy of the list before modifying it
-                val newInvitationList = _invitationList.value?.toMutableList()?.apply { remove(trip) }
+                val newInvitationList =
+                    _invitationList.value?.toMutableList()?.apply { remove(trip) }
 
                 _invitationList.value = newInvitationList
             } else {
