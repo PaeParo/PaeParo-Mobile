@@ -16,14 +16,14 @@ class TripViewModel : ViewModel() {
     /**
      * 사용자가 멤버로 포함되어 있는 여행 목록
      */
-    private val _trips = MutableLiveData<List<Trip>>()
-    val trips: LiveData<List<Trip>> = _trips
+    private val _tripList = MutableLiveData<List<Trip>>()
+    val tripList: LiveData<List<Trip>> = _tripList
 
     /**
      * 사용자가 초대되어 있는 여행 목록
      */
-    private val _invitations = MutableLiveData<List<Trip>>()
-    val invitations: LiveData<List<Trip>> = _invitations
+    private val _invitationList = MutableLiveData<List<Trip>>()
+    val invitationList: LiveData<List<Trip>> = _invitationList
 
     /**
      * FirebaseManager에서 발생한 에러
@@ -43,8 +43,8 @@ class TripViewModel : ViewModel() {
 
             if (userTripsResult.isSuccess) {
                 val userTrips = userTripsResult.data
-                _trips.value = userTrips?.first ?: emptyList()
-                _invitations.value = userTrips?.second ?: emptyList()
+                _tripList.value = userTrips?.first ?: emptyList()
+                _invitationList.value = userTrips?.second ?: emptyList()
             } else {
                 _error.value = userTripsResult.error
             }
@@ -61,8 +61,8 @@ class TripViewModel : ViewModel() {
         viewModelScope.launch {
             val acceptInvitationResult = FirebaseManager.acceptTripInvitation(trip.tripId, userId)
             if (acceptInvitationResult.isSuccess) {
-                _trips.value = _trips.value?.toMutableList()?.apply { add(trip) }
-                _invitations.value = _invitations.value?.toMutableList()?.apply { remove(trip) }
+                _tripList.value = _tripList.value?.toMutableList()?.apply { add(trip) }
+                _invitationList.value = _invitationList.value?.toMutableList()?.apply { remove(trip) }
             } else {
                 _error.value = acceptInvitationResult.error
             }
@@ -79,7 +79,7 @@ class TripViewModel : ViewModel() {
         viewModelScope.launch {
             val declineInvitationResult = FirebaseManager.rejectTripInvitation(trip.tripId, userId)
             if (declineInvitationResult.isSuccess) {
-                _invitations.value = _invitations.value?.toMutableList()?.apply { remove(trip) }
+                _invitationList.value = _invitationList.value?.toMutableList()?.apply { remove(trip) }
             } else {
                 _error.value = declineInvitationResult.error
             }
@@ -95,7 +95,7 @@ class TripViewModel : ViewModel() {
         viewModelScope.launch {
             val deleteTripResult = FirebaseManager.deleteTrip(trip.tripId)
             if (deleteTripResult.isSuccess) {
-                _trips.value = _trips.value?.toMutableList()?.apply { remove(trip) }
+                _tripList.value = _tripList.value?.toMutableList()?.apply { remove(trip) }
             } else {
                 _error.value = deleteTripResult.error
             }
