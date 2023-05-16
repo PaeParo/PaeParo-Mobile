@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/iv_trip_empty_image"
+        android:id="@+id/iv_trip_not_exists_image"
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:contentDescription="@string/sample_text_no_trip"
@@ -54,7 +54,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sample_text_trips_go_trip"
+            android:text="@string/sample_text_go_trip"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             android:textStyle="bold" />

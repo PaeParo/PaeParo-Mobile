@@ -1,11 +1,13 @@
 package com.paeparo.paeparo_mobile.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -35,6 +37,9 @@ class NickNameActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+        binding.root.setOnClickListener {
+            hideKeyboard()
+        }
 
         binding.btnNicknameNext.setOnClickListener {
             val nickname: String = binding.edtNickname.text.toString().trim()
@@ -66,6 +71,7 @@ class NickNameActivity : AppCompatActivity() {
                                 this@NickNameActivity, "이미 존재하는 닉네임입니다.", Toast.LENGTH_SHORT
                             ).show()
                         }
+
                         else -> {
                             Toast.makeText(
                                 this@NickNameActivity,
@@ -83,4 +89,13 @@ class NickNameActivity : AppCompatActivity() {
         val regex = "^[a-zA-Z가-힣0-9]*$"
         return nickname.matches(regex.toRegex()) && nickname.length in 2..12
     }
+
+    private fun hideKeyboard() {
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(
+            currentFocus?.windowToken,
+            InputMethodManager.HIDE_NOT_ALWAYS
+        )
+    }
+
 }

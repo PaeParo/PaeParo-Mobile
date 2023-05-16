@@ -21,8 +21,8 @@
         app:trackColor="#2A292F" />
 
     <include
-        android:id="@+id/layout_trip_empty"
-        layout="@layout/layout_trip_empty"
+        android:id="@+id/layout_trip_not_exists"
+        layout="@layout/layout_trip_not_exists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,8 +31,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/layout_trip_trips"
-        layout="@layout/layout_trip_trips"
+        android:id="@+id/layout_trip_exists"
+        layout="@layout/layout_trip_exists"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
