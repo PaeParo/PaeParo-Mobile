@@ -9,6 +9,7 @@ import com.paeparo.paeparo_mobile.databinding.ActivityPlanBinding
 import com.paeparo.paeparo_mobile.model.Trip
 import com.paeparo.paeparo_mobile.model.TripPlan
 import timber.log.Timber
+import kotlin.random.Random
 
 /*
     일정 세부정보를 일자별로(Day1,Day2) 보는 Activiy
@@ -23,18 +24,20 @@ class PlanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        bind()
+        bind(getTrip()!!) //TODO(서윤오) NULL 예외처리
         Timber.d(getTrip().toString())
 
         TripPlan(getTrip()!!)
     }
-    private fun bind() {
-        binding.vpPlan.adapter = PlanAdapter(this)
-
+    private fun bind(trip: Trip) {
         with(binding) {
+            tvPlanTitle.text = trip.name
+            tvPlanSubtitle.text = trip.region
+            vpPlan.adapter = PlanAdapter(this@PlanActivity, Random.nextInt(5,10))
+
             TabLayoutMediator(tlPlan, vpPlan) { tab, position ->
-                tab.text = "tab"
-            }
+                tab.text = "DAY $position"
+            }.attach()
         }
     }
 

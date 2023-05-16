@@ -4,22 +4,24 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.paeparo.paeparo_mobile.fragment.MyHomeFragment
-import kotlin.random.Random
+import timber.log.Timber
 
 /*
 PlanActivity의 ViewPager용 어뎁터
  */
-class PlanAdapter(fa : FragmentActivity) : FragmentStateAdapter(fa) {
+class PlanAdapter(fa: FragmentActivity, nextInt: Int) : FragmentStateAdapter(fa) {
 
-
-    override fun getItemCount(): Int = 3
+    var i = 0
+    init {
+        i = nextInt
+    }
+    override fun getItemCount(): Int = i.also{
+        Timber.d("getItemCount : ${it.toString()}")
+    }
 
     override fun createFragment(position: Int): Fragment {
-        return when(position){
-            0 -> MyHomeFragment()
-            1 -> MyHomeFragment()
-            else -> MyHomeFragment()
-
+        return MyHomeFragment().also{
+            Timber.d("createFragment : ${it.hashCode()}")
         }
     }
 }

@@ -35,7 +35,4 @@ data class TripPlan(
         }
 
     }
-
-
-
 }
