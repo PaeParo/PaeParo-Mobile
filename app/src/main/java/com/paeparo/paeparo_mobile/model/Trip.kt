@@ -1,10 +1,13 @@
 package com.paeparo.paeparo_mobile.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Trip(
     @SerializedName("trip_id") var tripId: String = "",
     @SerializedName("name") var name: String = "",
@@ -19,7 +22,7 @@ data class Trip(
     @SerializedName("gender_distribution") var genderDistribution: GenderDistribution = GenderDistribution(),
     @SerializedName("age_distribution") var ageDistribution: AgeDistribution = AgeDistribution(),
     @SerializedName("travel_preferences") var travelPreferences: TravelPreferences = TravelPreferences()
-): Serializable {
+) : Parcelable {
     enum class TripStatus {
         NONE,
         PLANNING,
@@ -37,16 +40,18 @@ data class Trip(
         val serializedOther = FirestoreNamingUtil.toSerializedMap(other)
 
         return serializedThis.filter { (key, value) ->
-           serializedOther[key] != value
+            serializedOther[key] != value
         }
     }
 }
 
+@Parcelize
 data class GenderDistribution(
     @SerializedName("male") var male: Int = 0,
     @SerializedName("female") var female: Int = 0
-)
+) : Parcelable
 
+@Parcelize
 data class AgeDistribution(
     @SerializedName("10s") var _10s: Int = 0,
     @SerializedName("20s") var _20s: Int = 0,
@@ -54,8 +59,9 @@ data class AgeDistribution(
     @SerializedName("40s") var _40s: Int = 0,
     @SerializedName("50s") var _50s: Int = 0,
     @SerializedName("60s") var _60s: Int = 0
-)
+) : Parcelable
 
+@Parcelize
 data class TravelPreferences(
     @SerializedName("activity") var activity: Int = 0,
     @SerializedName("food") var food: Int = 0,
@@ -64,4 +70,4 @@ data class TravelPreferences(
     @SerializedName("sightseeing") var sightseeing: Int = 0,
     @SerializedName("healing") var healing: Int = 0,
     @SerializedName("accommodation") var accommodation: Int = 0,
-)
+) : Parcelable
