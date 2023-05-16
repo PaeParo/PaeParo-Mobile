@@ -27,35 +27,37 @@ class MyHomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentMyHomeBinding.inflate(inflater)
 
-        binding.name.text = requireContext().getPaeParo().nickname
+        with(binding) {
 
-        //설정
-        binding.settings.setOnClickListener {
-            val intent = Intent(activity, MyHomeSettingsActivity::class.java)
-            startActivity(intent)
+            name.text = requireContext().getPaeParo().nickname
+
+            //설정
+            settings.setOnClickListener {
+                val intent = Intent(activity, MyHomeSettingsActivity::class.java)
+                startActivity(intent)
+            }
+
+            //자주듣는질문(FAQ)
+            faq.setOnClickListener {
+                val intent = Intent(activity, MyHomeFaqActivity::class.java)
+                startActivity(intent)
+            }
+
+            //댓글 단 글
+            comment.setOnClickListener {
+                val intent = Intent(activity, MyHomeCommentActivity::class.java)
+                startActivity(intent)
+            }
+
+            //찜한 일정
+            like.setOnClickListener {
+                val intent = Intent(activity, MyHomeLikeActivity::class.java)
+                startActivity(intent)
+            }
         }
-
-        //자주듣는질문(FAQ)
-        binding.faq.setOnClickListener {
-            val intent = Intent(activity, MyHomeFaqActivity::class.java)
-            startActivity(intent)
-        }
-
-        //댓글 단 글
-        binding.comment.setOnClickListener {
-            val intent = Intent(activity, MyHomeCommentActivity::class.java)
-            startActivity(intent)
-        }
-
-        //찜한 일정
-        binding.like.setOnClickListener {
-            val intent = Intent(activity, MyHomeLikeActivity::class.java)
-            startActivity(intent)
-        }
-
         ImageUtil.displayImageFromUrl(
             binding.profileImageView,
             FirebaseManager.getCurrentUserProfileUrl()

@@ -117,8 +117,8 @@ class TripAdapter :
                 val context = it.context;
                 val intent = Intent(context, PlanActivity::class.java)
                 with(Bundle()){
-                    this.putParcelable("trip",trip);
-                    intent.putExtra("tripBundle",this);
+                    this.putParcelable("trip",trip)
+                    intent.putExtra("tripBundle",this)
                 }
                 context.startActivity(intent)
             }

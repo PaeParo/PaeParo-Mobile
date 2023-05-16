@@ -7,6 +7,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.paeparo.paeparo_mobile.adapter.PlanAdapter
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanBinding
 import com.paeparo.paeparo_mobile.model.Trip
+import com.paeparo.paeparo_mobile.model.TripPlan
 import timber.log.Timber
 
 /*
@@ -25,9 +26,8 @@ class PlanActivity : AppCompatActivity() {
         bind()
         Timber.d(getTrip().toString())
 
-
+        TripPlan(getTrip()!!)
     }
-
     private fun bind() {
         binding.vpPlan.adapter = PlanAdapter(this)
 
@@ -39,12 +39,12 @@ class PlanActivity : AppCompatActivity() {
     }
 
     // intent에서 Trip 추출 deprecated되어서 sdk 버전에 따라 처리
-    private fun getTrip(): Trip {
+    private fun getTrip(): Trip? {
         val bundle = intent.getBundleExtra("tripBundle")
         if (bundle == null) {
             // 번들이 없을 경우,
             Timber.e("(getTrip) TripBundle is Null")
-            throw Exception("No Trip Bundle Found")
+            return null
         }
         // Android 13
         val trip = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -58,7 +58,7 @@ class PlanActivity : AppCompatActivity() {
         else {
             bundle.getParcelable<Trip>("trip")
         }
-        return trip!! // 애초에 bundle이있는데 trip이 null 일 수 없음.
+        return trip // 애초에 bundle이있는데 trip이 null 일 수 없음.
     }
 
 }

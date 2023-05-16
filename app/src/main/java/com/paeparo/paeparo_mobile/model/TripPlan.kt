@@ -1,33 +1,41 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.firebase.Timestamp
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
+import com.paeparo.paeparo_mobile.util.DateUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.Date
 
-data class TripPlan (
+data class TripPlan(
     val trip: Trip,
-    ){
+) {
+    lateinit var map: Map<String, List<Event>>
+    var eventList: List<Event>? = null
 
-    fun test(){
-        trip.startDate
+    lateinit var tripStartDate: Timestamp
+    init {
+        tripStartDate = trip.startDate
+        val tripStart = DateUtil.getDateFromTimestamp(trip.startDate, DateUtil.yyyyMdFormat)
+        Timber.d("Trip start : $tripStart")
+        //getting Events
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = FirebaseManager.getTripEvents(trip.tripId)
+            if (!result.isSuccess) {
+                eventList = result.data
+            }
+        }
+        eventList?.forEach { event ->
+            val eventStart = DateUtil.getDateFromTimestamp(event.startTime, DateUtil.yyyyMdFormat)
+            Timber.d("Event Start :${eventStart}")
+        }
+
     }
 
-    // 여행이 몇일인지 계산하는 함수
-    fun getTripDays():Int{
-        val diffMillis = trip.endDate.toDate().time - trip.startDate.toDate().time
-        val diffDays = diffMillis / (1000 * 60 * 60 * 24)+1
-        return diffDays.toInt()
-    }
-
-//    suspend fun groupEventsByDay(): Map<String, List<Event>> {
-//        val list = FirebaseManager.getTripEvents(trip.tripId)
-//        trip.startDate.
-//    }
-
-//    fun getDayOfMonth(date: Date): Int {
-//        val cal = Calendar.getInstance()
-//        cal.time = date
-//        return cal.get(Calendar.DAY_OF_MONTH)
-//    }
 
 
 }
