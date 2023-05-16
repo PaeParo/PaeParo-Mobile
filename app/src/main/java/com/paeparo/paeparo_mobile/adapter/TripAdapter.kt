@@ -1,9 +1,11 @@
 package com.paeparo.paeparo_mobile.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.activity.PlanActivity
 import com.paeparo.paeparo_mobile.databinding.ItemTripContentBinding
 import com.paeparo.paeparo_mobile.databinding.ItemTripHeaderBinding
 import com.paeparo.paeparo_mobile.model.Trip
@@ -111,7 +113,10 @@ class TripAdapter :
             }
 
             binding.clItemTripContentInfo.setOnClickListener {
-                // TODO(서윤오): 여행 누를 경우 해당 여행 일정으로 이동
+                val context = it.context;
+                val intent = Intent(context, PlanActivity::class.java)
+                // intent.putExtra("Trip",trip);
+                context.startActivity(intent)
             }
         }
     }
