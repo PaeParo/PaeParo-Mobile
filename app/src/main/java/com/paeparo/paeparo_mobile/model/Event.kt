@@ -2,16 +2,17 @@ package com.paeparo.paeparo_mobile.model
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
 open class Event(
-    @SerializedName("event_id") var eventId: String = "",
-    @SerializedName("name") var name: String = "",
-    @SerializedName("type") var type: EventType = EventType.NONE,
-    @SerializedName("start_time") var startTime: Timestamp = Timestamp.now(),
-    @SerializedName("end_time") var endTime: Timestamp = Timestamp.now(),
-    @SerializedName("budget") var budget: Int = 0
+    @set:PropertyName("event_id") @get:PropertyName("event_id") @SerializedName("event_id") var eventId: String = "",
+    @set:PropertyName("name") @get:PropertyName("name") @SerializedName("name") var name: String = "",
+    @set:PropertyName("type") @get:PropertyName("type") @SerializedName("type") var type: EventType = EventType.NONE,
+    @set:PropertyName("start_time") @get:PropertyName("start_time") @SerializedName("start_time") var startTime: Timestamp = Timestamp.now(),
+    @set:PropertyName("end_time") @get:PropertyName("end_time") @SerializedName("end_time") var endTime: Timestamp = Timestamp.now(),
+    @set:PropertyName("budget") @get:PropertyName("budget") @SerializedName("budget") var budget: Int = 0
 ) {
     enum class EventType {
         NONE,
@@ -19,6 +20,7 @@ open class Event(
         MOVE,
         MEAL
     }
+
     fun toMapWithoutEventId(): Map<String, Any?> {
         val serializedMap = FirestoreNamingUtil.toSerializedMap(this)
         return serializedMap.filterKeys { it != "event_id" }
@@ -35,17 +37,19 @@ open class Event(
 }
 
 data class PlaceEvent(
-    @SerializedName("place") var place: Place = Place(),
+    @set:PropertyName("place") @get:PropertyName("place") @SerializedName("place") var place: Place = Place(),
 ) : Event()
 
 data class MoveEvent(
-    @SerializedName("mode") var mode: String = "",
-    @SerializedName("origin") var origin: Place = Place(),
-    @SerializedName("destination") var destination: Place = Place()
+    @set:PropertyName("mode") @get:PropertyName("mode") @SerializedName("mode") var mode: String = "",
+    @set:PropertyName("origin") @get:PropertyName("origin") @SerializedName("origin") var origin: Place = Place(),
+    @set:PropertyName("destination") @get:PropertyName("destination") @SerializedName("destination") var destination: Place = Place()
 ) : Event()
 
-
 data class Place(
-    @SerializedName("name") var name: String = "",
-    @SerializedName("location") var location: GeoPoint = GeoPoint(0.0, 0.0),
+    @set:PropertyName("name") @get:PropertyName("name") @SerializedName("name") var name: String = "",
+    @set:PropertyName("location") @get:PropertyName("location") @SerializedName("location") var location: GeoPoint = GeoPoint(
+        0.0,
+        0.0
+    ),
 )

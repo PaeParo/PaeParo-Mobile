@@ -1,20 +1,21 @@
 package com.paeparo.paeparo_mobile.model
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
 data class Post(
-    @SerializedName("post_id") var postId: String = "",
-    @SerializedName("title") var title: String = "",
-    @SerializedName("description") var description: String = "",
-    @SerializedName("user_id") var userId: String = "",
-    @SerializedName("trip_id") var tripId: String = "",
-    @SerializedName("created_at") var createdAt: Timestamp = Timestamp.now(),
-    @SerializedName("likes") var likes: Int = 0,
-    @SerializedName("tags") var tags: List<String> = listOf(),
-    @SerializedName("images") var images: List<String> = listOf(),
-    @SerializedName("author_review") var authorReview: AuthorReview = AuthorReview(),
+    @set:PropertyName("post_id") @get:PropertyName("post_id") @SerializedName("post_id") var postId: String = "",
+    @set:PropertyName("title") @get:PropertyName("title") @SerializedName("title") var title: String = "",
+    @set:PropertyName("description") @get:PropertyName("description") @SerializedName("description") var description: String = "",
+    @set:PropertyName("user_id") @get:PropertyName("user_id") @SerializedName("user_id") var userId: String = "",
+    @set:PropertyName("trip_id") @get:PropertyName("trip_id") @SerializedName("trip_id") var tripId: String = "",
+    @set:PropertyName("created_at") @get:PropertyName("created_at") @SerializedName("created_at") var createdAt: Timestamp = Timestamp.now(),
+    @set:PropertyName("likes") @get:PropertyName("likes") @SerializedName("likes") var likes: Int = 0,
+    @set:PropertyName("tags") @get:PropertyName("tags") @SerializedName("tags") var tags: List<String> = listOf(),
+    @set:PropertyName("images") @get:PropertyName("images") @SerializedName("images") var images: List<String> = listOf(),
+    @set:PropertyName("author_review") @get:PropertyName("author_review") @SerializedName("author_review") var authorReview: AuthorReview = AuthorReview(),
 ) {
     fun toMapWithoutPostId(): Map<String, Any?> {
         val serializedMap = FirestoreNamingUtil.toSerializedMap(this)
@@ -32,15 +33,15 @@ data class Post(
 }
 
 data class AuthorReview(
-    @SerializedName("rating") var rating: Double = 0.0,
-    @SerializedName("rating_detail") var ratingDetail: RatingDetail = RatingDetail()
+    @set:PropertyName("rating") @get:PropertyName("rating") @SerializedName("rating") var rating: Double = 0.0,
+    @set:PropertyName("rating_detail") @get:PropertyName("rating_detail") @SerializedName("rating_detail") var ratingDetail: RatingDetail = RatingDetail()
 )
 
 data class RatingDetail(
-    @SerializedName("food") var food: Double = 0.0,
-    @SerializedName("accommodation") var accommodation: Double = 0.0,
-    @SerializedName("transportation") var transportation: Double = 0.0,
-    @SerializedName("sightseeing") var touristDestination: Double = 0.0,
-    @SerializedName("hygiene") var hygiene: Double = 0.0,
-    @SerializedName("activity") var activity: Double = 0.0
+    @set:PropertyName("food") @get:PropertyName("food") @SerializedName("food") var food: Double = 0.0,
+    @set:PropertyName("accommodation") @get:PropertyName("accommodation") @SerializedName("accommodation") var accommodation: Double = 0.0,
+    @set:PropertyName("transportation") @get:PropertyName("transportation") @SerializedName("transportation") var transportation: Double = 0.0,
+    @set:PropertyName("sightseeing") @get:PropertyName("sightseeing") @SerializedName("sightseeing") var touristDestination: Double = 0.0,
+    @set:PropertyName("hygiene") @get:PropertyName("hygiene") @SerializedName("hygiene") var hygiene: Double = 0.0,
+    @set:PropertyName("activity") @get:PropertyName("activity") @SerializedName("activity") var activity: Double = 0.0
 )

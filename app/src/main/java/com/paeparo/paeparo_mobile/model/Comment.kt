@@ -1,15 +1,16 @@
 package com.paeparo.paeparo_mobile.model
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
 data class Comment(
-    @SerializedName("comment_id") var commentId: String = "",
-    @SerializedName("post_id") var postId: String = "",
-    @SerializedName("nickname") var nickname: String = "",
-    @SerializedName("created_at") var createdAt: Timestamp = Timestamp.now(),
-    @SerializedName("content") var content: String = ""
+    @set:PropertyName("comment_id") @get:PropertyName("comment_id") @SerializedName("comment_id") var commentId: String = "",
+    @set:PropertyName("post_id") @get:PropertyName("post_id") @SerializedName("post_id") var postId: String = "",
+    @set:PropertyName("nickname") @get:PropertyName("nickname") @SerializedName("nickname") var nickname: String = "",
+    @set:PropertyName("created_at") @get:PropertyName("created_at") @SerializedName("created_at") var createdAt: Timestamp = Timestamp.now(),
+    @set:PropertyName("content") @get:PropertyName("content") @SerializedName("content") var content: String = ""
 ) {
     fun toMapWithoutCommentId(): Map<String, Any?> {
         val serializedMap = FirestoreNamingUtil.toSerializedMap(this)
