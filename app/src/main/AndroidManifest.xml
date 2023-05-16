@@ -19,6 +19,9 @@
             android:name=".activity.MyHomeSettingsUserActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.PlanActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.MyHomePlanActivity"
             android:exported="false" />
         <activity

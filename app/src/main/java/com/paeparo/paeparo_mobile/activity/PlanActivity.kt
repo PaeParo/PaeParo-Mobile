@@ -11,6 +11,7 @@ import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanAdapter
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanBinding
 import com.paeparo.paeparo_mobile.model.Trip
+import timber.log.Timber
 import kotlin.math.roundToInt
 /*
     일정 세부정보를 일자별로(Day1,Day2) 보는 Activiy
@@ -24,13 +25,18 @@ class PlanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.vpPlan.adapter = PlanAdapter(this)
-        val trip = getTrip()
+//        val trip = getTrip()
+//        Timber.d(trip.toString())
 
-
+        with(binding){
+            TabLayoutMediator(tlPlan,vpPlan){tab,position->
+                tab.text = "tab"
+        }
+        }
 
     }
 
-    // deprecated되어서 sdk 버전에 따라 처리
+    // intent에서 Trip 추출 deprecated되어서 sdk 버전에 따라 처리
     fun getTrip() : Trip{
         val model : Trip = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("data", Trip::class.java)!!
