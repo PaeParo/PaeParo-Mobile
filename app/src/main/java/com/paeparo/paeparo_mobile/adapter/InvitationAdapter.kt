@@ -13,11 +13,8 @@ import com.paeparo.paeparo_mobile.util.DateUtil
  * InvitationAdapter class
  *
  * TripFragment의 초대 목록을 관리하는 Adapter 클래스
- *
- * @property accept 초대 수락 시 실행되는 함수
- * @property decline 초대 거절 시 실행되는 함수
  */
-class InvitationAdapter(private val accept: (Trip) -> Unit, private val decline: (Trip) -> Unit) :
+class InvitationAdapter :
     ListAdapter<Trip, InvitationAdapter.InvitationViewHolder>(InvitationDiffCallback()) {
 
     /**
@@ -28,7 +25,7 @@ class InvitationAdapter(private val accept: (Trip) -> Unit, private val decline:
      */
     inner class InvitationViewHolder(private val binding: ItemInvitationBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(invitation: Trip, accept: (Trip) -> Unit, decline: (Trip) -> Unit) {
+        fun bind(invitation: Trip) {
             binding.tvItemInvitationTitle.text = invitation.name
             binding.tvItemInvitationDate.text = itemView.context.getString(
                 R.string.date_range,
@@ -75,7 +72,7 @@ class InvitationAdapter(private val accept: (Trip) -> Unit, private val decline:
     }
 
     override fun onBindViewHolder(holder: InvitationViewHolder, position: Int) {
-        holder.bind(getItem(position), accept, decline)
+        holder.bind(getItem(position))
     }
 
     /**

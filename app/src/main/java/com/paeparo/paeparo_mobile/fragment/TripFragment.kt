@@ -163,10 +163,7 @@ class TripFragment : Fragment() {
         binding.layoutTripExists.rvTripExistsTripList.adapter = tripAdapter
 
         // InvitationAdapter 초기화
-        invitationAdapter = InvitationAdapter(
-            { trip -> tripViewModel.acceptInvitation(trip, requireContext().getPaeParo().userId) },
-            { trip -> tripViewModel.declineInvitation(trip, requireContext().getPaeParo().userId) }
-        )
+        invitationAdapter = InvitationAdapter()
         dialogInvitationListBinding.rvInvitationList.layoutManager = LinearLayoutManager(context)
         dialogInvitationListBinding.rvInvitationList.adapter = invitationAdapter
 
