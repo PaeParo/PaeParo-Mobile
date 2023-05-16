@@ -1,6 +1,7 @@
 package com.paeparo.paeparo_mobile.adapter
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -115,7 +116,10 @@ class TripAdapter :
             binding.clItemTripContentInfo.setOnClickListener {
                 val context = it.context;
                 val intent = Intent(context, PlanActivity::class.java)
-                // intent.putExtra("Trip",trip);
+                with(Bundle()){
+                    this.putParcelable("trip",trip);
+                    intent.putExtra("tripBundle",this);
+                }
                 context.startActivity(intent)
             }
         }
