@@ -3,44 +3,29 @@ package com.paeparo.paeparo_mobile.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.paeparo.paeparo_mobile.TestMyHomeComment
 import com.paeparo.paeparo_mobile.databinding.ItemMyhomeCommentBinding
+import com.paeparo.paeparo_mobile.model.Comment
 import timber.log.Timber
 
-class MyHomeCommentAdapter(var datas:MutableList<TestMyHomeComment>):RecyclerView.Adapter<MyHomeCommentAdapter.MyHomeCommentViewHolder>() {
+class MyHomeCommentAdapter(private var writeCommentList:MutableList<Comment>):RecyclerView.Adapter<MyHomeCommentAdapter.MyHomeCommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHomeCommentViewHolder {
         val binding = ItemMyhomeCommentBinding.inflate(LayoutInflater.from(parent.context),parent,false,)
-        return MyHomeCommentViewHolder(binding).also { holder->
-            with(binding){
-                commentView.setOnClickListener {
-                    Timber.d("commentView Click")
-                    /*
-                    val intent = Intent(it.context, activity)
-
-                    해당 아이템 클릭시 액티비티를 하나 생성
-                    intent.putExtra()
-
-                    startActivity(it.context, intent, null)
-                    */
-                }
-            }
-        }
+        return MyHomeCommentViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MyHomeCommentViewHolder, position: Int) {
-        holder.bind(datas[position])
+        holder.bind(writeCommentList[position])
     }
 
-    override fun getItemCount(): Int {
-        return datas.size
-    }
+    override fun getItemCount(): Int = writeCommentList.size
+
 
     class MyHomeCommentViewHolder(private  val binding: ItemMyhomeCommentBinding):RecyclerView.ViewHolder(binding.root) {
-        fun bind(position: TestMyHomeComment){
+        fun bind(comment: Comment){
             with(binding){
-                commentTitle.text=position.commentTitle
-                comment.text=position.comment
+                commentTitle.text = comment.nickname
+                this.comment.text=comment.content
             }
         }
     }

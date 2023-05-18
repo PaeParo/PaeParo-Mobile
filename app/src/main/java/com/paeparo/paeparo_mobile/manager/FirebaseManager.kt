@@ -528,7 +528,7 @@ object FirebaseManager {
      * @param userId 사용자 ID
      * @return Success Data: Post Object List / Failure Type: CLIENT_ERROR & Error Object
      */
-    suspend fun getUserLikedPosts(userId: String): FirebaseResult<List<Post>> {
+    suspend fun getUserLikedPosts(userId: String): FirebaseResult<MutableList<Post>> {
         return withContext(Dispatchers.IO) {
             try {
                 val userRef = firestoreUsersRef.document(userId).get().await()
@@ -571,10 +571,10 @@ object FirebaseManager {
      * @param userId 사용자 ID
      * @return Success Data: Comment Object List / Failure Type: CLIENT_ERROR & Error Object
      */
-    suspend fun getUserComments(userId: String): FirebaseResult<List<Comment>> {
+    suspend fun getUserComments(userId: String): FirebaseResult<MutableList<Comment>> {
         return withContext(Dispatchers.IO) {
             try {
-                val commentsRef = firestoreCommentsRef.whereEqualTo("userId", userId).get().await()
+                val commentsRef = firestoreCommentsRef.whereEqualTo("user_id", userId).get().await()
 
                 val comments = mutableListOf<Comment>()
                 for (commentRef in commentsRef) {

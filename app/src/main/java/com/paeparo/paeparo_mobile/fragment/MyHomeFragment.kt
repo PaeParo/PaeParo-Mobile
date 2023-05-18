@@ -14,15 +14,11 @@ import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.FragmentMyHomeBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.util.ImageUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 
 
 class MyHomeFragment : Fragment() {
     private var _binding: FragmentMyHomeBinding? = null
     private val binding get() = _binding!!
-    private val networkScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +63,6 @@ class MyHomeFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        networkScope.cancel()
         _binding = null
         super.onDestroy()
     }
