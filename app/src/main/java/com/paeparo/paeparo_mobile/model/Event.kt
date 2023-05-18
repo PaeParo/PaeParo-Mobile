@@ -34,6 +34,11 @@ open class Event(
             serializedOther[key] != value
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        val otherEvent = other as Event
+        return this.eventId == other.eventId
+    }
 }
 
 data class PlaceEvent(

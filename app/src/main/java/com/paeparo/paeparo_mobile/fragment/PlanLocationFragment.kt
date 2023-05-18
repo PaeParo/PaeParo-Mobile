@@ -9,6 +9,11 @@ import com.paeparo.paeparo_mobile.R
 
 class PlanLocationFragment : Fragment() {
 
+    /*
+        TODO(석민재)
+        1. XML 작성
+        2. 위도 경도 
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
