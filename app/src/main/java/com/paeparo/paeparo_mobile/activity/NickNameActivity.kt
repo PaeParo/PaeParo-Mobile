@@ -30,6 +30,22 @@ class NickNameActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 // 입력한 글자를 tv_nickname_name_left TextView에 표시
                 binding.tvNicknameNameLeft.text = s.toString()
+
+                val nickname: String = s.toString()
+
+                if (isNicknameValid(nickname)) {
+                    binding.cbNicknameWarning1.isChecked = false
+                } else {
+                    binding.cbNicknameWarning1.isChecked = true
+                }
+
+                if (isNicknameLengthValid(nickname)) {
+                    binding.cbNicknameWarning2.isChecked = false
+                } else {
+                    binding.cbNicknameWarning2.isChecked = true
+                }
+
+
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -42,13 +58,15 @@ class NickNameActivity : AppCompatActivity() {
         }
 
         binding.btnNicknameNext.setOnClickListener {
-            val nickname: String = binding.edtNickname.text.toString().trim()
+            val nickname: String = binding.edtNickname.text.toString()
 
             if (TextUtils.isEmpty(nickname)) {
                 binding.edtNickname.error = "닉네임을 입력하세요."
                 return@setOnClickListener
             } else if (!isNicknameValid(nickname)) {
-                binding.edtNickname.error = "닉네임은 특수문자와 공백을 제외한 2~12자 이내로 입력해주세요."
+//                binding.edtNickname.error = "닉네임은 특수문자와 공백을 제외한 2~12자 이내로 입력해주세요."
+                return@setOnClickListener
+            } else if (containsWhiteSpace(nickname)) {
                 return@setOnClickListener
             }
 
@@ -87,7 +105,15 @@ class NickNameActivity : AppCompatActivity() {
 
     private fun isNicknameValid(nickname: String): Boolean {
         val regex = "^[a-zA-Z가-힣0-9]*$"
-        return nickname.matches(regex.toRegex()) && nickname.length in 2..12
+        return nickname.matches(regex.toRegex())
+    }
+
+    private fun isNicknameLengthValid(nickname: String): Boolean {
+        return nickname.length in 2..12
+    }
+
+    private fun containsWhiteSpace(nickname: String): Boolean {
+        return nickname.contains(" ")
     }
 
     private fun hideKeyboard() {
