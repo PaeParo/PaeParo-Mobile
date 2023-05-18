@@ -1,16 +1,31 @@
 package com.paeparo.paeparo_mobile.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.TestMyHomeComment
+import com.paeparo.paeparo_mobile.databinding.ItemMyhomeCommentBinding
+import timber.log.Timber
 
-class MyHomeCommentAdapter(var datas:MutableList<String>):RecyclerView.Adapter<MyHomeCommentAdapter.MyHomeCommentViewHolder>() {
+class MyHomeCommentAdapter(var datas:MutableList<TestMyHomeComment>):RecyclerView.Adapter<MyHomeCommentAdapter.MyHomeCommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHomeCommentViewHolder {
-        return MyHomeCommentViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_myhome_comment,parent,false))
+        val binding = ItemMyhomeCommentBinding.inflate(LayoutInflater.from(parent.context),parent,false,)
+        return MyHomeCommentViewHolder(binding).also { holder->
+            with(binding){
+                commentView.setOnClickListener {
+                    Timber.d("commentView Click")
+                    /*
+                    val intent = Intent(it.context, activity)
+
+                    해당 아이템 클릭시 액티비티를 하나 생성
+                    intent.putExtra()
+
+                    startActivity(it.context, intent, null)
+                    */
+                }
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: MyHomeCommentViewHolder, position: Int) {
@@ -21,10 +36,12 @@ class MyHomeCommentAdapter(var datas:MutableList<String>):RecyclerView.Adapter<M
         return datas.size
     }
 
-    class MyHomeCommentViewHolder(view:View):RecyclerView.ViewHolder(view) {
-        val title:TextView = view.findViewById(R.id.title_name)
-        fun bind(position: String){
-            title.text=position
+    class MyHomeCommentViewHolder(private  val binding: ItemMyhomeCommentBinding):RecyclerView.ViewHolder(binding.root) {
+        fun bind(position: TestMyHomeComment){
+            with(binding){
+                commentTitle.text=position.commentTitle
+                comment.text=position.comment
+            }
         }
     }
 }
