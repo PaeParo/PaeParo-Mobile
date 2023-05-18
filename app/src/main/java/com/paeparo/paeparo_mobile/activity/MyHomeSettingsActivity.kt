@@ -3,6 +3,7 @@ package com.paeparo.paeparo_mobile.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import com.paeparo.paeparo_mobile.constant.SharedPreferencesKey
 import com.paeparo.paeparo_mobile.databinding.ActivityMyHomeSettingsBinding
@@ -19,6 +20,8 @@ class MyHomeSettingsActivity : AppCompatActivity() {
         binding = ActivityMyHomeSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loadData()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 상단 액션바
 
         //초기 세팅 추후에 코드 바꿀 예정
         if(binding.alram.isChecked==true){
@@ -51,6 +54,16 @@ class MyHomeSettingsActivity : AppCompatActivity() {
     //ShardPreferencesKey 로드
     private fun loadData(){
         binding.alram.isChecked=SharedPreferencesManager.get(SharedPreferencesKey.KEY_SETTINGS_ALARM,true) ?: true
+    }
 
+    //상단 바 제어
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed() // 뒤로가기 동작 수행
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
