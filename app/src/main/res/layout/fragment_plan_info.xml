@@ -6,7 +6,8 @@
     tools:context=".fragment.PlanInfoFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        tools:listitem="@layout/item_trip_event"
+        android:id="@+id/rv_list"
+        tools:listitem="@layout/item_plan_event"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>
