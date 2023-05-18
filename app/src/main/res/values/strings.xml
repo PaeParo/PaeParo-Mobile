@@ -8,7 +8,9 @@
     <string name="sample_text_tv_nickname_name_right"> 님,</string>
     <string name="sample_text_nickname_title">PaeParo와 떠날 준비가 되셨나요?</string>
     <string name="sample_text_edt_nickname">닉네임 입력</string>
-    <string name="sample_text_nickname_warning">• 닉네임에는 특수문자와 공백을 포함할 수 없습니다\n• 닉네임 길이는 최소 2자리, 최대 12자리까지 가능합니다\n• 설정한 닉네임은 추후 변경이 불가능합니다</string>
+    <string name="sample_text_nickname_warning1">닉네임에는 특수문자와 공백을 포함할 수 없습니다</string>
+    <string name="sample_text_nickname_warning2">닉네임 길이는 최소 2자리, 최대 12자리까지 가능합니다</string>
+    <string name="sample_text_nickname_warning3">설정한 닉네임은 추후 변경이 불가능합니다</string>
     <string name="sample_text_btn_nickname_next">다음</string>
 
     <string name="sample_text_tv_home_nickname">___님,</string>
