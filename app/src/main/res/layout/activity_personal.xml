@@ -5,52 +5,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.PersonalActivity">
-<!--test-->
+
     <TextView
         android:id="@+id/tv_personal_title1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginStart="20dp"
         android:text="@string/sample_text_tv_personal_title1"
         android:textColor="#FFFFFF"
-        android:textSize="38sp"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_marginStart="30dp"
 
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.09" />
 
     <TextView
         android:id="@+id/tv_personal_title2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="20dp"
         android:text="@string/sample_text_tv_personal_title2"
         android:textColor="#FFFFFF"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
 
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_personal_title1" />
 
     <TextView
         android:id="@+id/tv_personal_title3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingEnd="60dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="35dp"
         android:text="@string/sample_text_tv_personal_title3"
         android:textColor="#999999"
         android:textSize="15sp"
         android:textStyle="bold"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_personal_title2" />
 
 
@@ -58,50 +64,59 @@
         android:id="@+id/tv_personal_gender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="20dp"
         android:text="@string/sample_text_tv_personal_gender"
         android:textColor="#FFFFFF"
         android:textSize="23sp"
         android:textStyle="bold"
 
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
-        app:layout_constraintTop_toBottomOf="@id/tv_personal_title3" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_personal_title3"
+        app:layout_constraintVertical_bias="0.05" />
 
     <RadioGroup
         android:id="@+id/rg_personal_gender"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:orientation="horizontal"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_personal_gender">
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_gender"
+        app:layout_constraintVertical_bias="0.01">
 
         <RadioButton
             android:id="@+id/btn_personal_gender_male"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="70dp"
-            android:paddingEnd="70dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
             android:text="@string/gender_male"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
         <RadioButton
             android:id="@+id/btn_personal_gender_female"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="70dp"
-            android:paddingEnd="70dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
             android:text="@string/gender_female"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -112,38 +127,46 @@
         android:id="@+id/tv_personal_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="20dp"
         android:text="@string/sample_text_tv_personal_age"
         android:textColor="#FFFFFF"
         android:textSize="23sp"
         android:textStyle="bold"
 
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
-        app:layout_constraintTop_toBottomOf="@+id/rg_personal_gender" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rg_personal_gender"
+        app:layout_constraintVertical_bias="0.03" />
 
     <LinearLayout
         android:id="@+id/ll_personal_age1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:orientation="horizontal"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_personal_age">
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_age"
+        app:layout_constraintVertical_bias="0.01">
 
         <CheckBox
             android:id="@+id/cb_personal_age_teens"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="@string/age_teens"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -153,10 +176,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="@string/age_twenty"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -165,10 +189,11 @@
             android:id="@+id/cb_personal_age_thirty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="@string/age_thirty"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -176,23 +201,28 @@
 
     <LinearLayout
         android:id="@+id/ll_personal_age2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:orientation="horizontal"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_personal_age1">
+        app:layout_constraintTop_toBottomOf="@id/ll_personal_age1"
+        app:layout_constraintVertical_bias="0.02">
 
         <CheckBox
             android:id="@+id/cb_personal_age_forty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="@string/age_forty"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -201,10 +231,11 @@
             android:id="@+id/cb_personal_age_fifty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="@string/age_fifty"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -215,56 +246,66 @@
         android:id="@+id/tv_personal_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="20dp"
         android:text="@string/sample_text_tv_personal_style"
         android:textColor="#FFFFFF"
         android:textSize="23sp"
         android:textStyle="bold"
 
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
-        app:layout_constraintTop_toBottomOf="@id/ll_personal_age2" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_personal_age2"
+        app:layout_constraintVertical_bias="0.03" />
 
     <TextView
         android:id="@+id/tv_personal_style_explain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="35dp"
         android:text="@string/sample_text_tv_personal_style_explain"
         android:textColor="#999999"
         android:textSize="15sp"
         android:textStyle="bold"
-
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/tv_personal_title2"
-        app:layout_constraintTop_toBottomOf="@id/tv_personal_style" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_style"
+        app:layout_constraintVertical_bias="0" />
 
 
     <LinearLayout
         android:id="@+id/ll_personal_style1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_personal_style_explain">
-
+        app:layout_constraintTop_toBottomOf="@id/tv_personal_style_explain"
+        app:layout_constraintVertical_bias="0.02">
 
         <CheckBox
             android:id="@+id/cb_personal_style_style1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+
             android:text="@string/style_style1"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -274,10 +315,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+
             android:text="@string/style_style2"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -287,10 +328,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+
             android:text="@string/style_style3"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -299,10 +340,10 @@
             android:id="@+id/cb_personal_style_style4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+
             android:text="@string/style_style4"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -310,50 +351,50 @@
 
     <LinearLayout
         android:id="@+id/ll_personal_style2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:orientation="horizontal"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_personal_style1">
+        app:layout_constraintTop_toBottomOf="@id/ll_personal_style1"
+        app:layout_constraintVertical_bias="0.03">
 
         <CheckBox
             android:id="@+id/cb_personal_style_style5"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
             android:text="@string/style_style5"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
         <CheckBox
             android:id="@+id/cb_personal_style_style6"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
             android:text="@string/style_style6"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
 
         <CheckBox
             android:id="@+id/cb_personal_style_style7"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/bg_btn_personal"
             android:button="@null"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
             android:text="@string/style_style7"
             android:textAlignment="center"
             android:textColor="@drawable/tc_btn_personal" />
@@ -364,7 +405,6 @@
         android:id="@+id/nextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:backgroundTint="#DD4C4C"
@@ -376,8 +416,8 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.9" />
+        app:layout_constraintTop_toBottomOf="@id/ll_personal_style2"
+        app:layout_constraintVertical_bias="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
