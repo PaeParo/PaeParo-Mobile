@@ -2,13 +2,17 @@ package com.paeparo.paeparo_mobile.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.TestMyHomeData
 import com.paeparo.paeparo_mobile.adapter.MyHomeLikeAdapter
-import com.paeparo.paeparo_mobile.adapter.SwipeToDeleteCallback
+import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.ActivityMyHomeLikeBinding
+import com.paeparo.paeparo_mobile.manager.FirebaseManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MyHomeLikeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMyHomeLikeBinding
@@ -29,22 +33,28 @@ class MyHomeLikeActivity : AppCompatActivity() {
             adapter = likeAdapter
         }
 
-        //임시 데이터
-        datas.apply {
-            add(TestMyHomeData(1))
-            add(TestMyHomeData(2))
-            add(TestMyHomeData(3))
-        }
-
-        //아이템 삭제
-        val swipeToDeleteCallBack = object : SwipeToDeleteCallback(){
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                datas.removeAt(position)
-                binding.myhomeLikeRecyclerview.adapter?.notifyItemRemoved(position)
+        //좋아요한 일정 가져오기
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = FirebaseManager.getUser(getPaeParo().userId)
+            val userId = if(result.isSuccess){
+                result.data?.userId
+            } else {
+                Timber.e("null userId")
+            }
+            val result_like = FirebaseManager.getUserLikedPosts(userId as String)
+            val like = if(result_like.isSuccess){
+                Timber.d("like is "+result_like.data)
+            }else{
+                Timber.e("null like")
             }
         }
-        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallBack)
-        itemTouchHelper.attachToRecyclerView(binding.myhomeLikeRecyclerview)
+
+        //임시 데이터
+        datas.apply {
+
+            add(TestMyHomeData(R.drawable.ic_menu_trip_filled,"친구들이랑 함께 다녀옴","23-05-15"))
+            add(TestMyHomeData(R.drawable.ic_menu_trip_filled,"시원한 저녁 떠나는 여행","23-05-16"))
+        }
+
     }
 }

@@ -1,32 +1,35 @@
 package com.paeparo.paeparo_mobile.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.TestMyHomeData
+import com.paeparo.paeparo_mobile.databinding.ItemMyhomeLikeBinding
+import timber.log.Timber
 
-class MyHomeLikeAdapter(var datas: MutableList<TestMyHomeData>):RecyclerView.Adapter<MyHomeLikeAdapter.MyHomeLikeViewHoloder>() {
-
+class MyHomeLikeAdapter(private var planList:MutableList<TestMyHomeData>):RecyclerView.Adapter<MyHomeLikeAdapter.MyHomeLikeViewHoloder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHomeLikeViewHoloder {
-        return MyHomeLikeViewHoloder(LayoutInflater.from(parent.context).inflate(R.layout.item_myhome_like,parent,false))
+        val binding = ItemMyhomeLikeBinding.inflate(LayoutInflater.from(parent.context),parent,false,)
+        Timber.d("onCreateViewHolder ")
+        return MyHomeLikeViewHoloder(binding).also {holder ->
+
+        }
     }
 
-    override fun getItemCount(): Int = datas.size
+    override fun getItemCount(): Int = planList.size
 
     override fun onBindViewHolder(holder: MyHomeLikeViewHoloder, position: Int) {
-        holder.bind(datas[position])
+        Timber.d("test onBindViewHolder")
+        holder.bind(planList[position])
     }
 
-    class MyHomeLikeViewHoloder(view: View):RecyclerView.ViewHolder(view) {
-        val button:TextView =view.findViewById(R.id.button)
-        fun bind(position: TestMyHomeData){
-            button.text= position.num.toString()
-            button.setOnClickListener(){
-                button.text="클릭했다!"
+    class MyHomeLikeViewHoloder(private  val binding: ItemMyhomeLikeBinding):RecyclerView.ViewHolder(binding.root) {
+        fun bind(post: TestMyHomeData){
+            with(binding){
+                likePlanImage.setImageResource(post.image)
+                title.text = post.title
+                date.text= post.date
             }
         }
     }

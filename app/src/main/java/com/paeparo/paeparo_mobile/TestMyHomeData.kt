@@ -1,5 +1,7 @@
 package com.paeparo.paeparo_mobile
 
 class TestMyHomeData (
-    val num : Int
+    val image : Int,
+    val title : String,
+    val date : String,
         )
