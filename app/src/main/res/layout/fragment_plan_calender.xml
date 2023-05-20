@@ -10,7 +10,7 @@
         android:id="@+id/plan_date_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/cv_plan"
+        app:layout_constraintBottom_toTopOf="@+id/cv_plan_Generate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,30 +21,25 @@
         android:id="@+id/cv_plan_Generate"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:calendarBackgroundColor="@color/brand_color"
+        app:connectedDayIconPosition="bottom"
+        app:currentDayTextColor="@color/app_personal_red"
+        app:dayTextColor="@color/white"
+        app:firstDayOfTheWeek="sunday"
         app:layout_constraintBottom_toTopOf="@+id/btn_cal_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/plan_date_header"
-        app:calendarBackgroundColor="@color/brand_color"
-
-        app:currentDayIconRes="@drawable/ic_weather_sun"
-        app:connectedDayIconPosition="bottom"
-
-        app:currentDayTextColor="@color/app_personal_red"
-        app:firstDayOfTheWeek="sunday"
         app:orientation="horizontal"
         app:selectedDayBackgroundColor="@color/app_personal_red"
         app:selectedDayBackgroundEndColor="@color/app_personal_red"
-        app:selectedDayBackgroundStartColor="@color/app_personal_red"
 
-        app:dayTextColor="@color/white"
+        app:selectedDayBackgroundStartColor="@color/app_personal_red"
         app:selectedDayTextColor="@color/white"
+        app:selectionType="range"
+
 
         app:weekDayTitleTextColor="@color/white"
-
-
-
-        app:selectionType="range"
         app:weekendDayTextColor="#ef4550" />
 
     <androidx.appcompat.widget.AppCompatButton
