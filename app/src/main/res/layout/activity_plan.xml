@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".activity.PlanActivity">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_plan_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/app_personal_red"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_plan"
         android:layout_width="match_parent"

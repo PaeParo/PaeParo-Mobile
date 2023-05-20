@@ -10,41 +10,33 @@ import androidx.viewpager2.widget.ViewPager2
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanGenerateAdapter
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanGenerateBinding
+import timber.log.Timber
 
 class PlanGenerateActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityPlanGenerateBinding
-    lateinit var viewPager : ViewPager2
+    lateinit var binding: ActivityPlanGenerateBinding
+    private lateinit var viewPager : ViewPager2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlanGenerateBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        bind()
 
-        viewPager = binding.vpPlanGenerate
+    }
 
-        viewPager.apply {
-            adapter = PlanGenerateAdapter(context as FragmentActivity)
-            isUserInputEnabled = false
+    private fun bind() {
+        with(binding) {
+            viewPager = vpPlanGenerate
+            viewPager.adapter = PlanGenerateAdapter(this@PlanGenerateActivity)
+            viewPager.isUserInputEnabled = false // 슬라이드 금지를 통한 페이지 전환 방지.
         }
-
     }
 
     override fun onBackPressed() {
-        val num = viewPager.currentItem
-        Toast.makeText(applicationContext,"$num",Toast.LENGTH_SHORT).show()
-        viewPager.currentItem-=1
-        if(num==0) finish()
-        }
-    fun testDataPrint(tag : String) : String{
-      return intent.getStringExtra(tag)!!
+        if(viewPager.currentItem==0) finish()
+        viewPager.currentItem--
     }
-    fun settestData(tag : String, obj: String){
-        if(intent==null) intent = Intent()
-        intent.putExtra(tag,obj)
-    }
-//    fun nextPage(currentpage : Int){
-//        viewPager.setCurrentItem(++currentpage, true)
-//    }
-
 }
+
+
 
 

@@ -12,8 +12,9 @@ import java.util.Collections
 
 class PlanInfoAdapter :
     ListAdapter<Event, RecyclerView.ViewHolder>(PlanInfoDiffCallback()) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val viewHolder = MyViewHolder(
+        val viewHolder = PlanInfoViewHolder(
             ItemPlanEventBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -21,11 +22,12 @@ class PlanInfoAdapter :
             )
         )
 
+
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is MyViewHolder) {
+        if (holder is PlanInfoViewHolder) {
             val event = getItem(position) as Event
             holder.bind(event)
         }
@@ -43,7 +45,7 @@ class PlanInfoAdapter :
         submitList(newList)
     }
 
-    inner class MyViewHolder(private val binding: ItemPlanEventBinding) :
+    inner class PlanInfoViewHolder(private val binding: ItemPlanEventBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(data: Event) {

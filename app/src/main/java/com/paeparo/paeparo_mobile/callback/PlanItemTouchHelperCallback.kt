@@ -33,7 +33,7 @@ class PlanItemTouchHelperCallback(private val recyclerView: RecyclerView) :
         super.onSelectedChanged(viewHolder, actionState)
         when (actionState) {
             ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.ACTION_STATE_SWIPE -> {
-                (viewHolder as PlanInfoAdapter.MyViewHolder).setAlpha(0.5f)
+                (viewHolder as PlanInfoAdapter.PlanInfoViewHolder).setAlpha(0.5f)
             }
         }
     }
@@ -42,7 +42,7 @@ class PlanItemTouchHelperCallback(private val recyclerView: RecyclerView) :
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
 
-        (viewHolder as PlanInfoAdapter.MyViewHolder).setAlpha(1.0f)
+        (viewHolder as PlanInfoAdapter.PlanInfoViewHolder).setAlpha(1.0f)
     }
 }
 class PlanInfoDiffCallback : DiffUtil.ItemCallback<Event>() {

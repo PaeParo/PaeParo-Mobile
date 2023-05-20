@@ -18,7 +18,7 @@
         app:title="여행 스타일" />
 
     <com.applikeysolutions.cosmocalendar.view.CalendarView
-        android:id="@+id/cv_plan"
+        android:id="@+id/cv_plan_Generate"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_cal_next"
@@ -39,7 +39,7 @@
 
         app:dayTextColor="@color/white"
         app:selectedDayTextColor="@color/white"
-        app:monthTextColor="@color/white"
+
         app:weekDayTitleTextColor="@color/white"
 
 

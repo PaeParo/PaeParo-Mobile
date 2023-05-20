@@ -26,25 +26,18 @@ class PlanCompanionFragment : Fragment() {
     private var job: Job? = null
     private val invited_users = emptyList<User>()
 
-    companion object {
-        const val TAG = "PlanCompanionFragment" //로그용
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPlanCompanionBinding.inflate(inflater, container, false)
-        Log.d(TAG,"OnCreate :"+Thread.currentThread().name)
         val searchView = binding.svPlanCompanion
 
-        val t = activity as? PlanGenerateActivity
-        Log.d("PlanCompanionFragment","dates :"+t?.testDataPrint("dates"))
-
-        Log.d("Intent","Get Intent dates :"+activity?.intent?.getStringExtra("dates"))
+        val t = activity as PlanGenerateActivity
 
         binding.btnCompanionNext.setOnClickListener{
-            nextPage()
+            t.binding.vpPlanGenerate.currentItem++
         }
 
         searchView.apply {
@@ -86,13 +79,10 @@ class PlanCompanionFragment : Fragment() {
            if(result.isSuccess){
                withContext(Dispatchers.Main) {
                    binding.rvPlanCompanion.adapter = SearchViewAdapter(result.data as List<User>)
-                   Log.d(TAG,"Main :"+Thread.currentThread().name)
                }
                result.data
            } else {
-               Log.e(TAG,result.error.toString())
            }
-            Log.d(TAG,"IO :"+Thread.currentThread().name)
         }
     }
 
@@ -101,19 +91,16 @@ class PlanCompanionFragment : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
             val binding =
                 ItemAddCompanionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            Log.d(TAG, "onCreateView()")
             return SearchViewHolder(
                 binding
             ).also { holder ->
                 binding.btnAddCompanion.setOnClickListener {
-                    Log.d(TAG, "친구초대됨 \t " + users[holder.adapterPosition].nickname.toString())
                 }
             }
 
         }
 
         override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-            Log.d(TAG, "onBindingView() : $users[position].nickname.toString()")
             holder.bind(users[position])
         }
 
@@ -127,11 +114,6 @@ class PlanCompanionFragment : Fragment() {
             binding.tvAddCompanion.text = user.nickname.toString() + "\nthumbnail :"+ user.thumbnail.toString()
         }
     }
-    private fun nextPage(){
-        val vp = activity?.findViewById<ViewPager2>(R.id.vp_plan_generate)
-        vp?.setCurrentItem(2, true)
-    }
-
 }
 
 
