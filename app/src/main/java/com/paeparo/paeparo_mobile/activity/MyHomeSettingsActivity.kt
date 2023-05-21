@@ -22,6 +22,7 @@ class MyHomeSettingsActivity : AppCompatActivity() {
         loadData()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true) // 상단 액션바
+        supportActionBar?.setTitle("설정")
 
         //초기 세팅 추후에 코드 바꿀 예정
         if(binding.alram.isChecked==true){

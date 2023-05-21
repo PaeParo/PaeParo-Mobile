@@ -18,6 +18,7 @@ class MyHomeSettingsUserActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true) // 상단 액션바
+        supportActionBar?.setTitle("회원")
 
         val builder = AlertDialog.Builder(this) //다이어로그 창
 

@@ -23,6 +23,7 @@ class MyHomeCommentActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true) // 상단 액션바
+        supportActionBar?.setTitle("작성 댓글")
 
         verticalManager = LinearLayoutManager(this@MyHomeCommentActivity)
         verticalManager.orientation = LinearLayoutManager.VERTICAL

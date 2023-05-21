@@ -23,6 +23,7 @@ class MyHomeLikeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true) // 상단 액션바
+        supportActionBar?.setTitle("찜한 일정")
 
         verticalManager = LinearLayoutManager(this@MyHomeLikeActivity)
         verticalManager.orientation =LinearLayoutManager.VERTICAL
