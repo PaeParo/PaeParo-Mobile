@@ -13,7 +13,7 @@ import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanCalenderBinding
 import java.util.Date
 
-class PlanDateFragment : Fragment() {
+class PlanCalenderFragment : Fragment() {
     private var _binding: FragmentPlanCalenderBinding? = null
     private val binding get() = _binding!!
     private var dates: MutableList<Date> = mutableListOf()
@@ -40,9 +40,6 @@ class PlanDateFragment : Fragment() {
                     Snackbar.make(it, "여행 날짜를 선택해주세요", Snackbar.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-
-                dates.add(1, cvPlanGenerate.selectedDates.last().time)
-
                 // 다음페이지로 이동
                 activity.binding.vpPlanGenerate.currentItem++
 
