@@ -81,4 +81,5 @@
     <string name="tab_menu_myinfo">내 정보</string>
     <string name="tab_menu_invitation">초대</string>
     <string name="btn_invite_companion">초대하기</string>
+    <string name="companion_total">%s</string>
 </resources>

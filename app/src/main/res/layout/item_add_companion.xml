@@ -10,10 +10,10 @@
     android:gravity="center"
     android:orientation="horizontal">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
         android:id="@+id/iv_add_companion"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
         tools:src="@drawable/ic_menu_mypage_filled"
         app:layout_constraintBottom_toBottomOf="parent"

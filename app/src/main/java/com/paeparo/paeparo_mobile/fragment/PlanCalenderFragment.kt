@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +41,10 @@ class PlanCalenderFragment : Fragment() {
                     Snackbar.make(it, "여행 날짜를 선택해주세요", Snackbar.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
+                if(cvPlanGenerate.selectedDays.size==1){
+                    Snackbar.make(it, "하루 이상 날짜로 선택해주세요", Snackbar.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 // 다음페이지로 이동
                 activity.binding.vpPlanGenerate.currentItem++
 
@@ -51,7 +56,8 @@ class PlanCalenderFragment : Fragment() {
             //Cosmo CalenderView
             with(cvPlanGenerate) {
                 isShowDaysOfWeekTitle = false
-
+                monthTextColor = Color.WHITE
+                weekendDayTextColor = Color.RED
                 selectionManager = RangeSelectionManager(OnDaySelectedListener {
                     val dayStart = this.selectedDates.first().time
 

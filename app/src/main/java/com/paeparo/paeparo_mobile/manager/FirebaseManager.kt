@@ -423,7 +423,7 @@ object FirebaseManager {
                         .await()
 
                 val tripsInvitationRef =
-                    firestoreTripsRef.whereArrayContains("invitations", userId).get().await()
+                    firestoreTripsRef.whereArrayContains("invitedUserList", userId).get().await()
 
                 val tripsInMember = mutableListOf<Trip>()
                 for (tripRef in tripsMemberRef) {
@@ -606,7 +606,7 @@ object FirebaseManager {
                         .limit(5).get().await()
 
                 userListRef.documents.forEach {
-                    userList.add(PaeParoUser(it.id, it.getString("nickname")!!))
+                    userList.add(PaeParoUser(it.id, it.getString("nickname")!!,it.getString("thumbnail")!!))
                 }
 
                 FirebaseResult.success(data = userList)
