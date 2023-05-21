@@ -13,6 +13,7 @@ data class Post(
     @set:PropertyName("trip_id") @get:PropertyName("trip_id") @SerializedName("trip_id") var tripId: String = "",
     @set:PropertyName("created_at") @get:PropertyName("created_at") @SerializedName("created_at") var createdAt: Timestamp = Timestamp.now(),
     @set:PropertyName("likes") @get:PropertyName("likes") @SerializedName("likes") var likes: Int = 0,
+    @set:PropertyName("comments") @get:PropertyName("comments") @SerializedName("comments") var comments: Int = 0,
     @set:PropertyName("tags") @get:PropertyName("tags") @SerializedName("tags") var tags: List<String> = listOf(),
     @set:PropertyName("images") @get:PropertyName("images") @SerializedName("images") var images: List<String> = listOf(),
     @set:PropertyName("author_review") @get:PropertyName("author_review") @SerializedName("author_review") var authorReview: AuthorReview = AuthorReview(),
