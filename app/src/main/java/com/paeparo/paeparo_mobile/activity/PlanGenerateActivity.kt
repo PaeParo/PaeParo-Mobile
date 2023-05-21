@@ -10,17 +10,20 @@ import androidx.viewpager2.widget.ViewPager2
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanGenerateAdapter
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanGenerateBinding
+import com.paeparo.paeparo_mobile.model.Trip
 import timber.log.Timber
 
 class PlanGenerateActivity : AppCompatActivity() {
     lateinit var binding: ActivityPlanGenerateBinding
     private lateinit var viewPager : ViewPager2
+    lateinit var trip : Trip
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlanGenerateBinding.inflate(layoutInflater)
         setContentView(binding.root)
         bind()
-
+        trip = Trip()
     }
 
     private fun bind() {
