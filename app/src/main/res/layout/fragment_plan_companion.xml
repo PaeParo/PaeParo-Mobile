@@ -20,7 +20,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_companion_next"
         android:layout_width="0dp"
-        android:layout_height="47dp"
+        android:layout_height="wrap_content"
         android:text="@string/btn_next"
         android:fontFamily="@font/noto_sans"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -33,11 +33,15 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.SearchView
+        android:layout_marginTop="8dp"
+        android:layout_margin="8dp"
         android:id="@+id/sv_plan_companion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:outlineAmbientShadowColor="#FFFFFF"
-        android:outlineSpotShadowColor="#FFFFFF"
+        app:searchIcon="@drawable/ic_search"
+
+        app:closeIcon="@drawable/ic_close"
+        android:background="@drawable/bg_round_border_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/customHeader">
@@ -45,14 +49,16 @@
     </androidx.appcompat.widget.SearchView>
 
     <androidx.recyclerview.widget.RecyclerView
-        tools:itemCount="3"
         android:id="@+id/rv_plan_companion"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/btn_fragmentname"
+        tools:listitem="@layout/item_add_companion"
+        app:layout_constraintBottom_toTopOf="@+id/btn_companion_next"
         app:layout_constraintEnd_toEndOf="parent"
+        app:queryHint="함께할 동행자의 아이디를 입력해주세요."
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sv_plan_companion" />
+        app:layout_constraintTop_toBottomOf="@+id/sv_plan_companion"
+        tools:itemCount="3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
