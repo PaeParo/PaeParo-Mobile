@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.paeparo.paeparo_mobile.fragment.PlanCompanionFragment
 import com.paeparo.paeparo_mobile.fragment.PlanCalenderFragment
+import com.paeparo.paeparo_mobile.fragment.PlanDetailsFragment
 import com.paeparo.paeparo_mobile.fragment.PlanLocationFragment
 
 class PlanGenerateAdapter(fa : FragmentActivity) : FragmentStateAdapter(fa){
@@ -15,7 +16,8 @@ class PlanGenerateAdapter(fa : FragmentActivity) : FragmentStateAdapter(fa){
         return when (position) {
             0 -> { PlanCalenderFragment() }
             1 -> { PlanCompanionFragment() }
-            else -> { PlanLocationFragment() }
+            2 -> { PlanLocationFragment() }
+            else -> PlanDetailsFragment()
 
         }
     }

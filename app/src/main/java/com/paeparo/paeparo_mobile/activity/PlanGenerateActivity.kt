@@ -9,14 +9,21 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanGenerateAdapter
+import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanGenerateBinding
+import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.Trip
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PlanGenerateActivity : AppCompatActivity() {
     lateinit var binding: ActivityPlanGenerateBinding
     private lateinit var viewPager : ViewPager2
     lateinit var trip : Trip
+    var job : Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +44,19 @@ class PlanGenerateActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if(viewPager.currentItem==0) finish()
         viewPager.currentItem--
+    }
+
+    fun createTrip(){
+        if(job != null) return
+        val currentUserId = applicationContext.getPaeParo().userId
+        Timber.d("Creating Trip")
+        job = CoroutineScope(Dispatchers.IO).launch {
+            val reuslt = FirebaseManager.createTrip(trip,currentUserId)
+
+            if(reuslt.isSuccess){
+                Timber.d("Trip created id: ${reuslt.data}")
+            }
+}
     }
 }
 
