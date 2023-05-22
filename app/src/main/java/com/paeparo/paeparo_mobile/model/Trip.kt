@@ -17,7 +17,7 @@ data class Trip(
     @set:PropertyName("end_date") @get:PropertyName("end_date") @SerializedName("end_date") var endDate: Timestamp = Timestamp.now(),
     @set:PropertyName("budget") @get:PropertyName("budget") @SerializedName("budget") var budget: Int = 0,
     @set:PropertyName("members") @get:PropertyName("members") @SerializedName("members") var members: List<String> = listOf(),
-    @set:PropertyName("invitedUserList") @get:PropertyName("invitedUserList") @SerializedName("invitedUserList") var invitedUserList: List<String> = listOf(),
+    @set:PropertyName("invitations") @get:PropertyName("invitations") @SerializedName("invitations") var invitations: List<String> = listOf(),
     @set:PropertyName("travel_styles") @get:PropertyName("travel_styles") @SerializedName("travel_styles") var travelStyles: Map<String, List<String>> = mutableMapOf(),
     @set:PropertyName("gender_distribution") @get:PropertyName("gender_distribution") @SerializedName(
         "gender_distribution"

@@ -135,16 +135,16 @@ class TripFragment : Fragment() {
             }
         }
 
-        // TripViewModel의 invitedUserList 변경사항 확인
-        tripViewModel.invitationList.observe(viewLifecycleOwner) { invitedUserList ->
-            if (invitedUserList.isEmpty()) { // 초대받은 여행이 없을 경우
+        // TripViewModel의 invitations 변경사항 확인
+        tripViewModel.invitationList.observe(viewLifecycleOwner) { invitations ->
+            if (invitations.isEmpty()) { // 초대받은 여행이 없을 경우
                 invitationListDialog.hide()
                 binding.clTripInvitation.visibility = View.GONE
             } else { // 초대받은 여행이 있을 경우
                 binding.clTripInvitation.visibility = View.VISIBLE
-                binding.tvTripInvitationCount.text = invitedUserList.size.toString()
+                binding.tvTripInvitationCount.text = invitations.size.toString()
             }
-            invitationAdapter.updateInvitationList(invitedUserList)
+            invitationAdapter.updateInvitationList(invitations)
         }
 
         tripViewModel.error.observe(viewLifecycleOwner) { error ->

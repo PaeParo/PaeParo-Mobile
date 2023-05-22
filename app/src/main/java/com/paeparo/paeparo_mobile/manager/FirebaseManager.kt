@@ -423,7 +423,7 @@ object FirebaseManager {
                         .await()
 
                 val tripsInvitationRef =
-                    firestoreTripsRef.whereArrayContains("invitedUserList", userId).get().await()
+                    firestoreTripsRef.whereArrayContains("invitations", userId).get().await()
 
                 val tripsInMember = mutableListOf<Trip>()
                 for (tripRef in tripsMemberRef) {

@@ -104,7 +104,7 @@ class PlanCompanionFragment : Fragment() {
             for (user in invitedUserList) {
                 memberList.add(user.userId)
             }
-            activity.trip.invitedUserList = memberList
+            activity.trip.invitations = memberList
             activity.trip.members = listOf(requireContext().getPaeParo().userId)
             activity.binding.vpPlanGenerate.currentItem++
         }.setNegativeButton("취소") { _, _ ->
