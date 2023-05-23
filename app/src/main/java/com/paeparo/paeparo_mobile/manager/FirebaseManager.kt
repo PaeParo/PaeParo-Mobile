@@ -1104,7 +1104,7 @@ object FirebaseManager {
      * @param comment 추가할 댓글 객체
      * @return Success Data: Comment ID / Failure Type: CLIENT_ERROR & Error Object
      */
-    suspend fun addComment(comment: Comment): FirebaseResult<String> {
+    suspend fun createComment(comment: Comment): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val commentRef = firestoreCommentsRef.document()
