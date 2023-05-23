@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.databinding.ActivityMainBinding
+import com.paeparo.paeparo_mobile.fragment.CommunityFragment
 import com.paeparo.paeparo_mobile.fragment.MyHomeFragment
 import com.paeparo.paeparo_mobile.fragment.TripFragment
 
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
                 val ft = supportFragmentManager.beginTransaction()
                 when (item.itemId) {
                     R.id.community_fragment -> {
-//                        ft.replace(R.id.frameLayout, MyHomeFragment()).commit()
+                        ft.replace(R.id.frameLayout, CommunityFragment()).commit()
                     }
 
                     R.id.trip_fragment -> {
