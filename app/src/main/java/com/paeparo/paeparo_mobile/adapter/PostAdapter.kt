@@ -28,7 +28,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(post: Post) {
-            binding.tvItemPostRegion.text = post.postId
+            binding.tvItemPostRegion.text = post.region
             if (post.images.isNotEmpty()) { // 게시물에 연결된 이미지가 있을 경우
                 // 게시물의 대표 이미지(첫 번째 이미지)를 표시
                 ImageUtil.displayImageFromUrl(binding.ivItemPostMainImage, post.images.first())
