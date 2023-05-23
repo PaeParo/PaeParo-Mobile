@@ -10,11 +10,13 @@
 
     <TextView
         android:id="@+id/tv_item_trip_content_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="제주도 맛집 탐방" />
 
@@ -52,12 +54,16 @@
 
         <TextView
             android:id="@+id/tv_item_trip_content_place"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="32dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_item_trip_content_place"
+            app:layout_constraintEnd_toStartOf="@id/tv_item_trip_content_date"
             app:layout_constraintStart_toEndOf="@id/iv_item_trip_content_place"
             app:layout_constraintTop_toTopOf="@id/iv_item_trip_content_place"
             tools:text="제주도" />
