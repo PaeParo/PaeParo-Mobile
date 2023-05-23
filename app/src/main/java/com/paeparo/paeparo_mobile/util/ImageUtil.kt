@@ -4,6 +4,8 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
 
 /**
  * 이미지 처리 관련 기능들을 제공하는 유틸리티 클래스
@@ -30,6 +32,17 @@ object ImageUtil {
             Glide.with(imageView.context)
                 .load(url)
                 .apply(requestOptions)
+                .placeholder(ShimmerDrawable().apply {
+                    setShimmer(
+                        Shimmer.AlphaHighlightBuilder()
+                            .setDuration(500)
+                            .setBaseAlpha(0.7f)
+                            .setHighlightAlpha(0.6f)
+                            .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
+                            .setAutoStart(true)
+                            .build()
+                    )
+                })
                 .into(imageView)
         }
     }
