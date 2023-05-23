@@ -773,29 +773,32 @@ object FirebaseManager {
      * @param userId 이벤트를 추가한 사용자 ID
      * @param tripId 이벤트를 추가할 여행 ID
      * @param event 추가할 이벤트 객체
-     * @return Success Data: Event ID / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     * @return Success Data: Event ID / Failure Type: CLIENT_ERROR & Error Object
      */
-    suspend fun addEventToTrip(
+    suspend fun createEvent(
         userId: String,
         tripId: String,
         event: Event
     ): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
-                val result = functions.getHttpsCallable("addEventToTrip")
-                    .call(
-                        hashMapOf(
-                            "trip_id" to tripId,
-                            "event" to event.toMapWithoutEventId(),
-                            "user_id" to userId
-                        )
-                    ).await().data as Map<*, *>
+                val eventRef =
+                    firestoreEventsRef.document(tripId).collection("trip_events").document()
 
-                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS) {
-                    FirebaseResult.success(data = result["event_id"] as String)
-                } else {
-                    FirebaseResult.make(result)
+                firestore.runBatch { batch ->
+                    batch.set(eventRef, event)
+                    batch.set(
+                        firestoreTripUpdateRef.document(tripId),
+                        TripUpdateInfo(
+                            userId,
+                            eventRef.path,
+                            TripUpdate.UpdateType.ADD,
+                            Timestamp.now()
+                        )
+                    )
                 }
+
+                FirebaseResult.success(data = eventRef.id)
             } catch (e: Exception) {
                 FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
