@@ -3,6 +3,7 @@ package com.paeparo.paeparo_mobile.manager
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +29,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.util.UUID
 import com.paeparo.paeparo_mobile.model.User as PaeParoUser
 
 
@@ -117,6 +120,10 @@ object FirebaseManager {
      */
     private val firestoreCommentsRef = firestore.collection("comments")
 
+    /**
+     * Storage의 images에 대한 참조
+     */
+    private val storageImageRef = storage.reference.child("images")
 
     /**
      * TripUpdates에 대한 변경사항을 수신하는 Listener
@@ -914,12 +921,26 @@ object FirebaseManager {
      * 특정 게시물을 추가하는 함수
      *
      * @param post 추가할 게시물
+     * @param localImagePaths 추가할 이미지 파일들의 로컬 경로 목록
      * @return Success Data: Post ID / Failure Type: CLIENT_ERROR & Error Object
      */
-    suspend fun createPost(post: Post): FirebaseResult<String> {
+    suspend fun createPost(post: Post, localImagePaths: List<String>?): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val postRef = firestorePostsRef.document()
+
+                if (localImagePaths != null) {
+                    for (path in localImagePaths) {
+                        val imageRef =
+                            storageImageRef.child(
+                                "${post.userId}/${post.postId}/${
+                                    UUID.randomUUID()
+                                }"
+                            )
+                        imageRef.putFile(Uri.fromFile(File(path))).await()
+                        post.images.add(imageRef.downloadUrl.await().toString())
+                    }
+                }
 
                 postRef.set(post).await()
 
