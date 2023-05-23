@@ -11,6 +11,7 @@ import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 data class Post(
     @get:Exclude @SerializedName("post_id") var postId: String = "",
     @set:PropertyName("title") @get:PropertyName("title") @SerializedName("title") var title: String = "",
+    @set:PropertyName("region") @get:PropertyName("region") @SerializedName("region") var region: String = "",
     @set:PropertyName("description") @get:PropertyName("description") @SerializedName("description") var description: String = "",
     @set:PropertyName("user_id") @get:PropertyName("user_id") @SerializedName("user_id") var userId: String = "",
     @set:PropertyName("trip_id") @get:PropertyName("trip_id") @SerializedName("trip_id") var tripId: String = "",
