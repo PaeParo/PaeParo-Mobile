@@ -14,6 +14,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.*
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
@@ -954,21 +955,24 @@ object FirebaseManager {
     /**
      * 게시글 목록을 불러오는 함수
      *
-     * @param startPostId 시작 게시물 ID (null일 경우 가장 최신 게시물이 시작)
+     * @param startPostSnapshot 시작 게시물 Snapshot (null일 경우 가장 최신 게시물이 시작)
      * @param limit 불러올 게시물 수
      * @return Success Data: Post List / Failure Type: CLIENT_ERROR & Error Object
      */
-    suspend fun getPostsInRange(startPostId: String?, limit: Int): FirebaseResult<List<Post>> {
+    suspend fun getPostsInRange(
+        startPostSnapshot: DocumentSnapshot?,
+        limit: Long
+    ): FirebaseResult<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             try {
                 val postList = mutableListOf<Post>()
 
-                val postListRef = if (startPostId == null) {
+                val postListRef = if (startPostSnapshot == null) {
                     firestorePostsRef.orderBy("created_at", Query.Direction.DESCENDING)
-                        .limit(limit.toLong()).get().await()
+                        .limit(limit).get().await()
                 } else {
                     firestorePostsRef.orderBy("created_at", Query.Direction.DESCENDING)
-                        .startAfter(startPostId).limit(limit.toLong()).get().await()
+                        .startAfter(startPostSnapshot).limit(limit).get().await()
                 }
 
                 postListRef.documents.forEach {
@@ -977,7 +981,12 @@ object FirebaseManager {
                     postList.add(post)
                 }
 
-                FirebaseResult.success(data = postList)
+                FirebaseResult.success(
+                    data = mapOf(
+                        "posts" to postList,
+                        "last_post_snapshot" to postListRef.last()
+                    )
+                )
             } catch (e: Exception) {
                 FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
