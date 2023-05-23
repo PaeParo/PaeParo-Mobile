@@ -131,9 +131,7 @@ class TripAdapter :
      * @param tripList 새로운 Trip 목록
      */
     fun updateTripList(tripList: List<Trip>) {
-        val sortedTrip =
-            tripList.sortedWith(compareByDescending<Trip> { trip -> trip.status.ordinal }.thenByDescending { trip -> trip.startDate })
-        val groupedTrip = sortedTrip.groupBy { trip -> trip.status }
+        val groupedTrip = tripList.groupBy { trip -> trip.status }
 
         this.tripList = mutableListOf<Any>().apply {
             groupedTrip[Trip.TripStatus.ONGOING]?.let { ongoingTrip ->
@@ -145,13 +143,13 @@ class TripAdapter :
             groupedTrip[Trip.TripStatus.PLANNING]?.let { planningTrip ->
                 if (planningTrip.isNotEmpty()) {
                     add("계획 중인 여행")
-                    addAll(planningTrip)
+                    addAll(planningTrip.sortedBy { it.startDate })
                 }
             }
             groupedTrip[Trip.TripStatus.FINISHED]?.let { finishedTrip ->
                 if (finishedTrip.isNotEmpty()) {
                     add("지난 여행")
-                    addAll(finishedTrip)
+                    addAll(finishedTrip.sortedByDescending { it.startDate })
                 }
             }
         }
