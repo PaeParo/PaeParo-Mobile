@@ -934,7 +934,7 @@ object FirebaseManager {
                     for (path in localImagePaths) {
                         val imageRef =
                             storageImageRef.child(
-                                "${post.userId}/${post.postId}/${
+                                "images/${post.userId}/${post.postId}/${
                                     UUID.randomUUID()
                                 }"
                             )
