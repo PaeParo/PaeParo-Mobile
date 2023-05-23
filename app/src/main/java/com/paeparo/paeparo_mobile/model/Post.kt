@@ -1,12 +1,15 @@
 package com.paeparo.paeparo_mobile.model
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Exclude
+import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
+@IgnoreExtraProperties
 data class Post(
-    @set:PropertyName("post_id") @get:PropertyName("post_id") @SerializedName("post_id") var postId: String = "",
+    @get:Exclude @SerializedName("post_id") var postId: String = "",
     @set:PropertyName("title") @get:PropertyName("title") @SerializedName("title") var title: String = "",
     @set:PropertyName("description") @get:PropertyName("description") @SerializedName("description") var description: String = "",
     @set:PropertyName("user_id") @get:PropertyName("user_id") @SerializedName("user_id") var userId: String = "",

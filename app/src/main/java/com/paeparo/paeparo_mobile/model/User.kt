@@ -1,11 +1,14 @@
 package com.paeparo.paeparo_mobile.model
 
+import com.google.firebase.firestore.Exclude
+import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
+@IgnoreExtraProperties
 data class User(
-    @set:PropertyName("user_id") @get:PropertyName("user_id") @SerializedName("user_id") var userId: String = "",
+    @get:Exclude @SerializedName("user_id") var userId: String = "",
     @set:PropertyName("nickname") @get:PropertyName("nickname") @SerializedName("nickname") var nickname: String = "",
     @set:PropertyName("thumbnail") @get:PropertyName("thumbnail") @SerializedName("thumbnail") var thumbnail: String = "",
     @set:PropertyName("age") @get:PropertyName("age") @SerializedName("age") var age: Int = 0,

@@ -1,13 +1,16 @@
 package com.paeparo.paeparo_mobile.model
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 
+@IgnoreExtraProperties
 open class Event(
-    @set:PropertyName("event_id") @get:PropertyName("event_id") @SerializedName("event_id") var eventId: String = "",
+    @get:Exclude @SerializedName("event_id") var eventId: String = "",
     @set:PropertyName("name") @get:PropertyName("name") @SerializedName("name") var name: String = "",
     @set:PropertyName("type") @get:PropertyName("type") @SerializedName("type") var type: EventType = EventType.NONE,
     @set:PropertyName("start_time") @get:PropertyName("start_time") @SerializedName("start_time") var startTime: Timestamp = Timestamp.now(),

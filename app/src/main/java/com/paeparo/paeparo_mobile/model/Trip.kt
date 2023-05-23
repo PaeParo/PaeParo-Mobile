@@ -2,14 +2,17 @@ package com.paeparo.paeparo_mobile.model
 
 import android.os.Parcelable
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Exclude
+import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
 import kotlinx.parcelize.Parcelize
 
+@IgnoreExtraProperties
 @Parcelize
 data class Trip(
-    @set:PropertyName("trip_id") @get:PropertyName("trip_id") @SerializedName("trip_id") var tripId: String = "",
+    @get:Exclude @SerializedName("trip_id") var tripId: String = "",
     @set:PropertyName("name") @get:PropertyName("name") @SerializedName("name") var name: String = "",
     @set:PropertyName("region") @get:PropertyName("region") @SerializedName("region") var region: String = "",
     @set:PropertyName("status") @get:PropertyName("status") @SerializedName("status") var status: TripStatus = TripStatus.NONE,
