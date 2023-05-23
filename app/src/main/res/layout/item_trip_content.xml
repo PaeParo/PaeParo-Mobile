@@ -20,67 +20,76 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="제주도 맛집 탐방" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_item_trip_content_info"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="96dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="8dp">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_item_trip_content_thumbnail"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:foreground="#22000000"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/RoundView4dp"
-            tools:src="@drawable/sample_image_1" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_item_trip_content_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/iv_item_trip_content_place"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:contentDescription="@string/sample_text_item_trip_place_icon_desc"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_place"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/iv_item_trip_content_thumbnail"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:foreground="#22000000"
+                android:contentDescription="@string/sample_text_item_trip_place_icon_desc"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/sample_image_1" />
 
-        <TextView
-            android:id="@+id/tv_item_trip_content_place"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="32dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_item_trip_content_place"
-            app:layout_constraintEnd_toStartOf="@id/tv_item_trip_content_date"
-            app:layout_constraintStart_toEndOf="@id/iv_item_trip_content_place"
-            app:layout_constraintTop_toTopOf="@id/iv_item_trip_content_place"
-            tools:text="제주도" />
+            <ImageView
+                android:id="@+id/iv_item_trip_content_place"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/sample_text_item_trip_place_icon_desc"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_place"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_item_trip_content_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_item_trip_content_place"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/iv_item_trip_content_place"
-            tools:text="2023.02.23 ~ 2023.02.27" />
+            <TextView
+                android:id="@+id/tv_item_trip_content_place"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="32dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_item_trip_content_place"
+                app:layout_constraintEnd_toStartOf="@id/tv_item_trip_content_date"
+                app:layout_constraintStart_toEndOf="@id/iv_item_trip_content_place"
+                app:layout_constraintTop_toTopOf="@id/iv_item_trip_content_place"
+                tools:text="제주도" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tv_item_trip_content_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_item_trip_content_place"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/iv_item_trip_content_place"
+                tools:text="2023.02.23 ~ 2023.02.27" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/tv_item_trip_content_members"
