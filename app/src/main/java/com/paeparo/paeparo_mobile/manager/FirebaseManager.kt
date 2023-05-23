@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -606,7 +607,13 @@ object FirebaseManager {
                         .limit(5).get().await()
 
                 userListRef.documents.forEach {
-                    userList.add(PaeParoUser(it.id, it.getString("nickname")!!,it.getString("thumbnail")!!))
+                    userList.add(
+                        PaeParoUser(
+                            it.id,
+                            it.getString("nickname")!!,
+                            it.getString("thumbnail")!!
+                        )
+                    )
                 }
 
                 FirebaseResult.success(data = userList)
@@ -621,24 +628,22 @@ object FirebaseManager {
      *
      * @param trip 생성할 여행 객체
      * @param userId 여행을 생성한 사용자 ID
-     * @return Success Data: Trip ID / Failure Type: SERVER_ERROR, CLIENT_ERROR & Error Object
+     * @return Success Data: Trip ID / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun createTrip(trip: Trip, userId: String): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
-                val result = functions.getHttpsCallable("createTrip")
-                    .call(
-                        hashMapOf(
-                            "trip" to trip.toMapWithoutTripId(),
-                            "user_id" to userId
-                        )
-                    ).await().data as Map<*, *>
+                val tripRef = firestoreTripsRef.document()
 
-                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS) {
-                    FirebaseResult.success(data = result["trip_id"] as String)
-                } else {
-                    FirebaseResult.make(result)
-                }
+                firestore.runBatch { batch ->
+                    batch.set(tripRef, trip)
+                    batch.set(
+                        firestoreTripUpdateRef.document(tripRef.id),
+                        TripUpdateInfo(userId, "", TripUpdate.UpdateType.CREATE, Timestamp.now())
+                    )
+                }.await()
+
+                FirebaseResult.success(data = tripRef.id)
             } catch (e: Exception) {
                 FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
@@ -906,23 +911,16 @@ object FirebaseManager {
      * 특정 게시물을 추가하는 함수
      *
      * @param post 추가할 게시물
-     * @return Success Data: Post ID / Failure Type: TRIP_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     * @return Success Data: Post ID / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun createPost(post: Post): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
-                val result = functions.getHttpsCallable("createPost")
-                    .call(
-                        hashMapOf(
-                            "post" to post.toMapWithoutPostId()
-                        )
-                    ).await().data as Map<*, *>
+                val postRef = firestorePostsRef.document()
 
-                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS) {
-                    FirebaseResult.success(data = result["post_id"] as String)
-                } else {
-                    FirebaseResult.make(result)
-                }
+                postRef.set(post).await()
+
+                FirebaseResult.success(data = postRef.id)
             } catch (e: Exception) {
                 FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
@@ -1101,23 +1099,16 @@ object FirebaseManager {
      * 특정 게시물에 댓글을 추가하는 함수
      *
      * @param comment 추가할 댓글 객체
-     * @return Success Data: Comment ID / Failure Type: POST_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
+     * @return Success Data: Comment ID / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun addComment(comment: Comment): FirebaseResult<String> {
         return withContext(Dispatchers.IO) {
             try {
-                val result = functions.getHttpsCallable("addComment")
-                    .call(
-                        hashMapOf(
-                            "comment" to comment.toMapWithoutCommentId()
-                        )
-                    ).await().data as Map<*, *>
+                val commentRef = firestoreCommentsRef.document()
 
-                if (result["result"] == FirebaseConstants.ResponseCodes.SUCCESS) {
-                    FirebaseResult.success(data = result["comment_id"] as String)
-                } else {
-                    FirebaseResult.make(result)
-                }
+                commentRef.set(comment.toMapWithoutCommentId()).await()
+
+                FirebaseResult.success(data = commentRef.id)
             } catch (e: Exception) {
                 FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
