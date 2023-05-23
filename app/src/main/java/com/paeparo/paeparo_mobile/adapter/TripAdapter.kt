@@ -113,12 +113,12 @@ class TripAdapter :
                 )
             }
 
-            binding.clItemTripContentInfo.setOnClickListener {
-                val context = it.context;
+            binding.cvItemTripContentInfo.setOnClickListener {
+                val context = it.context
                 val intent = Intent(context, PlanActivity::class.java)
-                with(Bundle()){
-                    this.putParcelable("trip",trip)
-                    intent.putExtra("tripBundle",this)
+                with(Bundle()) {
+                    this.putParcelable("trip", trip)
+                    intent.putExtra("tripBundle", this)
                 }
                 context.startActivity(intent)
             }

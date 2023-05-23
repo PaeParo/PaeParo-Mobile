@@ -21,16 +21,16 @@
         tools:text="제주도 맛집 탐방" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cv_item_trip_content_info"
         android:layout_width="match_parent"
         android:layout_height="96dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
-        android:foreground="?attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_item_trip_content_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -38,8 +38,8 @@
                 android:id="@+id/iv_item_trip_content_thumbnail"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:foreground="#22000000"
                 android:contentDescription="@string/sample_text_item_trip_place_icon_desc"
+                android:foreground="#22000000"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
