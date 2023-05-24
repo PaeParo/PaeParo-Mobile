@@ -84,8 +84,7 @@ class PlanActivity : AppCompatActivity() {
 
         // map 초기화 (날짜별 List생성)
         repeat(EndDate.calPeriod(startDate)) {
-            val dayEvents: MutableList<Event> = mutableListOf()
-            map[startDate.plusDays(it.toLong())] = dayEvents
+            map[startDate.plusDays(it.toLong())] = mutableListOf()
         }
 
         //getting Events
@@ -96,14 +95,9 @@ class PlanActivity : AppCompatActivity() {
             }
         }
 
-        //groping tripEvents
-        tripEvents.forEach {
-            val eventStartDate = it.startTime.toLocalDate()
-            if(!map.containsKey(eventStartDate)){
-                map[eventStartDate] = map[eventStartDate]!!.apply{
-                    this.add(it)
-                }
-            }
+        tripEvents.forEach { event ->
+            val eventStartDate = event.startTime.toLocalDate()
+            map.computeIfAbsent(eventStartDate) { mutableListOf() }.add(event)
         }
 
         return map
