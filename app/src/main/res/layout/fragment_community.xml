@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragment.CommunityFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_community_search_area"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="64dp">
+        android:layout_height="56dp"
+        android:layout_margin="12dp"
+        app:cardBackgroundColor="#404040"
+        app:cardCornerRadius="16dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/sv_community_region"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:queryBackground="@null"
+            app:iconifiedByDefault="false"
+            app:queryHint="지역 검색..."
+            app:searchIcon="@android:drawable/ic_menu_search" />
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_community_post_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="12dp"
-        android:paddingTop="16dp"
         android:paddingEnd="12dp" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
