@@ -22,9 +22,6 @@ class MyHomeCommentActivity : AppCompatActivity() {
         binding = ActivityMyHomeCommentBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 상단 액션바
-        supportActionBar?.setTitle("작성 댓글")
-
         verticalManager = LinearLayoutManager(this@MyHomeCommentActivity)
         verticalManager.orientation = LinearLayoutManager.VERTICAL
 
@@ -37,24 +34,17 @@ class MyHomeCommentActivity : AppCompatActivity() {
             val writeComments = FirebaseManager.getUserComments(getPaeParo().userId)
             if (writeComments.isSuccess) {
                 commentAdapter = MyHomeCommentAdapter(writeComments.data!!)
-                Timber.d("test"+writeComments.data)
                 binding.myhomeCommentRecyclerview.adapter = commentAdapter
             } else {
                 Timber.e("null comment")
             }
         }
 
-
-    }
-
-    //상단 바 제어
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed() // 뒤로가기 동작 수행
-                true
+        with(binding){
+            back.setOnClickListener {
+                finish()
             }
-            else -> super.onOptionsItemSelected(item)
+            comment.setText("작성한 댓글")
         }
     }
 }

@@ -13,26 +13,17 @@ class MyHomeFaqActivity : AppCompatActivity() {
         binding = ActivityMyHomeFaqBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        supportActionBar?.apply {
-            // 뒤로가기 버튼 활성화
-            setDisplayHomeAsUpEnabled(true)
-            // 액션바 타이틀 설정
-            title = "FAQ"
-        }
-
         binding.faqRecyclerView.apply{
             adapter=MyHomeFaqAdapter()
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
         }
-    }
 
-
-    //상단 바 제어
-    override fun onSupportNavigateUp(): Boolean {
-        // 뒤로가기 버튼 클릭 시 액티비티 종료
-        onBackPressed()
-        return true
+        with(binding){
+            back.setOnClickListener {
+                finish()
+            }
+            faq.setText("FAQ")
+        }
     }
 }

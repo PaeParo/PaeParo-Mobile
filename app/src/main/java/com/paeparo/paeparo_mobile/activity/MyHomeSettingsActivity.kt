@@ -21,9 +21,6 @@ class MyHomeSettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
         loadData()
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 상단 액션바
-        supportActionBar?.setTitle("설정")
-
         //초기 세팅 추후에 코드 바꿀 예정
         if(binding.alram.isChecked==true){
             binding.alramDetail.setText("알람을 받습니다.")
@@ -50,21 +47,14 @@ class MyHomeSettingsActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             ActivityCompat.finishAffinity(this)
         }
+        binding.settings.setOnClickListener {
+            finish()
+        }
+        binding.settings.setText("설정")
     }
 
     //ShardPreferencesKey 로드
     private fun loadData(){
         binding.alram.isChecked=SharedPreferencesManager.get(SharedPreferencesKey.KEY_SETTINGS_ALARM,true) ?: true
-    }
-
-    //상단 바 제어
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed() // 뒤로가기 동작 수행
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }
