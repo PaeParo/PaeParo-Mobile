@@ -5,8 +5,6 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="nav_background_color">#FF131216</color>
     <color name="nav_enable_color">#FFFFFFFF</color>
     <color name="nav_disable_color">#AEAEAE</color>
@@ -20,5 +18,65 @@
     <color name="trip_item_text_unselect">#FFA0A0A0</color>
     <color name="setting_detail_color">#808080</color>
     <color name="default_border_color">#18171C</color>
+
+    <!-- 빨간색 -->
+    <color name="red">#FFFF0000</color>
+    <color name="red_light">#FFFFA07A</color>
+    <color name="red_dark">#FF8B0000</color>
+
+    <!-- 주황색 -->
+    <color name="orange">#FFFFA500</color>
+    <color name="orange_light">#FFFFD700</color>
+    <color name="orange_dark">#FFFF8C00</color>
+
+    <!-- 노란색 -->
+    <color name="yellow">#FFFFFF00</color>
+    <color name="yellow_light">#FFFFFFE0</color>
+    <color name="yellow_dark">#FFFFD700</color>
+
+    <!-- 초록색 -->
+    <color name="green">#FF008000</color>
+    <color name="green_light">#FFADFF2F</color>
+    <color name="green_dark">#FF006400</color>
+
+    <!-- 파란색 -->
+    <color name="blue">#FF0000FF</color>
+    <color name="blue_light">#FF87CEEB</color>
+    <color name="blue_dark">#FF00008B</color>
+
+    <!-- 핑크색 -->
+    <color name="indigo">#FF4B0082</color>
+    <color name="indigo_light">#FF9370DB</color>
+    <color name="indigo_dark">#FF483D8B</color>
+
+    <!-- 보라색 -->
+    <color name="purple">#FF800080</color>
+    <color name="purple_light">#FFE6E6FA</color>
+    <color name="purple_dark">#FF800080</color>
+
+    <!-- 검정색 -->
+    <color name="black">#FF000000</color>
+    <color name="black_light">#FF696969</color>
+    <color name="black_dark">#FF191919</color>
+
+    <!-- 회색 -->
+    <color name="gray">#FF808080</color>
+    <color name="gray_light">#FFD3D3D3</color>
+    <color name="gray_dark">#FFA9A9A9</color>
+
+    <!-- 흰색 -->
+    <color name="white">#FFFFFFFF</color>
+    <color name="white_light">#FFF5F5F5</color>
+    <color name="white_dark">#FFDCDCDC</color>
+
+    <!-- 청록색 -->
+    <color name="cyan">#FF00FFFF</color>
+    <color name="cyan_light">#FFE0FFFF</color>
+    <color name="cyan_dark">#FF008B8B</color>
+
+    <!-- 갈색 -->
+    <color name="brown">#FFA52A2A</color>
+    <color name="brown_light">#FFDEB887</color>
+    <color name="brown_dark">#FF654321</color>
 
 </resources>
