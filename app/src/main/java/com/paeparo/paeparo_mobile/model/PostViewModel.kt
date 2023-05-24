@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.DocumentSnapshot
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
@@ -26,21 +27,22 @@ class PostViewModel : ViewModel() {
     val newPostList: LiveData<List<Post>> = _newPostList
 
     /**
-     * Firebase 관련 처리 상태
+     * 검색할 지역명
      */
-    private val _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> = _loading
+    private val _region = MutableLiveData<String?>()
+    val region: LiveData<String?> = _region
+
+    private var loadPostsJob: Job? = null
 
     /**
      * 새로운 게시물 목록을 가져오는 함수
      */
     fun loadPosts() {
-        // 이미 데이터가 로딩 중일 경우 새로 로딩하지 않음
-        if (_loading.value == true) return
-
-        _loading.value = true
-        viewModelScope.launch {
-            val postListResult = FirebaseManager.getPostsInRange(lastVisiblePost, POST_LOAD_SIZE)
+        // 이전에 실행 중이던 작업이 있다면 취소
+        loadPostsJob?.cancel()
+        loadPostsJob = viewModelScope.launch {
+            val postListResult =
+                FirebaseManager.getPostsInRange(lastVisiblePost, POST_LOAD_SIZE, region.value)
             val postListData = postListResult.data
 
             if (postListResult.isSuccess) { // 게시물 목록을 성공적으로 불러왔을 경우
@@ -51,9 +53,21 @@ class PostViewModel : ViewModel() {
                     lastVisiblePost = postListData["last_post_snapshot"] as DocumentSnapshot
                 }
             }
-
-            _loading.value = false
         }
+    }
+
+    /**
+     * 검색할 지역명을 설정하는 함수
+     */
+    fun setRegion(region: String?) {
+        _region.value = region
+    }
+
+    /**
+     * 마지막 게시물의 DocumentSnapsnot을 초기화하는 함수
+     */
+    fun clearLastVisiblePost() {
+        lastVisiblePost = null
     }
 
     companion object {
