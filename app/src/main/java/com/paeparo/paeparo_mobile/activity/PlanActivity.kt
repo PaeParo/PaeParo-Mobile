@@ -4,8 +4,10 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayoutMediator
+import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanAdapter
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanBinding
+import com.paeparo.paeparo_mobile.fragment.PlanInfoFragment
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.Event
 import com.paeparo.paeparo_mobile.model.Trip
@@ -20,20 +22,36 @@ import java.time.LocalDate
 /*
     일정 세부정보를 일자별로(Day1,Day2) 보는 Activiy
  */
-class PlanActivity : AppCompatActivity() {
-    var trip: Trip? = null
+enum class MODE {
+    DISPLAY, EDIT
+}
 
+interface EditModeable {
+    var state: MODE
+    fun changeMode()
+}
+
+class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(), EditModeable {
+
+
+    private lateinit var eventsByDate: Map<LocalDate, MutableList<Event>>
+    private val planAdapter by lazy {
+        PlanAdapter(this@PlanActivity, eventsByDate)
+    }
     private val binding: ActivityPlanBinding by lazy {
         ActivityPlanBinding.inflate(layoutInflater) //viewbinding
     }
+    private val currentFragent: PlanInfoFragment
+        get() = planAdapter.planInfoFragments[binding.vpPlan.currentItem]
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        trip = getTripFromIntent()
+        val trip = getTripFromIntent()
         if (trip == null) finish()
-        bind(trip!!)
+        eventsByDate = groupEventsByDay(trip!!)
+
+        bind(trip)
 
     }
 
@@ -41,13 +59,33 @@ class PlanActivity : AppCompatActivity() {
         with(binding) {
             tvPlanTitle.text = trip.name
             tvPlanSubtitle.text = trip.region
-            vpPlan.adapter = PlanAdapter(this@PlanActivity, groupEventsByDay(trip))
+            vpPlan.adapter = planAdapter
 
             TabLayoutMediator(tlPlan, vpPlan) { tab, position ->
                 tab.text = "DAY ${position + 1}"
             }.attach()
+
+            btnPlanFab.setOnClickListener {
+                // getting List
+                val eventList =
+                    currentFragent.planInfoAdapter.currentList
+                // update List
+                val newList = eventList.toMutableList()
+                newList.add(Event(name = "앙기모띠"))
+
+                // update PlanInfoViewPager
+                currentFragent.planInfoAdapter.applyListUpdate(
+                    newList
+                )
+
+            }
+
+            btnPlanEdit.setOnClickListener {
+                changeMode()
+            }
         }
     }
+
 
     /**
      * Trip 객체를 Intent에서 가져오는 함수
@@ -101,5 +139,18 @@ class PlanActivity : AppCompatActivity() {
         }
 
         return map
+    }
+
+    override fun changeMode() {
+        state = if(state == MODE.DISPLAY) MODE.EDIT else MODE.DISPLAY
+
+        val (imageResource, isUserInputEnabled) = when (state) {
+            MODE.DISPLAY -> R.drawable.ic_edit to true
+            MODE.EDIT -> R.drawable.ic_close to false
+        }
+
+        binding.btnPlanEdit.setImageResource(imageResource)
+        binding.vpPlan.isUserInputEnabled = isUserInputEnabled
+        currentFragent.changeMode()
     }
 }

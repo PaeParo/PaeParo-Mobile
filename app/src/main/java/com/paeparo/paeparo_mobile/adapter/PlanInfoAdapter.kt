@@ -32,7 +32,10 @@ class PlanInfoAdapter :
             holder.bind(event)
         }
     }
-
+    fun applyListUpdate(list : List<Event>){
+        val newList = list.toMutableList()
+        submitList(newList)
+    }
     fun moveItem(fromPosition: Int, toPosition: Int) {
         val newList = currentList.toMutableList()
         Collections.swap(newList, fromPosition, toPosition)
@@ -53,6 +56,7 @@ class PlanInfoAdapter :
                 //ivWeatherIcon.drawable
                 tvTime.text = data.startTime.toString() //@TODO get Hour From TimeStamp
                 ivLocationThumbnail.setImageResource(R.drawable.location_image_example)
+                tvLocationTitle.text = data.name
                 //ivLocationIcon.setImageResource(R.drawable.ic_)
 
 //                laoutViewholder.setOnClickListener({
