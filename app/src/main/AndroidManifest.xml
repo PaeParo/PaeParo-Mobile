@@ -16,29 +16,25 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activity.CommunityWriteActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.MyHomeSettingsUserActivity"
-            android:theme="@style/Theme.AppCompat"
             android:exported="false" />
         <activity
             android:name=".activity.PlanActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.MyHomePlanActivity"
-            android:exported="false" />
-        <activity
             android:name=".activity.MyHomeCommentActivity"
-            android:theme="@style/Theme.AppCompat"
             android:exported="false" />
         <activity
             android:name=".activity.MyHomeLikeActivity"
-            android:theme="@style/Theme.AppCompat"
             android:exported="false" />
         <activity
-            android:name=".activity.MyHomeFaqActivity" android:theme="@style/Theme.AppCompat"
+            android:name=".activity.MyHomeFaqActivity"
             android:exported="false" />
         <activity
             android:name=".activity.MyHomeSettingsActivity"
-            android:theme="@style/Theme.AppCompat"
             android:exported="false" />
         <activity
             android:name=".activity.PlanGenerateActivity"

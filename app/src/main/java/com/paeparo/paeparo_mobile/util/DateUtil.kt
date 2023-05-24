@@ -37,7 +37,6 @@ object DateUtil {
      */
     fun LocalDate.calPeriod(other: LocalDate): Int {
         val daysBetween = kotlin.math.abs(this.toEpochDay() - other.toEpochDay())
-        val timestamp: Timestamp
         return daysBetween.toInt()+1 // 여행 당일 포함 +1
     }
     // LocalDate를 Timestamp로 변환합니다.

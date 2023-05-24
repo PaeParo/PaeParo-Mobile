@@ -17,9 +17,6 @@ class MyHomeSettingsUserActivity : AppCompatActivity() {
         binding = ActivityMyHomeSettingsUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 상단 액션바
-        supportActionBar?.setTitle("회원")
-
         val builder = AlertDialog.Builder(this) //다이어로그 창
 
         binding.userDelete.setOnClickListener {
@@ -37,16 +34,10 @@ class MyHomeSettingsUserActivity : AppCompatActivity() {
                     })
             builder.show()
         }
-    }
 
-    //상단 바 제어
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed() // 뒤로가기 동작 수행
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+        binding.settingsUser.setOnClickListener {
+            finish()
         }
+        binding.settingsUser.setText("회원")
     }
 }

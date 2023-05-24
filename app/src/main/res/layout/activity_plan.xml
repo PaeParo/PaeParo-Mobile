@@ -11,8 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:backgroundTint="@color/app_personal_red"
+        app:backgroundTint="@color/app_personal_red"
+        android:backgroundTintMode="add"
         android:src="@drawable/ic_add"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="SpeakableTextPresentCheck" />
@@ -49,18 +51,21 @@
             android:orientation="vertical">
 
             <TextView
+                android:maxWidth="250dp"
                 android:id="@+id/tv_plan_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                tools:text="나의 여행 계획이름" />
+                android:ellipsize="end"
+                tools:text="나의 여행 계획이름 많은 글씨 ㅌ스트 가나다다라마바사" />
 
             <TextView
                 android:id="@+id/tv_plan_subtitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
+                android:layout_gravity="center"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 tools:text="1박 2일 || 2인" />
@@ -75,7 +80,7 @@
             android:adjustViewBounds="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:src="@drawable/baseline_mode_edit_24" />
+            android:src="@drawable/ic_edit" />
 
 
     </androidx.appcompat.widget.Toolbar>
@@ -101,7 +106,9 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tl_plan" />
+        app:layout_constraintTop_toBottomOf="@+id/tl_plan"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,8 +22,7 @@ class MyHomeLikeActivity : AppCompatActivity() {
         binding = ActivityMyHomeLikeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 상단 액션바
-        supportActionBar?.setTitle("찜한 일정")
+
 
         verticalManager = LinearLayoutManager(this@MyHomeLikeActivity)
         verticalManager.orientation =LinearLayoutManager.VERTICAL
@@ -43,16 +42,12 @@ class MyHomeLikeActivity : AppCompatActivity() {
                 Timber.e("null like")
             }
         }
-    }
 
-    //상단 바 제어
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed() // 뒤로가기 동작 수행
-                true
+        with(binding){
+            back.setOnClickListener {
+                finish()
             }
-            else -> super.onOptionsItemSelected(item)
+            like.setText("좋아요한 일정")
         }
     }
 }
