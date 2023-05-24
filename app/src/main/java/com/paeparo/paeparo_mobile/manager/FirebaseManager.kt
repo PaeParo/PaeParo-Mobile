@@ -957,22 +957,28 @@ object FirebaseManager {
      *
      * @param startPostSnapshot 시작 게시물 Snapshot (null일 경우 가장 최신 게시물이 시작)
      * @param limit 불러올 게시물 수
+     * @param region 불러올 게시물의 지역 (null일 경우 전체 지역)
      * @return Success Data: Post List / Failure Type: CLIENT_ERROR & Error Object
      */
     suspend fun getPostsInRange(
         startPostSnapshot: DocumentSnapshot?,
-        limit: Long
+        limit: Long,
+        region: String? = null
     ): FirebaseResult<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             try {
                 val postList = mutableListOf<Post>()
 
+                var query: Query =
+                    firestorePostsRef.orderBy("created_at", Query.Direction.DESCENDING)
+
+                if (region != null)
+                    query = query.whereEqualTo("region", region)
+
                 val postListRef = if (startPostSnapshot == null) {
-                    firestorePostsRef.orderBy("created_at", Query.Direction.DESCENDING)
-                        .limit(limit).get().await()
+                    query.limit(limit).get().await()
                 } else {
-                    firestorePostsRef.orderBy("created_at", Query.Direction.DESCENDING)
-                        .startAfter(startPostSnapshot).limit(limit).get().await()
+                    query.startAfter(startPostSnapshot).limit(limit).get().await()
                 }
 
                 postListRef.documents.forEach {
