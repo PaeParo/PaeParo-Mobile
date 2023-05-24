@@ -49,18 +49,21 @@
             android:orientation="vertical">
 
             <TextView
+                android:maxWidth="250dp"
                 android:id="@+id/tv_plan_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                tools:text="나의 여행 계획이름" />
+                android:ellipsize="end"
+                tools:text="나의 여행 계획이름 많은 글씨 ㅌ스트 가나다다라마바사" />
 
             <TextView
                 android:id="@+id/tv_plan_subtitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
+                android:layout_gravity="center"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 tools:text="1박 2일 || 2인" />
