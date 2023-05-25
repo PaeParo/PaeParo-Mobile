@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.databinding.ItemPostBinding
+import com.paeparo.paeparo_mobile.fragment.OnPostClickListener
 import com.paeparo.paeparo_mobile.model.Post
 import com.paeparo.paeparo_mobile.util.ImageUtil
 import kotlin.math.abs
@@ -14,7 +15,8 @@ import kotlin.math.abs
  *
  * CommunityFragment의 게시물 목록을 관리하는 Adapter 클래스
  */
-class PostAdapter : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
+class PostAdapter(private val onPostClickListener: OnPostClickListener) :
+    RecyclerView.Adapter<PostAdapter.ViewHolder>() {
     /**
      * Post 목록
      */
@@ -28,6 +30,9 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(post: Post) {
+            binding.root.setOnClickListener {
+                onPostClickListener.onPostClicked(post)
+            }
             binding.tvItemPostRegion.text = post.region
             if (post.images.isNotEmpty()) { // 게시물에 연결된 이미지가 있을 경우
                 // 게시물의 대표 이미지(첫 번째 이미지)를 표시

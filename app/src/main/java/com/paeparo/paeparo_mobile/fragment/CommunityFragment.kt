@@ -10,11 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PostAdapter
 import com.paeparo.paeparo_mobile.databinding.FragmentCommunityBinding
+import com.paeparo.paeparo_mobile.model.Post
 import com.paeparo.paeparo_mobile.model.PostViewModel
 
-class CommunityFragment : Fragment() {
+class CommunityFragment : Fragment(), OnPostClickListener {
     private var _binding: FragmentCommunityBinding? = null
     private val binding get() = _binding!!
 
@@ -41,7 +43,7 @@ class CommunityFragment : Fragment() {
 
         setupPostViewModel()
         setupPostAdapter()
-        setupUIListener()
+        setupUI()
 
         postViewModel.loadPosts()
     }
@@ -71,17 +73,36 @@ class CommunityFragment : Fragment() {
      * PostAdapter 초기화 함수
      */
     private fun setupPostAdapter() {
-        postAdapter = PostAdapter()
-        binding.rvCommunityPostList.addItemDecoration(CustomItemDecoration(16))
-        binding.rvCommunityPostList.layoutManager =
-            StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+        postAdapter = PostAdapter(this)
         binding.rvCommunityPostList.adapter = postAdapter
     }
 
     /**
-     * UI Listener 초기화 함수
+     * UI 초기화 함수
      */
-    private fun setupUIListener() {
+    private fun setupUI() {
+        binding.rvCommunityPostList.layoutManager =
+            StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+
+        binding.rvCommunityPostList.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            private val space: Int = 16
+
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                outRect.left = space
+                outRect.right = space
+                outRect.bottom = space
+
+                if (parent.getChildAdapterPosition(view) > 1) { // 첫 번째 아이템일 경우 위쪽 간격도 추가
+                    outRect.top = space
+                }
+            }
+        })
+
         binding.rvCommunityPostList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -114,21 +135,25 @@ class CommunityFragment : Fragment() {
         })
     }
 
-    class CustomItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
-        ) {
-            outRect.left = space
-            outRect.right = space
-            outRect.bottom = space
-
-            // 첫 번째 아이템이라면 위쪽 간격도 추가한다.
-            if (parent.getChildAdapterPosition(view) > 1) {
-                outRect.top = space
-            }
-        }
+    /**
+     * Post 아이템 선택 시 해당 아이템의 세부내용 Fragment를 호출하는 함수
+     *
+     * @param post 선택된 Post 아이템
+     */
+    override fun onPostClicked(post: Post) {
+        parentFragmentManager.beginTransaction()
+            .add(R.id.fl_main_view, PostFragment.newInstance(post))
+            .hide(this)
+            .addToBackStack(null)
+            .commit()
     }
+}
+
+/**
+ * Post 아이템 클릭 리스너
+ *
+ * @constructor Create empty On post click listener
+ */
+interface OnPostClickListener {
+    fun onPostClicked(post: Post)
 }
