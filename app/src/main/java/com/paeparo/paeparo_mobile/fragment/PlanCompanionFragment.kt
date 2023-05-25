@@ -1,7 +1,6 @@
 package com.paeparo.paeparo_mobile.fragment
 
 import android.app.AlertDialog
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +8,10 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanCompanionBinding
@@ -23,12 +20,17 @@ import com.paeparo.paeparo_mobile.databinding.ItemCompanionInvitedBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.User
 import com.paeparo.paeparo_mobile.util.ImageUtil
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class PlanCompanionFragment : Fragment() {
     companion object {
-        const val DELAY_BEFORE_SEARCH = 5000L
+        const val DELAY_BEFORE_SEARCH = 1000L
     }
 
     private var _binding: FragmentPlanCompanionBinding? = null
@@ -81,9 +83,9 @@ class PlanCompanionFragment : Fragment() {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("동행자 안내")
             .setMessage("동행자가 설정되지 않았습니다. 다음페이지로 넘어가시겠습니까?")
-            .setPositiveButton("확인", { dialog, which ->
+            .setPositiveButton("확인") { dialog, which ->
                 activity.binding.vpPlanGenerate.currentItem++
-            })
+            }
 
         val dialog = builder.create()
         dialog.show()
@@ -124,14 +126,9 @@ class PlanCompanionFragment : Fragment() {
             }
 
             svPlanCompanion.setOnQueryTextListener(SearchUserListener())
-            // SearchView 글자 색 바꾸기
             val editText =
                 svPlanCompanion.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
             with(editText) {
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-                setHintTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-                setTypeface(null, Typeface.NORMAL) // 이텔릭체 제거
-                hint = "닉네임을 입력해주세요."
                 // 텍스트 입력 시, 다음 버튼 사라짐.
                 setOnFocusChangeListener { v, hasFocus ->
                     Timber.d("focus: $hasFocus")

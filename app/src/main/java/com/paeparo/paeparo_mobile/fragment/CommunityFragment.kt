@@ -41,6 +41,7 @@ class CommunityFragment : Fragment() {
 
         setupPostViewModel()
         setupPostAdapter()
+        setupUIListener()
 
         postViewModel.loadPosts()
     }
@@ -58,6 +59,12 @@ class CommunityFragment : Fragment() {
         postViewModel.newPostList.observe(viewLifecycleOwner) { postList ->
             postAdapter.addPostList(postList)
         }
+
+        postViewModel.region.observe(viewLifecycleOwner) {
+            postAdapter.clearPostList()
+            postViewModel.clearLastVisiblePost()
+            postViewModel.loadPosts()
+        }
     }
 
     /**
@@ -69,7 +76,12 @@ class CommunityFragment : Fragment() {
         binding.rvCommunityPostList.layoutManager =
             StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
         binding.rvCommunityPostList.adapter = postAdapter
+    }
 
+    /**
+     * UI Listener 초기화 함수
+     */
+    private fun setupUIListener() {
         binding.rvCommunityPostList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -78,10 +90,25 @@ class CommunityFragment : Fragment() {
                 val lastVisibleItem =
                     layoutManager.findLastVisibleItemPositions(null).maxOrNull() ?: 0
 
-                if (!postViewModel.loading.value!! && layoutManager.itemCount <= (lastVisibleItem + 4)) {
+                if (layoutManager.itemCount <= (lastVisibleItem + 4)) {
                     // 현재 새로운 Post 목록을 로딩 중이 아니고 스크롤이 끝에 도달했을 경우, 새로운 Post 목록 로딩
                     postViewModel.loadPosts()
                 }
+            }
+        })
+
+        binding.svCommunityRegion.setOnQueryTextListener(object :
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                postViewModel.setRegion(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText.isNullOrEmpty()) {
+                    postViewModel.setRegion(null)
+                }
+                return false
             }
         })
     }

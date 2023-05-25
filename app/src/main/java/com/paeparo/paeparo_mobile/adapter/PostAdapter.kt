@@ -74,4 +74,12 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
         postList.addAll(newPostList)
         notifyItemRangeInserted(postList.size, newPostList.size)
     }
+
+    /**
+     * Post 목록을 초기화하는 함수
+     */
+    fun clearPostList() {
+        postList.clear()
+        notifyDataSetChanged()
+    }
 }
