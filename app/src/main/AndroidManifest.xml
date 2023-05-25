@@ -19,9 +19,6 @@
             android:name=".activity.CommunityWriteActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.MyHomeSettingsUserActivity"
-            android:exported="false" />
-        <activity
             android:name=".activity.PlanActivity"
             android:exported="false" />
         <activity
