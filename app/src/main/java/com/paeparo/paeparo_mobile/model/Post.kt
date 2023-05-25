@@ -1,13 +1,16 @@
 package com.paeparo.paeparo_mobile.model
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
+import kotlinx.parcelize.Parcelize
 
 @IgnoreExtraProperties
+@Parcelize
 data class Post(
     @get:Exclude @SerializedName("post_id") var postId: String = "",
     @set:PropertyName("title") @get:PropertyName("title") @SerializedName("title") var title: String = "",
@@ -20,7 +23,7 @@ data class Post(
     @set:PropertyName("tags") @get:PropertyName("tags") @SerializedName("tags") var tags: MutableList<String> = mutableListOf(),
     @set:PropertyName("images") @get:PropertyName("images") @SerializedName("images") var images: MutableList<String> = mutableListOf(),
     @set:PropertyName("author_review") @get:PropertyName("author_review") @SerializedName("author_review") var authorReview: AuthorReview = AuthorReview(),
-) {
+) : Parcelable {
     fun toMapWithoutPostId(): Map<String, Any?> {
         val serializedMap = FirestoreNamingUtil.toSerializedMap(this)
         return serializedMap.filterKeys { it != "post_id" }
@@ -36,11 +39,13 @@ data class Post(
     }
 }
 
+@Parcelize
 data class AuthorReview(
     @set:PropertyName("rating") @get:PropertyName("rating") @SerializedName("rating") var rating: Double = 0.0,
     @set:PropertyName("rating_detail") @get:PropertyName("rating_detail") @SerializedName("rating_detail") var ratingDetail: RatingDetail = RatingDetail()
-)
+) : Parcelable
 
+@Parcelize
 data class RatingDetail(
     @set:PropertyName("food") @get:PropertyName("food") @SerializedName("food") var food: Double = 0.0,
     @set:PropertyName("accommodation") @get:PropertyName("accommodation") @SerializedName("accommodation") var accommodation: Double = 0.0,
@@ -48,4 +53,4 @@ data class RatingDetail(
     @set:PropertyName("sightseeing") @get:PropertyName("sightseeing") @SerializedName("sightseeing") var touristDestination: Double = 0.0,
     @set:PropertyName("hygiene") @get:PropertyName("hygiene") @SerializedName("hygiene") var hygiene: Double = 0.0,
     @set:PropertyName("activity") @get:PropertyName("activity") @SerializedName("activity") var activity: Double = 0.0
-)
+) : Parcelable
