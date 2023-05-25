@@ -8,11 +8,11 @@ import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.callback.PlanInfoDiffCallback
 import com.paeparo.paeparo_mobile.databinding.ItemPlanEventBinding
 import com.paeparo.paeparo_mobile.model.Event
+import timber.log.Timber
 import java.util.Collections
 
 class PlanInfoAdapter :
     ListAdapter<Event, RecyclerView.ViewHolder>(PlanInfoDiffCallback()) {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val viewHolder = PlanInfoViewHolder(
             ItemPlanEventBinding.inflate(
@@ -23,13 +23,18 @@ class PlanInfoAdapter :
         )
 
 
-        return viewHolder
+
+        return viewHolder.also{
+            Timber.d("Craete : ${it.hashCode()}")
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is PlanInfoViewHolder) {
             val event = getItem(position) as Event
             holder.bind(event)
+            Timber.d("Bind : ${holder.hashCode()}")
+
         }
     }
     fun applyListUpdate(list : List<Event>){

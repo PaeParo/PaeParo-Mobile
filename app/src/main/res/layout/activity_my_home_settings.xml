@@ -126,25 +126,37 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/user_layout"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/user"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:gravity="center|start"
+                    android:layout_weight="1"
                     android:text="@string/home_settings_user"
                     android:textColor="@color/white" />
 
+                <TextView
+                    android:id="@+id/user_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="TextView"
+                    android:textColor="@color/setting_detail_color" />
+
             </LinearLayout>
 
-            <Button
-                android:id="@+id/logout_button"
+            <TextView
+                android:id="@+id/logout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/home_settings_logout" />
+                android:layout_height="50dp"
+                android:gravity="center|start"
+                android:text="@string/home_settings_logout"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanCalenderBinding
+import timber.log.Timber
 import java.util.Date
 
 class PlanCalenderFragment : Fragment() {
@@ -29,6 +30,11 @@ class PlanCalenderFragment : Fragment() {
         // 버튼
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        Timber.d("Fragment Destroy : hashCode()")
+        super.onDestroy()
     }
 
     private fun bind(activity: PlanGenerateActivity) {

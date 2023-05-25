@@ -3,6 +3,7 @@ package com.paeparo.paeparo_mobile.activity
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanAdapter
@@ -22,21 +23,21 @@ import java.time.LocalDate
 /*
     일정 세부정보를 일자별로(Day1,Day2) 보는 Activiy
  */
-enum class MODE {
-    DISPLAY, EDIT
-}
+
 
 interface EditModeable {
-    var state: MODE
-    fun changeMode()
+
+    var state : PlanActivity.MODE
+    fun changeMode(state: PlanActivity.MODE)
 }
 
 class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(), EditModeable {
-
-
+    enum class MODE {
+        DISPLAY, EDIT
+    }
     private lateinit var eventsByDate: Map<LocalDate, MutableList<Event>>
     private val planAdapter by lazy {
-        PlanAdapter(this@PlanActivity, eventsByDate)
+        PlanAdapter(this@PlanActivity, eventsByDate,state)
     }
     private val binding: ActivityPlanBinding by lazy {
         ActivityPlanBinding.inflate(layoutInflater) //viewbinding
@@ -60,6 +61,7 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
             tvPlanTitle.text = trip.name
             tvPlanSubtitle.text = trip.region
             vpPlan.adapter = planAdapter
+            vpPlan.offscreenPageLimit = 15
 
             TabLayoutMediator(tlPlan, vpPlan) { tab, position ->
                 tab.text = "DAY ${position + 1}"
@@ -81,7 +83,8 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
             }
 
             btnPlanEdit.setOnClickListener {
-                changeMode()
+                state = if(state == MODE.DISPLAY) MODE.EDIT else MODE.DISPLAY
+                changeMode(state)
             }
         }
     }
@@ -141,9 +144,7 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
         return map
     }
 
-    override fun changeMode() {
-        state = if(state == MODE.DISPLAY) MODE.EDIT else MODE.DISPLAY
-
+    override fun changeMode(state: PlanActivity.MODE) {
         val (imageResource, isUserInputEnabled) = when (state) {
             MODE.DISPLAY -> R.drawable.ic_edit to true
             MODE.EDIT -> R.drawable.ic_close to false
@@ -151,6 +152,6 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
 
         binding.btnPlanEdit.setImageResource(imageResource)
         binding.vpPlan.isUserInputEnabled = isUserInputEnabled
-        currentFragent.changeMode()
+        currentFragent.changeMode(state)
     }
 }
