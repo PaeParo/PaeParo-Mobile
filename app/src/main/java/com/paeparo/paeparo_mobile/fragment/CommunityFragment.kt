@@ -100,6 +100,7 @@ class CommunityFragment : Fragment() {
         binding.svCommunityRegion.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                binding.svCommunityRegion.clearFocus()
                 postViewModel.setRegion(query)
                 return true
             }
