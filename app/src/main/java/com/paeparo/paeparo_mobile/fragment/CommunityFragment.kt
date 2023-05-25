@@ -141,8 +141,14 @@ class CommunityFragment : Fragment(), OnPostClickListener {
      * @param post 선택된 Post 아이템
      */
     override fun onPostClicked(post: Post) {
-        parentFragmentManager.beginTransaction()
-            .add(R.id.fl_main_view, PostFragment.newInstance(post))
+        val existingPostFragment = parentFragmentManager.findFragmentByTag("PostFragment")
+
+        val transaction = parentFragmentManager.beginTransaction()
+        if (existingPostFragment != null) {
+            transaction.remove(existingPostFragment)
+        }
+
+        transaction.add(R.id.fl_main_view, PostFragment.newInstance(post))
             .hide(this)
             .addToBackStack(null)
             .commit()
