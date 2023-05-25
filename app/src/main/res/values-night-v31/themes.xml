@@ -18,6 +18,8 @@
         <item name="android:navigationBarColor">@color/charcoal</item>
         <item name="android:windowBackground">@color/charcoal</item>
         <item name="android:windowSplashScreenBackground">@color/charcoal</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="RoundView4dp" parent="">

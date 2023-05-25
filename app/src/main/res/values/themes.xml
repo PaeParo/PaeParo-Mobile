@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.PaeParoMobile" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -16,6 +16,8 @@
         <!-- Navigation bar color. -->
         <item name="android:navigationBarColor">@color/charcoal</item>
         <item name="android:windowBackground">@color/charcoal</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="RoundView4dp" parent="">
