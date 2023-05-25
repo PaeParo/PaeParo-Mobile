@@ -12,15 +12,23 @@ import java.time.LocalDate
 /*
 PlanActivity의 ViewPager용 어뎁터
  */
-class PlanAdapter(fa: FragmentActivity, private val map: Map<LocalDate, MutableList<Event>>) : FragmentStateAdapter(fa){
+class PlanAdapter(fa: FragmentActivity, private val map: Map<LocalDate, MutableList<Event>>) : FragmentStateAdapter(fa),EditModeable{
     var planInfoFragments = mutableListOf<PlanInfoFragment>()
     override fun getItemCount(): Int = map.keys.size
 
     override fun createFragment(position: Int): Fragment {
         val list = map.values.toList()
-        return PlanInfoFragment(list[position], state = MODE.DISPLAY).also{
+        return PlanInfoFragment(list[position]).also{
             planInfoFragments.add(it)
         }
     }
+
+    override fun changeMode() {
+        for(activity in planInfoFragments){
+            activity.changeMode()
+        }
+    }
+
+
 }
 

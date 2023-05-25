@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.activity.EditModeable
 import com.paeparo.paeparo_mobile.activity.MODE
+import com.paeparo.paeparo_mobile.activity.PlanActivity
 import com.paeparo.paeparo_mobile.adapter.PlanInfoAdapter
 import com.paeparo.paeparo_mobile.callback.PlanItemTouchHelperCallback
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanInfoBinding
@@ -20,7 +21,7 @@ import com.paeparo.paeparo_mobile.model.Event
 일자별 Event를 표시해주는 RecyclerView
  */
 
-class PlanInfoFragment(val eventList: MutableList<Event>, override var state: MODE) : Fragment(), EditModeable{
+class PlanInfoFragment(val eventList: MutableList<Event>) : Fragment(), EditModeable{
 
     private lateinit var recyclerView : RecyclerView
     private lateinit var itemTouchHelperCallback : ItemTouchHelper
@@ -40,7 +41,6 @@ class PlanInfoFragment(val eventList: MutableList<Event>, override var state: MO
         bind(binding)
 
         return binding.root
-
 
     }
 
@@ -63,9 +63,7 @@ class PlanInfoFragment(val eventList: MutableList<Event>, override var state: MO
     }
 
     override fun changeMode() {
-        state = if(state == MODE.DISPLAY) MODE.EDIT else MODE.DISPLAY // state 전환
-
-        when (state) {
+        when (PlanActivity.state) {
             MODE.DISPLAY -> itemTouchHelperCallback.attachToRecyclerView(null) // 슬라이드 방지
             MODE.EDIT -> itemTouchHelperCallback.attachToRecyclerView(recyclerView) // 슬라이드 가능
         }

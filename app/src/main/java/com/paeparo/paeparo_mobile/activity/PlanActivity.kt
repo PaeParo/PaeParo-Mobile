@@ -3,6 +3,7 @@ package com.paeparo.paeparo_mobile.activity
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanAdapter
@@ -27,12 +28,14 @@ enum class MODE {
 }
 
 interface EditModeable {
-    var state: MODE
     fun changeMode()
 }
 
-class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(), EditModeable {
+class PlanActivity() : AppCompatActivity(), EditModeable {
 
+    companion object{
+        var state = MODE.DISPLAY
+    }
 
     private lateinit var eventsByDate: Map<LocalDate, MutableList<Event>>
     private val planAdapter by lazy {
@@ -60,6 +63,7 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
             tvPlanTitle.text = trip.name
             tvPlanSubtitle.text = trip.region
             vpPlan.adapter = planAdapter
+            vpPlan.offscreenPageLimit = 15
 
             TabLayoutMediator(tlPlan, vpPlan) { tab, position ->
                 tab.text = "DAY ${position + 1}"
