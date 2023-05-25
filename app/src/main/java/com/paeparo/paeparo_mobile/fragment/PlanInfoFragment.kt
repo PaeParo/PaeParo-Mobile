@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.activity.EditModeable
-import com.paeparo.paeparo_mobile.activity.MODE
 import com.paeparo.paeparo_mobile.activity.PlanActivity
 import com.paeparo.paeparo_mobile.adapter.PlanInfoAdapter
 import com.paeparo.paeparo_mobile.callback.PlanItemTouchHelperCallback
@@ -21,7 +20,7 @@ import com.paeparo.paeparo_mobile.model.Event
 일자별 Event를 표시해주는 RecyclerView
  */
 
-class PlanInfoFragment(val eventList: MutableList<Event>) : Fragment(), EditModeable{
+class PlanInfoFragment(val eventList: MutableList<Event>, override var state: PlanActivity.MODE) : Fragment(), EditModeable{
 
     private lateinit var recyclerView : RecyclerView
     private lateinit var itemTouchHelperCallback : ItemTouchHelper
@@ -32,6 +31,10 @@ class PlanInfoFragment(val eventList: MutableList<Event>) : Fragment(), EditMode
         PlanInfoAdapter()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,10 +65,11 @@ class PlanInfoFragment(val eventList: MutableList<Event>) : Fragment(), EditMode
         _binding = null
     }
 
-    override fun changeMode() {
-        when (PlanActivity.state) {
-            MODE.DISPLAY -> itemTouchHelperCallback.attachToRecyclerView(null) // 슬라이드 방지
-            MODE.EDIT -> itemTouchHelperCallback.attachToRecyclerView(recyclerView) // 슬라이드 가능
+    override fun changeMode(state: PlanActivity.MODE) {
+        this.state = state
+        when (state) {
+            PlanActivity.MODE.DISPLAY -> itemTouchHelperCallback.attachToRecyclerView(null) // 슬라이드 방지
+            PlanActivity.MODE.EDIT -> itemTouchHelperCallback.attachToRecyclerView(recyclerView) // 슬라이드 가능
         }
     }
 

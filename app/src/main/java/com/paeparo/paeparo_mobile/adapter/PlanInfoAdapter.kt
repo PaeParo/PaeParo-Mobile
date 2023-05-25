@@ -13,7 +13,6 @@ import java.util.Collections
 
 class PlanInfoAdapter :
     ListAdapter<Event, RecyclerView.ViewHolder>(PlanInfoDiffCallback()) {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val viewHolder = PlanInfoViewHolder(
             ItemPlanEventBinding.inflate(

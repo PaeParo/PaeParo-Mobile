@@ -23,23 +23,21 @@ import java.time.LocalDate
 /*
     일정 세부정보를 일자별로(Day1,Day2) 보는 Activiy
  */
-enum class MODE {
-    DISPLAY, EDIT
-}
+
 
 interface EditModeable {
-    fun changeMode()
+
+    var state : PlanActivity.MODE
+    fun changeMode(state: PlanActivity.MODE)
 }
 
-class PlanActivity() : AppCompatActivity(), EditModeable {
-
-    companion object{
-        var state = MODE.DISPLAY
+class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(), EditModeable {
+    enum class MODE {
+        DISPLAY, EDIT
     }
-
     private lateinit var eventsByDate: Map<LocalDate, MutableList<Event>>
     private val planAdapter by lazy {
-        PlanAdapter(this@PlanActivity, eventsByDate)
+        PlanAdapter(this@PlanActivity, eventsByDate,state)
     }
     private val binding: ActivityPlanBinding by lazy {
         ActivityPlanBinding.inflate(layoutInflater) //viewbinding
@@ -85,7 +83,8 @@ class PlanActivity() : AppCompatActivity(), EditModeable {
             }
 
             btnPlanEdit.setOnClickListener {
-                changeMode()
+                state = if(state == MODE.DISPLAY) MODE.EDIT else MODE.DISPLAY
+                changeMode(state)
             }
         }
     }
@@ -145,9 +144,7 @@ class PlanActivity() : AppCompatActivity(), EditModeable {
         return map
     }
 
-    override fun changeMode() {
-        state = if(state == MODE.DISPLAY) MODE.EDIT else MODE.DISPLAY
-
+    override fun changeMode(state: PlanActivity.MODE) {
         val (imageResource, isUserInputEnabled) = when (state) {
             MODE.DISPLAY -> R.drawable.ic_edit to true
             MODE.EDIT -> R.drawable.ic_close to false
@@ -155,6 +152,6 @@ class PlanActivity() : AppCompatActivity(), EditModeable {
 
         binding.btnPlanEdit.setImageResource(imageResource)
         binding.vpPlan.isUserInputEnabled = isUserInputEnabled
-        currentFragent.changeMode()
+        currentFragent.changeMode(state)
     }
 }
