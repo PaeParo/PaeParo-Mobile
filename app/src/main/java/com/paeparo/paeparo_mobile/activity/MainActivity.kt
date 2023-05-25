@@ -18,20 +18,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Navigation 선택 이벤트
-        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+        binding.bvMainBottomNavigation.setOnItemSelectedListener { item ->
             if (item.itemId != currentTabId) {
                 val ft = supportFragmentManager.beginTransaction()
                 when (item.itemId) {
                     R.id.community_fragment -> {
-                        ft.replace(R.id.frameLayout, CommunityFragment()).commit()
+                        ft.replace(R.id.fl_main_view, CommunityFragment()).commit()
                     }
 
                     R.id.trip_fragment -> {
-                        ft.replace(R.id.frameLayout, TripFragment()).commit()
+                        ft.replace(R.id.fl_main_view, TripFragment()).commit()
                     }
 
                     R.id.mypage_fragment -> {
-                        ft.replace(R.id.frameLayout, MyHomeFragment()).commit()
+                        ft.replace(R.id.fl_main_view, MyHomeFragment()).commit()
                     }
                 }
                 currentTabId = item.itemId
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.bottomNavigationView.selectedItemId = R.id.trip_fragment
+        binding.bvMainBottomNavigation.selectedItemId = R.id.trip_fragment
         //    testRetrofit()
     }
 
