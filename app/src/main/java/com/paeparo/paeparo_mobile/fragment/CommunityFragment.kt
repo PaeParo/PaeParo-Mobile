@@ -2,9 +2,11 @@ package com.paeparo.paeparo_mobile.fragment
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -140,17 +142,30 @@ class CommunityFragment : Fragment(), OnPostClickListener {
      *
      * @param post 선택된 Post 아이템
      */
-    override fun onPostClicked(post: Post) {
+    override fun onPostClicked(post: Post, imageView: ImageView) {
         val existingPostFragment = parentFragmentManager.findFragmentByTag("PostFragment")
-
         val transaction = parentFragmentManager.beginTransaction()
-        if (existingPostFragment != null) {
+        if (existingPostFragment != null) { // 이미 PostFragment가 존재할 경우 제거
             transaction.remove(existingPostFragment)
         }
 
-        transaction.add(R.id.fl_main_view, PostFragment.newInstance(post))
+        // PostFragment 객체 생성
+        val postFragment = PostFragment.newInstance(post)
+        
+        // Fragment 전환 시 사용될 Transition 구성
+        val enterTransition =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        enterTransition.duration = 300
+        postFragment.sharedElementEnterTransition = enterTransition
+        val returnTransition =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        returnTransition.duration = 300
+        postFragment.sharedElementReturnTransition = returnTransition
+        transaction.add(R.id.fl_main_view, postFragment)
             .hide(this)
             .addToBackStack(null)
+            .setReorderingAllowed(true)
+            .addSharedElement(imageView, "transition_${post.postId}")
             .commit()
     }
 }
@@ -161,5 +176,5 @@ class CommunityFragment : Fragment(), OnPostClickListener {
  * @constructor Create empty On post click listener
  */
 interface OnPostClickListener {
-    fun onPostClicked(post: Post)
+    fun onPostClicked(post: Post, imageView: ImageView)
 }
