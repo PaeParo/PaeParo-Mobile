@@ -1,14 +1,16 @@
 package com.paeparo.paeparo_mobile.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.databinding.ActivityMainBinding
 import com.paeparo.paeparo_mobile.fragment.CommunityFragment
 import com.paeparo.paeparo_mobile.fragment.MyHomeFragment
 import com.paeparo.paeparo_mobile.fragment.TripFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnPostFragmentInteractionListener {
     private lateinit var binding: ActivityMainBinding
     private var currentTabId: Int = -1
 
@@ -45,6 +47,21 @@ class MainActivity : AppCompatActivity() {
         //    testRetrofit()
     }
 
+    override fun onPostFragmentDisplayed() {
+        binding.bvMainBottomNavigation.visibility = View.GONE
+        val layoutParams = binding.flMainView.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+        binding.flMainView.layoutParams = layoutParams
+    }
+
+    override fun onPostFragmentDismissed() {
+        binding.bvMainBottomNavigation.visibility = View.VISIBLE
+        val layoutParams = binding.flMainView.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.bottomToTop = binding.bvMainBottomNavigation.id
+        binding.flMainView.layoutParams = layoutParams
+    }
+
+
 //    // 추후 삭제할께요 ㅎ;
 //    private fun testRetrofit(){
 //        val service = KakaoRetroFit.kakaoKeyWordService
@@ -60,4 +77,9 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            }
 //        }
+}
+
+interface OnPostFragmentInteractionListener {
+    fun onPostFragmentDisplayed()
+    fun onPostFragmentDismissed()
 }
