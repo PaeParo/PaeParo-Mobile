@@ -109,6 +109,7 @@ class PostFragment : Fragment() {
         binding.ivPostLike.startAnimation(AnimationUtils.loadAnimation(context, R.anim.like_scale))
         binding.tvPostRegion.text = post.region
         binding.tvPostTitle.text = post.title
+        binding.tvPostTags.text = post.tags.joinToString(separator = "   ") { "#$it" }
         binding.tvPostDescription.text = post.description
         binding.tvPostLikeCount.text = post.likes.toString()
 
