@@ -13,6 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.Timestamp
@@ -116,7 +117,7 @@ class PostFragment : Fragment() {
         // 좋아요 버튼 Listener 추가 및 중복 처리 방지
         binding.llPostLike.setOnClickListener(object : View.OnClickListener {
             private var lastClickTime = 0L
-            private val intervalMillis = 300L
+            private val intervalMillis = 1000L
 
             override fun onClick(v: View) {
                 val currentTimeMillis = System.currentTimeMillis()
@@ -173,8 +174,20 @@ class PostFragment : Fragment() {
             }
         })
 
+        // 게시물 내용 확장 Listener 추가
+        binding.tvPostShowAllText.setOnClickListener {
+            binding.tvPostDescription.maxLines = Integer.MAX_VALUE
+            binding.tvPostDescription.ellipsize = null
+            binding.tvPostShowAllText.visibility = View.GONE
+        }
+
+        // 댓글 추가 버튼 Listener 추가
         binding.ivPostAddComment.setOnClickListener { view ->
             if (view.tag == R.drawable.ic_send) {
+                (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+                    binding.edtPostCommentInput.windowToken,
+                    0
+                )
                 lifecycleScope.launch {
                     val result = FirebaseManager.createComment(
                         Comment(
@@ -253,6 +266,20 @@ class PostFragment : Fragment() {
         binding.svPostImages.setIndicatorAnimation(IndicatorAnimationType.WORM)
         binding.svPostImages.setSliderTransformAnimation(SliderAnimations.FADETRANSFORMATION)
         binding.svPostImages.startAutoCycle()
+
+        binding.tvPostDescription.post {
+            val layout = binding.tvPostDescription.layout
+            if (layout != null) {
+                val lines = layout.lineCount
+                if (lines > 0) {
+                    if (layout.getEllipsisCount(lines - 1) > 0) {
+                        binding.tvPostShowAllText.visibility = View.VISIBLE
+                    } else {
+                        binding.tvPostShowAllText.visibility = View.GONE
+                    }
+                }
+            }
+        }
 
         // UI 값 설정
         binding.ivPostLike.startAnimation(AnimationUtils.loadAnimation(context, R.anim.like_scale))
