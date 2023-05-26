@@ -6,20 +6,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.activity.MainActivity
 import com.paeparo.paeparo_mobile.activity.OnPostFragmentInteractionListener
 import com.paeparo.paeparo_mobile.adapter.PostImageAdapter
+import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.FragmentPostBinding
+import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.Post
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
+import kotlinx.coroutines.launch
 
 class PostFragment : Fragment() {
     private var listener: OnPostFragmentInteractionListener? = null
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
 
+    private var liked = false
     private lateinit var post: Post
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +67,62 @@ class PostFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
+        // 좋아요 버튼 Listener 추가 및 중복 처리 방지
+        binding.llPostLike.setOnClickListener(object : View.OnClickListener {
+            private var lastClickTime = 0L
+            private val intervalMillis = 300L
+
+            override fun onClick(v: View) {
+                val currentTimeMillis = System.currentTimeMillis()
+                if (currentTimeMillis - lastClickTime >= intervalMillis) {
+                    lastClickTime = currentTimeMillis
+
+                    lifecycleScope.launch {
+                        if (!liked) { // 현재 게시물을 좋아요 하지 않은 상태일 경우
+                            if (FirebaseManager.likePost(
+                                    post.postId,
+                                    requireContext().getPaeParo().userId
+                                ).isSuccess
+                            ) {
+                                binding.ivPostLike.setImageResource(R.drawable.ic_like)
+                                post.likes += 1
+                                binding.tvPostLikeCount.text = post.likes.toString()
+                                liked = true
+                            }
+                        } else { // 현재 게시물을 좋아요 한 상태일 경우
+                            if (FirebaseManager.cancelLikePost(
+                                    post.postId,
+                                    requireContext().getPaeParo().userId
+                                ).isSuccess
+                            ) {
+                                binding.ivPostLike.setImageResource(R.drawable.ic_like_empty)
+                                post.likes -= 1
+                                binding.tvPostLikeCount.text = post.likes.toString()
+                                liked = false
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        binding.ivPostLike.startAnimation(AnimationUtils.loadAnimation(context, R.anim.like_scale))
         binding.tvPostRegion.text = post.region
+        binding.tvPostTitle.text = post.title
+        binding.tvPostDescription.text = post.description
+        binding.tvPostLikeCount.text = post.likes.toString()
+
+        lifecycleScope.launch {
+            val likedResult =
+                FirebaseManager.isPostLikedByUser(requireContext().getPaeParo().userId, post.postId)
+            liked = if (likedResult.isSuccess && likedResult.data!!) {
+                binding.ivPostLike.setImageResource(R.drawable.ic_like)
+                true
+            } else {
+                binding.ivPostLike.setImageResource(R.drawable.ic_like_empty)
+                false
+            }
+        }
     }
 
     override fun onDestroyView() {
