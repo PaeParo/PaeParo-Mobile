@@ -25,7 +25,7 @@
         app:sliderIndicatorRadius="1.5dp"
         app:sliderIndicatorSelectedColor="@color/gray_dark"
         app:sliderIndicatorUnselectedColor="@color/gray_light"
-        app:sliderScrollTimeInSec="3"
+        app:sliderScrollTimeInSec="2"
         app:sliderStartAutoCycle="true" />
 
     <ImageView
