@@ -27,7 +27,11 @@ class CommentAdapter :
     inner class ViewHolder(private val binding: ItemCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(comment: Comment) {
-            ImageUtil.displayImageFromUrl(binding.ivCommentUserThumbnail, comment.userThumbnail)
+            ImageUtil.displayImageFromUrl(
+                binding.ivCommentUserThumbnail,
+                comment.userThumbnail,
+                1000
+            )
             binding.tvCommentNickname.text = comment.nickname
             binding.tvCommentContent.text = comment.content
         }
