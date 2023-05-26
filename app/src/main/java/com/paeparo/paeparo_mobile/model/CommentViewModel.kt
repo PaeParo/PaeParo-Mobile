@@ -26,12 +26,18 @@ class CommentViewModel(private val postId: String) : ViewModel() {
     private val _newCommentList = MutableLiveData<List<Comment>>()
     val newCommentList: LiveData<List<Comment>> = _newCommentList
 
+    var resetList: Boolean = false
+
     private var loadCommentsJob: Job? = null
 
     /**
      * 새로운 댓글 목록을 가져오는 함수
      */
-    fun loadComments() {
+    fun loadComments(resetList: Boolean) {
+        this.resetList = resetList
+        if(resetList) {
+            lastVisibleComment = null
+        }
         // 이전에 실행 중이던 작업이 있다면 취소
         loadCommentsJob?.cancel()
         loadCommentsJob = viewModelScope.launch {

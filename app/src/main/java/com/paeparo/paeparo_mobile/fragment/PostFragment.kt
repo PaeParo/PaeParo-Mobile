@@ -119,7 +119,7 @@ class PostFragment : Fragment() {
             }
         }
 
-        commentViewModel.loadComments()
+        commentViewModel.loadComments(true)
     }
 
     override fun onAttach(context: Context) {
@@ -140,7 +140,11 @@ class PostFragment : Fragment() {
     private fun setupCommentViewModel() {
         commentViewModel = CommentViewModel(post.postId)
         commentViewModel.newCommentList.observe(viewLifecycleOwner) { commentList ->
-            commentAdapter.addCommentList(commentList)
+            if (commentViewModel.resetList) {
+                commentAdapter.replaceCommentList(commentList)
+            } else {
+                commentAdapter.addCommentList(commentList)
+            }
         }
     }
 
@@ -168,7 +172,7 @@ class PostFragment : Fragment() {
             lifecycleScope.launch {
                 val tripResult = FirebaseManager.getTrip(post.tripId)
 
-                if(tripResult.isSuccess){
+                if (tripResult.isSuccess) {
                     val context = it.context
                     val intent = Intent(context, PlanActivity::class.java)
                     with(Bundle()) {
@@ -223,11 +227,9 @@ class PostFragment : Fragment() {
 
         binding.edtPostCommentInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // 텍스트가 바뀌기 전에 호출됩니다.
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                // 텍스트가 바뀌는 동안에 호출됩니다.
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -274,7 +276,7 @@ class PostFragment : Fragment() {
                         binding.ivPostAddComment.setImageResource(R.drawable.ic_send_disabled)
                         binding.ivPostAddComment.tag = R.drawable.ic_send_disabled
 
-                        commentAdapter.addMyComment(comment)
+                        commentViewModel.loadComments(true)
                     }
                 }
             }
@@ -290,7 +292,7 @@ class PostFragment : Fragment() {
                     layoutManager.findLastVisibleItemPosition()
 
                 if (layoutManager.itemCount <= (lastVisibleItem + 4) && commentAdapter.itemCount > 1) {
-                    commentViewModel.loadComments()
+                    commentViewModel.loadComments(false)
                 }
             }
         })
