@@ -10,7 +10,7 @@
         android:id="@+id/sv_post_images"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="H,4:3"
+        app:layout_constraintDimensionRatio="H,5:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -69,13 +69,75 @@
         app:layout_constraintTop_toTopOf="@id/iv_post_place_icon"
         tools:text="제주도" />
 
+    <TextView
+        android:id="@+id/tv_post_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@id/ll_post_like"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sv_post_images"
+        tools:text="제주도 여행" />
+
+    <TextView
+        android:id="@+id/tv_post_tags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="2"
+        android:textColor="@color/gray_dark"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/ll_post_like"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_post_title"
+        tools:text="#태그1   #태그2   #태그3   #태그4   #태그5" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_post_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/tv_post_tags"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_post_title">
+
+        <ImageView
+            android:id="@+id/iv_post_like"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:contentDescription="@string/sample_text_like"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_like_empty" />
+
+        <TextView
+            android:id="@+id/tv_post_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            tools:text="123" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/cl_post_comment_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sv_post_images">
+        app:layout_constraintTop_toBottomOf="@id/tv_post_tags">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -83,96 +145,32 @@
             android:background="@color/brand_color"
             android:gravity="center">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="16dp"
                 android:paddingBottom="12dp"
                 app:layout_scrollFlags="scroll|enterAlways">
 
                 <TextView
-                    android:id="@+id/tv_post_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp"
-                    app:layout_constraintEnd_toStartOf="@id/ll_post_like"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="제주도 여행" />
-
-                <TextView
-                    android:id="@+id/tv_post_tags"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:maxLines="2"
-                    android:textColor="@color/gray_dark"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toStartOf="@id/ll_post_like"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_post_title"
-                    tools:text="#태그1   #태그2   #태그3   #태그4   #태그5" />
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/ll_post_like"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_post_tags"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_post_title">
-
-                    <ImageView
-                        android:id="@+id/iv_post_like"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_margin="4dp"
-                        android:contentDescription="@string/sample_text_like"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_like_empty" />
-
-                    <TextView
-                        android:id="@+id/tv_post_like_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"
-                        tools:text="123" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <TextView
                     android:id="@+id/tv_post_description"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="12dp"
                     android:layout_marginBottom="12dp"
                     android:ellipsize="end"
                     android:maxLines="3"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/tv_post_show_all_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_post_tags"
                     tools:text="제주도 여행을 다녀왔습니다." />
 
                 <TextView
                     android:id="@+id/tv_post_show_all_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:paddingStart="32dp"
@@ -181,12 +179,9 @@
                     android:paddingBottom="4dp"
                     android:text="@string/sample_text_show_all_text"
                     android:textColor="@color/gray_light"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    android:textSize="16sp" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -195,7 +190,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingStart="12dp"
-            android:paddingTop="16dp"
+            android:paddingTop="8dp"
             android:paddingEnd="12dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:itemCount="10"
