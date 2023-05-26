@@ -14,6 +14,7 @@ data class Comment(
     @set:PropertyName("user_id") @get:PropertyName("user_id") @SerializedName("user_id") var userId: String = "",
     @set:PropertyName("nickname") @get:PropertyName("nickname") @SerializedName("nickname") var nickname: String = "",
     @set:PropertyName("created_at") @get:PropertyName("created_at") @SerializedName("created_at") var createdAt: Timestamp = Timestamp.now(),
+    @set:PropertyName("user_thumbnail") @get:PropertyName("user_thumbnail") @SerializedName("user_thumbnail") var userThumbnail: String = "",
     @set:PropertyName("content") @get:PropertyName("content") @SerializedName("content") var content: String = ""
 ) {
     fun toMapWithoutCommentId(): Map<String, Any?> {
