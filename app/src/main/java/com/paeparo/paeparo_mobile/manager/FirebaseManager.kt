@@ -1026,6 +1026,26 @@ object FirebaseManager {
     }
 
     /**
+     * 특정 사용자가 특정 게시물을 좋아요 했는지 확인하는 함수
+     *
+     * @param userId 사용자 ID
+     * @param postId 게시물 ID
+     * @return Success Data: Boolean / Failure Type: CLIENT_ERROR & Error Object
+     */
+    suspend fun isPostLikedByUser(userId: String, postId: String): FirebaseResult<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val likedPosts = firestoreUsersRef.document(userId).get().await()
+                    .get("liked_posts") as? List<String> ?: emptyList()
+
+                FirebaseResult.success(data = likedPosts.contains(postId))
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+    /**
      * 특정 게시물을 수정하는 함수
      *
      * @param postId 수정할 게시물 ID
