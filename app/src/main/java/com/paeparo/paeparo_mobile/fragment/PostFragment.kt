@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.paeparo.paeparo_mobile.activity.MainActivity
 import com.paeparo.paeparo_mobile.activity.OnPostFragmentInteractionListener
+import com.paeparo.paeparo_mobile.adapter.PostImageAdapter
 import com.paeparo.paeparo_mobile.databinding.FragmentPostBinding
 import com.paeparo.paeparo_mobile.model.Post
-import com.paeparo.paeparo_mobile.util.ImageUtil
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
+import com.smarteist.autoimageslider.SliderAnimations
 
 class PostFragment : Fragment() {
     private var listener: OnPostFragmentInteractionListener? = null
@@ -42,8 +44,11 @@ class PostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.ivPostMainImage.transitionName = "transition_${post.postId}"
-        ImageUtil.displayImageFromUrl(binding.ivPostMainImage, post.images[0])
+        binding.svPostImages.transitionName = "transition_${post.postId}"
+        binding.svPostImages.setSliderAdapter(PostImageAdapter(post.images))
+        binding.svPostImages.setIndicatorAnimation(IndicatorAnimationType.WORM)
+        binding.svPostImages.setSliderTransformAnimation(SliderAnimations.FADETRANSFORMATION)
+        binding.svPostImages.startAutoCycle()
 
         binding.ivPostBack.setOnClickListener {
             listener?.onPostFragmentDismissed()

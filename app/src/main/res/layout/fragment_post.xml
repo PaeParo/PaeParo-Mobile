@@ -6,15 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".fragment.PostFragment">
 
-    <ImageView
-        android:id="@+id/iv_post_main_image"
+    <com.smarteist.autoimageslider.SliderView
+        android:id="@+id/sv_post_images"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:sliderAnimationDuration="600"
+        app:sliderAutoCycleDirection="back_and_forth"
+        app:sliderAutoCycleEnabled="true"
+        app:sliderIndicatorAnimationDuration="600"
+        app:sliderIndicatorGravity="center_horizontal|bottom"
+        app:sliderIndicatorMargin="15dp"
+        app:sliderIndicatorOrientation="horizontal"
+        app:sliderIndicatorPadding="2dp"
+        app:sliderIndicatorRadius="2dp"
+        app:sliderIndicatorSelectedColor="@color/gray_dark"
+        app:sliderIndicatorUnselectedColor="@color/gray_light"
+        app:sliderScrollTimeInSec="3"
+        app:sliderStartAutoCycle="true" />
 
     <ImageView
         android:id="@+id/iv_post_back"
