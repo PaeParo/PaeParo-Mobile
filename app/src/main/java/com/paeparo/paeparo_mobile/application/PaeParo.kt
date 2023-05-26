@@ -27,6 +27,11 @@ class PaeParo : Application() {
     var nickname: String = ""
 
     /**
+     * 로그인한 사용자 프로필
+     */
+    var thumbnail: String = ""
+
+    /**
      * Application 생성 시 실행되며 FirebaseApp 및 Manager 클래스 초기화
      */
     override fun onCreate() {
@@ -52,6 +57,7 @@ class PaeParo : Application() {
     fun clearUserInfo() {
         userId = ""
         nickname = ""
+        thumbnail = ""
     }
 }
 
