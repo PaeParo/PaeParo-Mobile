@@ -1,9 +1,13 @@
 package com.paeparo.paeparo_mobile.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -20,6 +24,7 @@ import com.paeparo.paeparo_mobile.model.Post
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class PostFragment : Fragment() {
     private var listener: OnPostFragmentInteractionListener? = null
@@ -48,6 +53,7 @@ class PostFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -106,6 +112,53 @@ class PostFragment : Fragment() {
             }
         })
 
+        // Gesture Detector 추가
+        val gestureDetector =
+            GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+
+                override fun onDown(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onFling(
+                    e1: MotionEvent,
+                    e2: MotionEvent,
+                    velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+                    var result = false
+                    try {
+                        val diffY = e2.y - e1.y
+                        val diffX = e2.x - e1.x
+                        if (abs(diffY) > abs(diffX)) {
+                            if (abs(diffY) > Resources.getSystem().displayMetrics.heightPixels / 3 && abs(
+                                    velocityY
+                                ) > 100
+                            ) {
+                                if (diffY > 0) {
+                                    listener?.onPostFragmentDismissed()
+                                    parentFragmentManager.popBackStack()
+                                }
+                                result = true
+                            }
+                        }
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                    return result
+                }
+            })
+
+        binding.root.setOnTouchListener { v, event ->
+            if (gestureDetector.onTouchEvent(event)) {
+                v.performClick()
+                true
+            } else {
+                false
+            }
+        }
+
+        // UI 값 설정
         binding.ivPostLike.startAnimation(AnimationUtils.loadAnimation(context, R.anim.like_scale))
         binding.tvPostRegion.text = post.region
         binding.tvPostTitle.text = post.title
