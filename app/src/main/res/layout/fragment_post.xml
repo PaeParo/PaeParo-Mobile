@@ -43,6 +43,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:id="@+id/iv_post_trip_schedule"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_circular_selectable_item"
+        android:clickable="true"
+        android:contentDescription="@string/sample_text_post_trip_schedule"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_post_trip_schedule"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/iv_post_place_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"

@@ -2,6 +2,7 @@ package com.paeparo.paeparo_mobile.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
@@ -14,14 +15,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.paeparo.paeparo_mobile.R
-import com.paeparo.paeparo_mobile.activity.MainActivity
 import com.paeparo.paeparo_mobile.activity.OnPostFragmentInteractionListener
+import com.paeparo.paeparo_mobile.activity.PlanActivity
 import com.paeparo.paeparo_mobile.adapter.CommentAdapter
 import com.paeparo.paeparo_mobile.adapter.PostImageAdapter
 import com.paeparo.paeparo_mobile.application.getPaeParo
@@ -30,6 +33,7 @@ import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.Comment
 import com.paeparo.paeparo_mobile.model.CommentViewModel
 import com.paeparo.paeparo_mobile.model.Post
+import com.paeparo.paeparo_mobile.model.Trip
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
 import kotlinx.coroutines.launch
@@ -71,6 +75,15 @@ class PostFragment : Fragment() {
         } else {
             arguments?.getParcelable("post")!!
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    listener?.onPostFragmentDismissed()
+                    parentFragmentManager.popBackStack()
+                }
+            })
     }
 
     override fun onCreateView(
@@ -78,7 +91,7 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPostBinding.inflate(inflater, container, false)
-        (activity as MainActivity).onPostFragmentDisplayed()
+        listener?.onPostFragmentDisplayed()
         return binding.root
     }
 
@@ -148,6 +161,25 @@ class PostFragment : Fragment() {
         binding.ivPostBack.setOnClickListener {
             listener?.onPostFragmentDismissed()
             parentFragmentManager.popBackStack()
+        }
+
+        // 게시물과 연결된 여행 일정 버튼 Listener 추가
+        binding.ivPostTripSchedule.setOnClickListener {
+            lifecycleScope.launch {
+                val tripResult = FirebaseManager.getTrip(post.tripId)
+
+                if(tripResult.isSuccess){
+                    val context = it.context
+                    val intent = Intent(context, PlanActivity::class.java)
+                    with(Bundle()) {
+                        this.putParcelable("trip", tripResult.data as Trip)
+                        intent.putExtra("tripBundle", this)
+                    }
+                    context.startActivity(intent)
+                } else {
+                    Snackbar.make(it, "여행 일정을 불러오지 못했습니다", Snackbar.LENGTH_SHORT).show()
+                }
+            }
         }
 
         // 좋아요 버튼 Listener 추가 및 중복 처리 방지
@@ -248,6 +280,7 @@ class PostFragment : Fragment() {
             }
         }
 
+        // 댓글 목록 최하단 스크롤 시 다음 댓글 목록 불러오는 Listener 등록
         binding.rvPostCommentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)

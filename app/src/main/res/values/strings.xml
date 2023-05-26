@@ -9,6 +9,7 @@
     <string name="hint_write_comment">댓글 작성…</string>
     <string name="desc_write_comment">댓글 추가</string>
     <string name="sample_text_show_all_text">펼쳐서 내용보기</string>
+    <string name="sample_text_post_trip_schedule">여행 일정</string>
 
     <string name="sample_text_tv_nickname_name_left">_____</string>
     <string name="sample_text_tv_nickname_name_right"> 님,</string>
