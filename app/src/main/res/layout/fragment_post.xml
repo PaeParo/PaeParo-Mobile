@@ -148,6 +148,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@id/cl_post_comment_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -163,7 +164,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="16dp"
                 android:paddingBottom="12dp"
                 app:layout_scrollFlags="scroll|enterAlways">
 
@@ -173,7 +173,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="12dp"
                     android:ellipsize="end"
                     android:maxLines="3"
                     android:textColor="#FFFFFF"
@@ -185,6 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="12dp"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:paddingStart="32dp"
