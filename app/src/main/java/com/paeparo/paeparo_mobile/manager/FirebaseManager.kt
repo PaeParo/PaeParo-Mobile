@@ -181,6 +181,7 @@ object FirebaseManager {
 
                     if (loginResult.isSuccess) {
                         context.getPaeParo().userId = authResult.user!!.uid
+                        context.getPaeParo().thumbnail = authResult.user!!.photoUrl.toString()
                         if (loginResult.type != FirebaseConstants.ResponseCodes.NICKNAME_NOT_SET) {
                             context.getPaeParo().nickname = loginResult.data!!
                         }
@@ -1118,28 +1119,28 @@ object FirebaseManager {
      * 특정 게시물의 댓글 목록을 불러오는 함수
      *
      * @param postId 댓글을 불러올 게시물 ID
-     * @param startCommentId 시작 댓글 ID (null일 경우 가장 최신 댓글이 시작)
+     * @param startCommentSnapshot 시작 댓글 DocumentSnapshot (null일 경우 가장 최신 댓글이 시작)
      * @param limit 불러올 댓글 수
      * @return Success Data: Comment List / Failure Type: CLIENT_ERROR & Error Object
      */
-    suspend fun getPostcommentsInRange(
+    suspend fun getPostCommentsInRange(
         postId: String,
-        startCommentId: String?,
-        limit: Int
-    ): FirebaseResult<List<Comment>> {
+        startCommentSnapshot: DocumentSnapshot? = null,
+        limit: Long
+    ): FirebaseResult<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             try {
                 val commentList = mutableListOf<Comment>()
 
-                val commentListRef = if (startCommentId == null) {
+                val commentListRef = if (startCommentSnapshot == null) {
                     firestoreCommentsRef.whereEqualTo("post_id", postId)
-                        .orderBy("created_at", Query.Direction.DESCENDING).limit(limit.toLong())
+                        .orderBy("created_at", Query.Direction.DESCENDING).limit(limit)
                         .get().await()
                 } else {
                     firestoreCommentsRef.whereEqualTo("post_id", postId)
                         .orderBy("created_at", Query.Direction.DESCENDING)
-                        .startAfter(startCommentId)
-                        .limit(limit.toLong()).get().await()
+                        .startAfter(startCommentSnapshot)
+                        .limit(limit).get().await()
                 }
 
                 commentListRef.documents.forEach {
@@ -1148,7 +1149,12 @@ object FirebaseManager {
                     commentList.add(comment)
                 }
 
-                FirebaseResult.success(data = commentList)
+                FirebaseResult.success(
+                    data = mapOf(
+                        "comments" to commentList,
+                        "last_comment_snapshot" to commentListRef.last()
+                    )
+                )
             } catch (e: Exception) {
                 FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
             }
