@@ -1165,7 +1165,7 @@ object FirebaseManager {
             try {
                 val commentRef = firestoreCommentsRef.document()
 
-                commentRef.set(comment.toMapWithoutCommentId()).await()
+                commentRef.set(comment).await()
 
                 FirebaseResult.success(data = commentRef.id)
             } catch (e: Exception) {
