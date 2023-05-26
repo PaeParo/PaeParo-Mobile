@@ -35,15 +35,15 @@ class MainActivity : AppCompatActivity(), OnPostFragmentInteractionListener {
                 )
                 when (item.itemId) {
                     R.id.community_fragment -> {
-                        ft.replace(R.id.fl_main_view, communityFragment).addToBackStack(null).commit()
+                        ft.replace(R.id.fl_main_view, communityFragment).commit()
                     }
 
                     R.id.trip_fragment -> {
-                        ft.replace(R.id.fl_main_view, tripFragment).addToBackStack(null).commit()
+                        ft.replace(R.id.fl_main_view, tripFragment).commit()
                     }
 
                     R.id.mypage_fragment -> {
-                        ft.replace(R.id.fl_main_view, myHomeFragment).addToBackStack(null).commit()
+                        ft.replace(R.id.fl_main_view, myHomeFragment).commit()
                     }
                 }
                 currentTabId = item.itemId
