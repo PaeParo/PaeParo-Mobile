@@ -38,8 +38,35 @@
         android:clickable="true"
         android:contentDescription="@string/sample_text_btn_back"
         android:scaleType="fitCenter"
-        android:src="@drawable/baseline_arrow_back_24"
+        android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_post_place_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/sample_text_item_trip_place_icon_desc"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_place"
+        app:layout_constraintBottom_toBottomOf="@id/sv_post_images"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_post_region"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_post_place_icon"
+        app:layout_constraintStart_toEndOf="@id/iv_post_place_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_post_place_icon"
+        tools:text="제주도" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

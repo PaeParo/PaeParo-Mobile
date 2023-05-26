@@ -30,10 +30,17 @@ class PostAdapter(private val onPostClickListener: OnPostClickListener) :
     inner class ViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(post: Post) {
-            binding.ivItemPostMainImage.transitionName = "transition_${post.postId}"
+            binding.ivItemPostMainImage.transitionName = "transition_image_${post.postId}"
+            binding.ivItemPostPlaceIcon.transitionName = "transition_icon_${post.postId}"
+            binding.tvItemPostRegion.transitionName = "transition_text_${post.postId}"
 
             binding.root.setOnClickListener {
-                onPostClickListener.onPostClicked(post, binding.ivItemPostMainImage)
+                onPostClickListener.onPostClicked(
+                    post,
+                    binding.ivItemPostMainImage,
+                    binding.ivItemPostPlaceIcon,
+                    binding.tvItemPostRegion
+                )
             }
             binding.tvItemPostRegion.text = post.region
             if (post.images.isNotEmpty()) { // 게시물에 연결된 이미지가 있을 경우

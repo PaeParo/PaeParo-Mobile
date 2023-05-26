@@ -44,16 +44,23 @@ class PostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.svPostImages.transitionName = "transition_${post.postId}"
+        // Transition 구성
+        binding.svPostImages.transitionName = "transition_image_${post.postId}"
+        binding.tvPostRegion.transitionName = "transition_text_${post.postId}"
+
+        // Image Slider 구성
         binding.svPostImages.setSliderAdapter(PostImageAdapter(post.images))
         binding.svPostImages.setIndicatorAnimation(IndicatorAnimationType.WORM)
         binding.svPostImages.setSliderTransformAnimation(SliderAnimations.FADETRANSFORMATION)
         binding.svPostImages.startAutoCycle()
 
+        // 뒤로가기 버튼 Listener 추가
         binding.ivPostBack.setOnClickListener {
             listener?.onPostFragmentDismissed()
             parentFragmentManager.popBackStack()
         }
+
+        binding.tvPostRegion.text = post.region
     }
 
     override fun onDestroyView() {

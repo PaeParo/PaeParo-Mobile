@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -142,7 +143,12 @@ class CommunityFragment : Fragment(), OnPostClickListener {
      *
      * @param post 선택된 Post 아이템
      */
-    override fun onPostClicked(post: Post, imageView: ImageView) {
+    override fun onPostClicked(
+        post: Post,
+        postImageView: ImageView,
+        regionIconImageView: ImageView,
+        postRegionTextView: TextView
+    ) {
         val existingPostFragment = parentFragmentManager.findFragmentByTag("PostFragment")
         val transaction = parentFragmentManager.beginTransaction()
         if (existingPostFragment != null) { // 이미 PostFragment가 존재할 경우 제거
@@ -151,7 +157,7 @@ class CommunityFragment : Fragment(), OnPostClickListener {
 
         // PostFragment 객체 생성
         val postFragment = PostFragment.newInstance(post)
-        
+
         // Fragment 전환 시 사용될 Transition 구성
         val enterTransition =
             TransitionInflater.from(context).inflateTransition(android.R.transition.move)
@@ -165,7 +171,9 @@ class CommunityFragment : Fragment(), OnPostClickListener {
             .hide(this)
             .addToBackStack(null)
             .setReorderingAllowed(true)
-            .addSharedElement(imageView, "transition_${post.postId}")
+            .addSharedElement(postImageView, "transition_image_${post.postId}")
+            .addSharedElement(regionIconImageView, "transition_icon_${post.postId}")
+            .addSharedElement(postRegionTextView, "transition_text_${post.postId}")
             .commit()
     }
 }
@@ -176,5 +184,10 @@ class CommunityFragment : Fragment(), OnPostClickListener {
  * @constructor Create empty On post click listener
  */
 interface OnPostClickListener {
-    fun onPostClicked(post: Post, imageView: ImageView)
+    fun onPostClicked(
+        post: Post,
+        postImageView: ImageView,
+        regionIconImageView: ImageView,
+        postRegionTextView: TextView
+    )
 }
