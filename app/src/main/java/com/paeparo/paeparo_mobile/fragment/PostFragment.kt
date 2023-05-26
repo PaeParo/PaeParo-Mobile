@@ -16,15 +16,19 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.activity.MainActivity
 import com.paeparo.paeparo_mobile.activity.OnPostFragmentInteractionListener
+import com.paeparo.paeparo_mobile.adapter.CommentAdapter
 import com.paeparo.paeparo_mobile.adapter.PostImageAdapter
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.FragmentPostBinding
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.Comment
+import com.paeparo.paeparo_mobile.model.CommentViewModel
 import com.paeparo.paeparo_mobile.model.Post
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
@@ -32,12 +36,32 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class PostFragment : Fragment() {
+    /**
+     * PostFragment 표시 시 BottomNavigationView을 숨기기 위한 Listener
+     */
     private var listener: OnPostFragmentInteractionListener? = null
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
 
+    /**
+     * 현재 게시물의 좋아요 여부
+     */
     private var liked = false
+
+    /**
+     * 표시할 Post 객체
+     */
     private lateinit var post: Post
+
+    /**
+     * CommentViewModel
+     */
+    private lateinit var commentViewModel: CommentViewModel
+
+    /**
+     * CommentAdapter
+     */
+    private lateinit var commentAdapter: CommentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +89,8 @@ class PostFragment : Fragment() {
         binding.svPostImages.transitionName = "transition_image_${post.postId}"
         binding.tvPostRegion.transitionName = "transition_text_${post.postId}"
 
+        setupCommentViewModel()
+        setupCommentAdapter()
         setupListener()
         setupUI()
 
@@ -79,11 +105,8 @@ class PostFragment : Fragment() {
                 false
             }
         }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        commentViewModel.loadComments()
     }
 
     override fun onAttach(context: Context) {
@@ -98,9 +121,22 @@ class PostFragment : Fragment() {
         listener = null
     }
 
-    override fun onPause() {
-        super.onPause()
-        listener?.onPostFragmentDismissed()
+    /**
+     * CommentViewModel 초기화 함수
+     */
+    private fun setupCommentViewModel() {
+        commentViewModel = CommentViewModel(post.postId)
+        commentViewModel.newCommentList.observe(viewLifecycleOwner) { commentList ->
+            commentAdapter.addCommentList(commentList)
+        }
+    }
+
+    /**
+     * CommentAdapter 초기화 함수
+     */
+    private fun setupCommentAdapter() {
+        commentAdapter = CommentAdapter()
+        binding.rvPostCommentList.adapter = commentAdapter
     }
 
     /**
@@ -189,14 +225,16 @@ class PostFragment : Fragment() {
                     0
                 )
                 lifecycleScope.launch {
+                    val comment = Comment(
+                        postId = post.postId,
+                        userId = requireContext().getPaeParo().userId,
+                        nickname = requireContext().getPaeParo().nickname,
+                        createdAt = Timestamp.now(),
+                        userThumbnail = requireContext().getPaeParo().thumbnail,
+                        content = binding.edtPostCommentInput.text.toString()
+                    )
                     val result = FirebaseManager.createComment(
-                        Comment(
-                            postId = post.postId,
-                            userId = requireContext().getPaeParo().userId,
-                            nickname = requireContext().getPaeParo().nickname,
-                            createdAt = Timestamp.now(),
-                            content = binding.edtPostCommentInput.text.toString()
-                        )
+                        comment
                     )
 
                     if (result.isSuccess) {
@@ -204,11 +242,25 @@ class PostFragment : Fragment() {
                         binding.ivPostAddComment.setImageResource(R.drawable.ic_send_disabled)
                         binding.ivPostAddComment.tag = R.drawable.ic_send_disabled
 
-                        // TODO: 댓글 추가 시 댓글 목록에 추가
+                        commentAdapter.addMyComment(comment)
                     }
                 }
             }
         }
+
+        binding.rvPostCommentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val lastVisibleItem =
+                    layoutManager.findLastVisibleItemPosition()
+
+                if (layoutManager.itemCount <= (lastVisibleItem + 4)) {
+                    commentViewModel.loadComments()
+                }
+            }
+        })
 
         // Gesture Detector 추가
         val gestureDetector =
@@ -288,6 +340,7 @@ class PostFragment : Fragment() {
         binding.tvPostTags.text = post.tags.joinToString(separator = "   ") { "#$it" }
         binding.tvPostDescription.text = post.description
         binding.tvPostLikeCount.text = post.likes.toString()
+        binding.rvPostCommentList.layoutManager = LinearLayoutManager(context)
     }
 
     companion object {
