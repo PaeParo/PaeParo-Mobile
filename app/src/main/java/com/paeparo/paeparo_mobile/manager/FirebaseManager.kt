@@ -583,7 +583,8 @@ object FirebaseManager {
     suspend fun getUserComments(userId: String): FirebaseResult<MutableList<Comment>> {
         return withContext(Dispatchers.IO) {
             try {
-                val commentsRef = firestoreCommentsRef.whereEqualTo("user_id", userId).get().await()
+                val commentsRef = firestoreCommentsRef.whereEqualTo("user_id", userId)
+                    .orderBy("created_at", Query.Direction.DESCENDING).get().await()
 
                 val comments = mutableListOf<Comment>()
                 for (commentRef in commentsRef) {
