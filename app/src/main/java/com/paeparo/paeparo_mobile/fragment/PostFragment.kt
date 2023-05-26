@@ -256,7 +256,7 @@ class PostFragment : Fragment() {
                 val lastVisibleItem =
                     layoutManager.findLastVisibleItemPosition()
 
-                if (layoutManager.itemCount <= (lastVisibleItem + 4)) {
+                if (layoutManager.itemCount <= (lastVisibleItem + 4) && commentAdapter.itemCount > 1) {
                     commentViewModel.loadComments()
                 }
             }
