@@ -6,6 +6,8 @@
     <string name="sample_text_login_title">여정의 시작을 PaeParo와 함께 해보세요</string>
     <string name="sample_text_post_image">게시물 사진</string>
     <string name="sample_text_like">좋아요</string>
+    <string name="hint_write_comment">댓글 작성…</string>
+    <string name="desc_write_comment">댓글 추가</string>
 
     <string name="sample_text_tv_nickname_name_left">_____</string>
     <string name="sample_text_tv_nickname_name_right"> 님,</string>
