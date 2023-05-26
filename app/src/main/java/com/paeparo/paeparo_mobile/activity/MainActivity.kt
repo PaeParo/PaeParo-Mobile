@@ -29,17 +29,21 @@ class MainActivity : AppCompatActivity(), OnPostFragmentInteractionListener {
         binding.bvMainBottomNavigation.setOnItemSelectedListener { item ->
             if (item.itemId != currentTabId) {
                 val ft = supportFragmentManager.beginTransaction()
+                ft.setCustomAnimations(
+                    R.anim.fade_in,  // 새로운 Fragment가 들어올 때의 애니메이션
+                    R.anim.fade_out   // 현재 Fragment가 나갈 때의 애니메이션
+                )
                 when (item.itemId) {
                     R.id.community_fragment -> {
-                        ft.replace(R.id.fl_main_view, communityFragment).commit()
+                        ft.replace(R.id.fl_main_view, communityFragment).addToBackStack(null).commit()
                     }
 
                     R.id.trip_fragment -> {
-                        ft.replace(R.id.fl_main_view, tripFragment).commit()
+                        ft.replace(R.id.fl_main_view, tripFragment).addToBackStack(null).commit()
                     }
 
                     R.id.mypage_fragment -> {
-                        ft.replace(R.id.fl_main_view, myHomeFragment).commit()
+                        ft.replace(R.id.fl_main_view, myHomeFragment).addToBackStack(null).commit()
                     }
                 }
                 currentTabId = item.itemId
@@ -48,6 +52,7 @@ class MainActivity : AppCompatActivity(), OnPostFragmentInteractionListener {
                 false
             }
         }
+
         binding.bvMainBottomNavigation.selectedItemId = R.id.trip_fragment
     }
 
