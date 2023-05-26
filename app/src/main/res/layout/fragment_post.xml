@@ -86,7 +86,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="12dp">
+                android:paddingBottom="12dp"
+                app:layout_scrollFlags="scroll|enterAlways">
 
                 <TextView
                     android:id="@+id/tv_post_title"
@@ -192,9 +193,13 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_post_comment_list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/cl_post_comment_input"
-            app:layout_constraintTop_toBottomOf="@id/tv_post_description" />
+            android:layout_height="match_parent"
+            android:paddingStart="12dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="12dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_comment" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
