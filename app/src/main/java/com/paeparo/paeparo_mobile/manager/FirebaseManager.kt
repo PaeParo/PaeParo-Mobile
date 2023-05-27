@@ -936,8 +936,9 @@ object FirebaseManager {
         return withContext(Dispatchers.IO) {
             try {
                 val eventList = mutableListOf<Event>()
-                val eventListRef =
-                    firestoreEventsRef.whereEqualTo("trip_id", tripId).get().await()
+
+                val tripEventRef = firestore.collection("events").document(tripId).get().await()
+                val eventListRef = tripEventRef.reference.collection("trip_events").get().await()
 
                 eventListRef.documents.forEach {
                     val event = it.toObject(Event::class.java)!!
@@ -951,6 +952,7 @@ object FirebaseManager {
             }
         }
     }
+
 
     /**
      * 2-10. 특정 여행에 속한 특정 사용자의 위치를 업데이트하는 함수
