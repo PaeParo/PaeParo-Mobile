@@ -31,7 +31,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
+import java.util.Date
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import com.paeparo.paeparo_mobile.model.User as PaeParoUser
 
 
@@ -681,6 +685,82 @@ object FirebaseManager {
     }
 
     /**
+     * 특정 여행 및 해당 여행에 포함된 일정을 특정 사용자에게로 복사하는 함수
+     *
+     * @param trip 복사할 여행 객체
+     * @param userId 사용자 ID
+     * @param startDate 복사된 여행의 시작 날짜
+     * @return Success Data: Trip ID / Failure Type: CLIENT_ERROR & Error Object
+     */
+    suspend fun cloneTrip(
+        trip: Trip,
+        userId: String,
+        startDate: Timestamp
+    ): FirebaseResult<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val daysDifference = ChronoUnit.DAYS.between(
+                    trip.startDate.toDate().toInstant().atZone(ZoneId.of("Asia/Seoul"))
+                        .toLocalDate(),
+                    startDate.toDate().toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDate()
+                )
+
+                val clonedTrip = trip.copy(
+                    tripId = "",
+                    startDate = startDate,
+                    endDate = Timestamp(
+                        Date(trip.endDate.toDate().time + TimeUnit.DAYS.toMillis(daysDifference))
+                    ),
+                    members = listOf(userId),
+                    status = Trip.TripStatus.PLANNING,
+                    invitations = listOf(),
+                )
+
+                val getEventsResult = getTripEvents(trip.tripId)
+                if (!getEventsResult.isSuccess) throw getEventsResult.error!!
+
+                val originalEvents = getEventsResult.data!!
+
+                val newTripId = firestoreTripsRef.document().id
+                clonedTrip.tripId = newTripId
+
+                firestore.runBatch { batch ->
+                    batch.set(firestoreTripsRef.document(newTripId), clonedTrip)
+
+                    originalEvents.forEach { originalEvent ->
+                        val clonedEvent = originalEvent.cloneWith(
+                            startTime = Timestamp(
+                                Date(
+                                    originalEvent.startTime.toDate().time + TimeUnit.DAYS.toMillis(
+                                        daysDifference
+                                    )
+                                )
+                            ),
+                            endTime = Timestamp(
+                                Date(
+                                    originalEvent.endTime.toDate().time + TimeUnit.DAYS.toMillis(
+                                        daysDifference
+                                    )
+                                )
+                            ),
+                        )
+
+                        val eventRef =
+                            firestoreEventsRef.document(newTripId).collection("trip_events")
+                                .document()
+                        batch.set(eventRef, clonedEvent)
+                    }
+                }.await()
+
+                FirebaseResult.success(data = newTripId)
+            } catch (e: Exception) {
+                FirebaseResult.failure(FirebaseConstants.ResponseCodes.CLIENT_ERROR, e)
+            }
+        }
+    }
+
+
+    /**
      * 2-03. 특정 여행을 수정하는 함수
      *
      * @param tripId 수정할 여행 ID
@@ -856,7 +936,9 @@ object FirebaseManager {
         return withContext(Dispatchers.IO) {
             try {
                 val eventList = mutableListOf<Event>()
-                val eventListRef = firestoreEventsRef.whereEqualTo("trip_id", tripId).get().await()
+
+                val tripEventRef = firestore.collection("events").document(tripId).get().await()
+                val eventListRef = tripEventRef.reference.collection("trip_events").get().await()
 
                 eventListRef.documents.forEach {
                     val event = it.toObject(Event::class.java)!!
@@ -870,6 +952,7 @@ object FirebaseManager {
             }
         }
     }
+
 
     /**
      * 2-10. 특정 여행에 속한 특정 사용자의 위치를 업데이트하는 함수
@@ -1054,7 +1137,10 @@ object FirebaseManager {
      * @param updateFields 수정할 필드
      * @return Success / Failure Type: POST_NOT_FOUND, SERVER_ERROR, CLIENT_ERROR & Error Object
      */
-    suspend fun updatePost(postId: String, updateFields: Map<String, Any?>): FirebaseResult<Unit> {
+    suspend fun updatePost(
+        postId: String,
+        updateFields: Map<String, Any?>
+    ): FirebaseResult<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = functions.getHttpsCallable("updatePost")
