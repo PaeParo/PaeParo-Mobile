@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), OnPostFragmentInteractionListener {
                 val ft = supportFragmentManager.beginTransaction()
                 ft.setCustomAnimations(
                     R.anim.fade_in,  // 새로운 Fragment가 들어올 때의 애니메이션
-                    R.anim.fade_out   // 현재 Fragment가 나갈 때의 애니메이션
+                    R.anim.fade_out   // 현재 Fragment가 나갈 때의 애니메이션.
                 )
                 when (item.itemId) {
                     R.id.community_fragment -> {
