@@ -24,6 +24,10 @@ open class Event(
         MEAL
     }
 
+    open fun cloneWith(startTime: Timestamp, endTime: Timestamp): Event {
+        return Event(eventId, name, type, startTime, endTime, budget)
+    }
+
     fun toMapWithoutEventId(): Map<String, Any?> {
         val serializedMap = FirestoreNamingUtil.toSerializedMap(this)
         return serializedMap.filterKeys { it != "event_id" }
@@ -46,13 +50,35 @@ open class Event(
 
 data class PlaceEvent(
     @set:PropertyName("place") @get:PropertyName("place") @SerializedName("place") var place: Place = Place(),
-) : Event()
+) : Event() {
+    override fun cloneWith(startTime: Timestamp, endTime: Timestamp): PlaceEvent {
+        return PlaceEvent(place).also {
+            it.name = name
+            it.type = type
+            it.startTime = startTime
+            it.endTime = endTime
+            it.budget = budget
+            it.eventId = eventId
+        }
+    }
+}
 
 data class MoveEvent(
     @set:PropertyName("mode") @get:PropertyName("mode") @SerializedName("mode") var mode: String = "",
     @set:PropertyName("origin") @get:PropertyName("origin") @SerializedName("origin") var origin: Place = Place(),
     @set:PropertyName("destination") @get:PropertyName("destination") @SerializedName("destination") var destination: Place = Place()
-) : Event()
+) : Event() {
+    override fun cloneWith(startTime: Timestamp, endTime: Timestamp): MoveEvent {
+        return MoveEvent(mode, origin, destination).also {
+            it.name = name
+            it.type = type
+            it.startTime = startTime
+            it.endTime = endTime
+            it.budget = budget
+            it.eventId = eventId
+        }
+    }
+}
 
 data class Place(
     @set:PropertyName("name") @get:PropertyName("name") @SerializedName("name") var name: String = "",
