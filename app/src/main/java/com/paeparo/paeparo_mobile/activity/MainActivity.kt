@@ -69,23 +69,6 @@ class MainActivity : AppCompatActivity(), OnPostFragmentInteractionListener {
         layoutParams.bottomToTop = binding.bvMainBottomNavigation.id
         binding.flMainView.layoutParams = layoutParams
     }
-
-
-//    // 추후 삭제할께요 ㅎ;
-//    private fun testRetrofit(){
-//        val service = KakaoRetroFit.kakaoKeyWordService
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val response = service.get(BuildConfig.KAKAO_API_KEY,"카카오프렌즈")
-//
-//            withContext(Dispatchers.Main){
-//                if(response.isSuccessful){
-//                                    }
-//                else {
-//                    Timber.d(response.code().toString()+"\n\n\n context : "+response.toString())
-//                }
-//            }
-//        }
 }
 
 interface OnPostFragmentInteractionListener {
