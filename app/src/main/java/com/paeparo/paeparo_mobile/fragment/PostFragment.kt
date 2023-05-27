@@ -39,6 +39,7 @@ import com.smarteist.autoimageslider.SliderAnimations
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+
 class PostFragment : Fragment() {
     /**
      * PostFragment 표시 시 BottomNavigationView을 숨기기 위한 Listener
@@ -225,6 +226,47 @@ class PostFragment : Fragment() {
             }
         })
 
+        binding.tvPostTags.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                v: View?,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int
+            ) {
+                if (bottom != oldBottom) {
+                    binding.tvPostTags.visibility = View.INVISIBLE
+                    binding.tvPostTags.removeOnLayoutChangeListener(this)
+                    val tagsList = post.tags
+                    val tagsLine1 = mutableListOf<String>()
+                    val tagsLine2 = mutableListOf<String>()
+
+                    var currentLine = tagsLine1
+
+                    while (tagsList.isNotEmpty()) {
+                        currentLine.add(tagsList.first())
+                        binding.tvPostTags.text = currentLine.joinToString("   ") { "#$it" }
+                        if (binding.tvPostTags.lineCount > 1) {
+                            currentLine.removeAt(currentLine.size - 1)
+                            currentLine = tagsLine2
+                        } else {
+                            tagsList.removeAt(0)
+                        }
+                    }
+
+                    binding.tvPostTags.text =
+                        tagsLine1.joinToString("   ") { "#$it" } + "\n" + tagsLine2.joinToString("   ") { "#$it" }
+                    binding.tvPostTags.addOnLayoutChangeListener(this)
+                    binding.tvPostTags.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        // 댓글 입력 영역 Listener 추가
         binding.edtPostCommentInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
@@ -334,6 +376,7 @@ class PostFragment : Fragment() {
                 }
             })
 
+        // 상단 -> 하단 스크롤 시 PostFragment 종료
         binding.root.setOnTouchListener { v, event ->
             if (gestureDetector.onTouchEvent(event)) {
                 v.performClick()
