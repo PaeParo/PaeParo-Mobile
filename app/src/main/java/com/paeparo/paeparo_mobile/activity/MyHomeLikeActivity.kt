@@ -36,18 +36,12 @@ class MyHomeLikeActivity : AppCompatActivity() {
             val likePosts = FirebaseManager.getUserLikedPosts(getPaeParo().userId)
             if(likePosts.isSuccess){
                 likeAdapter = MyHomeLikeAdapter(likePosts.data!!)
-                Timber.d("test"+likePosts.data)
                 binding.myhomeLikeRecyclerview.adapter = likeAdapter
             }else{
                 Timber.e("null like")
             }
         }
-
-        with(binding){
-            back.setOnClickListener {
-                finish()
-            }
-            like.setText("좋아요한 일정")
-        }
+        binding.back.setOnClickListener { finish() }
+        binding.like.text ="좋아요한 일정"
     }
 }
