@@ -15,7 +15,7 @@ class CommunityImagesAdapter(private var imageList: MutableList<String> = mutabl
         return CommunityViewHolder(binding)
     }
 
-    fun getTagList(): List<String> {
+    fun getImageList(): List<String> {
         return imageList
     }
 
