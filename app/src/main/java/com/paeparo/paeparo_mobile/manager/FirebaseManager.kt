@@ -937,8 +937,8 @@ object FirebaseManager {
             try {
                 val eventList = mutableListOf<Event>()
 
-                val tripEventRef = firestore.collection("events").document(tripId).get().await()
-                val eventListRef = tripEventRef.reference.collection("trip_events").get().await()
+                val eventListRef =
+                    firestoreEventsRef.document(tripId).collection("trip_events").get().await()
 
                 eventListRef.documents.forEach {
                     val event = it.toObject(Event::class.java)!!
