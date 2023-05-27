@@ -1,10 +1,13 @@
 package com.paeparo.paeparo_mobile.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.databinding.ItemMyhomeLikeBinding
 import com.paeparo.paeparo_mobile.model.Post
+import com.paeparo.paeparo_mobile.util.ImageUtil
+import java.text.SimpleDateFormat
 
 class MyHomeLikeAdapter(private var likedPostList: MutableList<Post>) :
     RecyclerView.Adapter<MyHomeLikeAdapter.MyHomeLikeViewHoloder>() {
@@ -23,13 +26,14 @@ class MyHomeLikeAdapter(private var likedPostList: MutableList<Post>) :
 
     class MyHomeLikeViewHoloder(private val binding: ItemMyhomeLikeBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(post: Post) {
-            with(binding) {
-                title.text = post.title // 제목
-                date.text = post.createdAt.toDate().toString()
-                likeNum.text = post.likes.toString() // 좋아요 수
-            }
+            val time = SimpleDateFormat("yyyy-MM-dd")
+            val toDate = time.format(post.createdAt.toDate())
+            Log.d("data",toDate)
+            ImageUtil.displayImageFromUrl(binding.bgLikeImage, post.images.toString())
+            binding.likeTitle.text = post.title
+            binding.time.text = toDate.toString()
+            binding.likeNum.text = post.likes.toString()
         }
     }
 }
