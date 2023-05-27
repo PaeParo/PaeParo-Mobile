@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.fragment
 
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -18,15 +19,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.activity.PlanActivity
 import com.paeparo.paeparo_mobile.adapter.InvitationAdapter
 import com.paeparo.paeparo_mobile.adapter.TripAdapter
+import com.paeparo.paeparo_mobile.adapter.TripClickListener
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.DialogInvitationListBinding
 import com.paeparo.paeparo_mobile.databinding.FragmentTripBinding
+import com.paeparo.paeparo_mobile.model.Trip
 import com.paeparo.paeparo_mobile.model.TripViewModel
 
 
-class TripFragment : Fragment() {
+class TripFragment : Fragment(), TripClickListener {
     private var _binding: FragmentTripBinding? = null
     private val binding get() = _binding!!
 
@@ -77,6 +81,13 @@ class TripFragment : Fragment() {
         tripViewModel.loadTrips(requireContext().getPaeParo().userId)
     }
 
+    override fun onTripClick(trip: Trip) {
+        val intent = Intent(context, PlanActivity::class.java)
+        val bundle = Bundle().apply { putParcelable("trip", trip) }
+        intent.putExtra("tripBundle", bundle)
+        startActivity(intent)
+    }
+
     /**
      * TripVieModel 초기화 함수
      */
@@ -110,7 +121,7 @@ class TripFragment : Fragment() {
                     R.id.btn_trip_create_trip
                 )
                     .setOnClickListener {
-                        val intent = android.content.Intent(
+                        val intent = Intent(
                             context,
                             com.paeparo.paeparo_mobile.activity.PlanGenerateActivity::class.java
                         )
@@ -125,7 +136,7 @@ class TripFragment : Fragment() {
                     R.id.btn_trip_create_trip
                 )
                     .setOnClickListener {
-                        val intent = android.content.Intent(
+                        val intent = Intent(
                             context,
                             com.paeparo.paeparo_mobile.activity.PlanGenerateActivity::class.java
                         )
@@ -157,7 +168,7 @@ class TripFragment : Fragment() {
      */
     private fun setupAdapter() {
         // TripAdapter 초기화
-        tripAdapter = TripAdapter()
+        tripAdapter = TripAdapter(this)
         binding.layoutTripExists.rvTripExistsTripList.layoutManager =
             LinearLayoutManager(context)
         binding.layoutTripExists.rvTripExistsTripList.adapter = tripAdapter

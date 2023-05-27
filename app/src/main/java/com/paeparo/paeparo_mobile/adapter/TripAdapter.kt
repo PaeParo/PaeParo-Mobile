@@ -1,12 +1,9 @@
 package com.paeparo.paeparo_mobile.adapter
 
-import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.R
-import com.paeparo.paeparo_mobile.activity.PlanActivity
 import com.paeparo.paeparo_mobile.databinding.ItemTripContentBinding
 import com.paeparo.paeparo_mobile.databinding.ItemTripHeaderBinding
 import com.paeparo.paeparo_mobile.model.Trip
@@ -19,7 +16,7 @@ import com.paeparo.paeparo_mobile.util.DateUtil
  *
  * @property tripList Trip 목록
  */
-class TripAdapter :
+class TripAdapter(private val listener: TripClickListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         /**
@@ -114,13 +111,7 @@ class TripAdapter :
             }
 
             binding.cvItemTripContentInfo.setOnClickListener {
-                val context = it.context
-                val intent = Intent(context, PlanActivity::class.java)
-                with(Bundle()) {
-                    this.putParcelable("trip", trip)
-                    intent.putExtra("tripBundle", this)
-                }
-                context.startActivity(intent)
+                listener.onTripClick(trip)
             }
         }
     }
@@ -156,4 +147,8 @@ class TripAdapter :
 
         notifyDataSetChanged()
     }
+}
+
+interface TripClickListener {
+    fun onTripClick(trip: Trip)
 }
