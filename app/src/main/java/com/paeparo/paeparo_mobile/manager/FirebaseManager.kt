@@ -705,9 +705,6 @@ object FirebaseManager {
                     startDate.toDate().toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDate()
                 )
 
-                // 일 수 차이 출력
-                Log.d("daysDifference", daysDifference.toString())
-
                 val clonedTrip = trip.copy(
                     tripId = "",
                     startDate = startDate,
