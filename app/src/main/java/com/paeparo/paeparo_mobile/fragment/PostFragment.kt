@@ -241,7 +241,7 @@ class PostFragment : Fragment() {
                 if (bottom != oldBottom) {
                     binding.tvPostTags.visibility = View.INVISIBLE
                     binding.tvPostTags.removeOnLayoutChangeListener(this)
-                    val tagsList = post.tags
+                    val tagsList = post.tags.toMutableList()
                     val tagsLine1 = mutableListOf<String>()
                     val tagsLine2 = mutableListOf<String>()
 
