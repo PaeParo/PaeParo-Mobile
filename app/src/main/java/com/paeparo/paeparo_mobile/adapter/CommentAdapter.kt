@@ -66,12 +66,12 @@ class CommentAdapter :
     }
 
     /**
-     * 내가 작성한 댓글을 최상단에 추가하는 함수
+     * 기존의 Comment 목록을 새로운 Comment 목록으로 교체하는 함수
      *
-     * @param comment 작성한 댓글
+     * @param commentList 새로운 Comment 목록
      */
-    fun addMyComment(comment: Comment) {
-        commentList.add(0, comment)
-        notifyItemInserted(0)
+    fun replaceCommentList(commentList: List<Comment>) {
+        this.commentList = commentList.toMutableList()
+        notifyDataSetChanged()
     }
 }

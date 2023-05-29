@@ -2,6 +2,10 @@ package com.paeparo.paeparo_mobile.manager
 
 import com.paeparo.paeparo_mobile.BuildConfig
 import com.paeparo.paeparo_mobile.model.KakaoMapModel.KaKaoResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -10,6 +14,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
+import timber.log.Timber
 
 /**
  * 키워드로 장소 검색하기
@@ -62,5 +67,19 @@ object KakaoRetroFit {
 
     val kakaoKeyWordService: KakaoKeyWordService by lazy {
         retrofit.create(KakaoKeyWordService::class.java)
+    }
+    private fun testRetrofit() {
+        val service = KakaoRetroFit.kakaoKeyWordService
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = service.get(BuildConfig.KAKAO_API_KEY, "카카오프렌즈")
+
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                } else {
+                    Timber.d(response.code().toString() + "\n\n\n context : " + response.toString())
+                }
+            }
+        }
     }
 }

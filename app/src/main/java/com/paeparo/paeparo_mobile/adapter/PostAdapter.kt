@@ -3,9 +3,10 @@ package com.paeparo.paeparo_mobile.adapter
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.databinding.ItemPostBinding
-import com.paeparo.paeparo_mobile.fragment.OnPostClickListener
 import com.paeparo.paeparo_mobile.model.Post
 import com.paeparo.paeparo_mobile.util.ImageUtil
 import kotlin.math.abs
@@ -96,4 +97,18 @@ class PostAdapter(private val onPostClickListener: OnPostClickListener) :
         postList.clear()
         notifyDataSetChanged()
     }
+}
+
+/**
+ * Post 아이템 클릭 리스너
+ *
+ * @constructor Create empty On post click listener
+ */
+interface OnPostClickListener {
+    fun onPostClicked(
+        post: Post,
+        postImageView: ImageView,
+        regionIconImageView: ImageView,
+        postRegionTextView: TextView
+    )
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.paeparo.paeparo_mobile.R
+import com.paeparo.paeparo_mobile.adapter.OnPostClickListener
 import com.paeparo.paeparo_mobile.adapter.PostAdapter
 import com.paeparo.paeparo_mobile.databinding.FragmentCommunityBinding
 import com.paeparo.paeparo_mobile.model.Post
@@ -176,18 +177,4 @@ class CommunityFragment : Fragment(), OnPostClickListener {
             .addSharedElement(postRegionTextView, "transition_text_${post.postId}")
             .commit()
     }
-}
-
-/**
- * Post 아이템 클릭 리스너
- *
- * @constructor Create empty On post click listener
- */
-interface OnPostClickListener {
-    fun onPostClicked(
-        post: Post,
-        postImageView: ImageView,
-        regionIconImageView: ImageView,
-        postRegionTextView: TextView
-    )
 }

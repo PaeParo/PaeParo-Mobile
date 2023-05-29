@@ -39,6 +39,7 @@ import com.smarteist.autoimageslider.SliderAnimations
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+
 class PostFragment : Fragment() {
     /**
      * PostFragment 표시 시 BottomNavigationView을 숨기기 위한 Listener
@@ -119,7 +120,7 @@ class PostFragment : Fragment() {
             }
         }
 
-        commentViewModel.loadComments()
+        commentViewModel.loadComments(true)
     }
 
     override fun onAttach(context: Context) {
@@ -140,7 +141,11 @@ class PostFragment : Fragment() {
     private fun setupCommentViewModel() {
         commentViewModel = CommentViewModel(post.postId)
         commentViewModel.newCommentList.observe(viewLifecycleOwner) { commentList ->
-            commentAdapter.addCommentList(commentList)
+            if (commentViewModel.resetList) {
+                commentAdapter.replaceCommentList(commentList)
+            } else {
+                commentAdapter.addCommentList(commentList)
+            }
         }
     }
 
@@ -168,7 +173,7 @@ class PostFragment : Fragment() {
             lifecycleScope.launch {
                 val tripResult = FirebaseManager.getTrip(post.tripId)
 
-                if(tripResult.isSuccess){
+                if (tripResult.isSuccess) {
                     val context = it.context
                     val intent = Intent(context, PlanActivity::class.java)
                     with(Bundle()) {
@@ -221,13 +226,52 @@ class PostFragment : Fragment() {
             }
         })
 
+        binding.tvPostTags.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                v: View?,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int
+            ) {
+                if (bottom != oldBottom) {
+                    binding.tvPostTags.visibility = View.INVISIBLE
+                    binding.tvPostTags.removeOnLayoutChangeListener(this)
+                    val tagsList = post.tags.toMutableList()
+                    val tagsLine1 = mutableListOf<String>()
+                    val tagsLine2 = mutableListOf<String>()
+
+                    var currentLine = tagsLine1
+
+                    while (tagsList.isNotEmpty()) {
+                        currentLine.add(tagsList.first())
+                        binding.tvPostTags.text = currentLine.joinToString("   ") { "#$it" }
+                        if (binding.tvPostTags.lineCount > 1) {
+                            currentLine.removeAt(currentLine.size - 1)
+                            currentLine = tagsLine2
+                        } else {
+                            tagsList.removeAt(0)
+                        }
+                    }
+
+                    binding.tvPostTags.text =
+                        tagsLine1.joinToString("   ") { "#$it" } + "\n" + tagsLine2.joinToString("   ") { "#$it" }
+                    binding.tvPostTags.addOnLayoutChangeListener(this)
+                    binding.tvPostTags.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        // 댓글 입력 영역 Listener 추가
         binding.edtPostCommentInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // 텍스트가 바뀌기 전에 호출됩니다.
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                // 텍스트가 바뀌는 동안에 호출됩니다.
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -274,7 +318,7 @@ class PostFragment : Fragment() {
                         binding.ivPostAddComment.setImageResource(R.drawable.ic_send_disabled)
                         binding.ivPostAddComment.tag = R.drawable.ic_send_disabled
 
-                        commentAdapter.addMyComment(comment)
+                        commentViewModel.loadComments(true)
                     }
                 }
             }
@@ -290,7 +334,7 @@ class PostFragment : Fragment() {
                     layoutManager.findLastVisibleItemPosition()
 
                 if (layoutManager.itemCount <= (lastVisibleItem + 4) && commentAdapter.itemCount > 1) {
-                    commentViewModel.loadComments()
+                    commentViewModel.loadComments(false)
                 }
             }
         })
@@ -332,6 +376,7 @@ class PostFragment : Fragment() {
                 }
             })
 
+        // 상단 -> 하단 스크롤 시 PostFragment 종료
         binding.root.setOnTouchListener { v, event ->
             if (gestureDetector.onTouchEvent(event)) {
                 v.performClick()

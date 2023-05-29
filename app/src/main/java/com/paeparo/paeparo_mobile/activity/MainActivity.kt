@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), OnPostFragmentInteractionListener {
                 val ft = supportFragmentManager.beginTransaction()
                 ft.setCustomAnimations(
                     R.anim.fade_in,  // 새로운 Fragment가 들어올 때의 애니메이션
-                    R.anim.fade_out   // 현재 Fragment가 나갈 때의 애니메이션
+                    R.anim.fade_out   // 현재 Fragment가 나갈 때의 애니메이션.
                 )
                 when (item.itemId) {
                     R.id.community_fragment -> {
@@ -69,23 +69,6 @@ class MainActivity : AppCompatActivity(), OnPostFragmentInteractionListener {
         layoutParams.bottomToTop = binding.bvMainBottomNavigation.id
         binding.flMainView.layoutParams = layoutParams
     }
-
-
-//    // 추후 삭제할께요 ㅎ;
-//    private fun testRetrofit(){
-//        val service = KakaoRetroFit.kakaoKeyWordService
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val response = service.get(BuildConfig.KAKAO_API_KEY,"카카오프렌즈")
-//
-//            withContext(Dispatchers.Main){
-//                if(response.isSuccessful){
-//                                    }
-//                else {
-//                    Timber.d(response.code().toString()+"\n\n\n context : "+response.toString())
-//                }
-//            }
-//        }
 }
 
 interface OnPostFragmentInteractionListener {
