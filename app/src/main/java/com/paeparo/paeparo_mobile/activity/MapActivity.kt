@@ -5,8 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.paeparo.paeparo_mobile.databinding.AcitivityMapBinding
 import com.paeparo.paeparo_mobile.manager.KakaoRetroFit
+import timber.log.Timber
 
 class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     lateinit var binding: AcitivityMapBinding
@@ -23,7 +26,8 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         with(binding) {
             svMap.setOnQueryTextListener(this@MapActivity);
-
+           // rvMap.adapter = MapAdapter();
+            rvMap.layoutManager = LinearLayoutManager(applicationContext)
 
             var onMap = true
             btnSearch.setOnClickListener{
@@ -45,8 +49,9 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        KakaoRetroFit.searchWithQuery(query);
-        return true
+        val result = KakaoRetroFit.searchWithQuery(query);
+        Timber.d("결과 값: "+result.toString())
+        return false;
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
