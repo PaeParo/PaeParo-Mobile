@@ -68,11 +68,27 @@ object KakaoRetroFit {
     val kakaoKeyWordService: KakaoKeyWordService by lazy {
         retrofit.create(KakaoKeyWordService::class.java)
     }
-    private fun testRetrofit() {
+    public fun testRetrofit() {
         val service = KakaoRetroFit.kakaoKeyWordService
 
         CoroutineScope(Dispatchers.IO).launch {
             val response = service.get(BuildConfig.KAKAO_API_KEY, "카카오프렌즈")
+
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                } else {
+                    Timber.d(response.code().toString() + "\n\n\n context : " + response.toString())
+                }
+            }
+        }
+    }
+
+    public fun searchWithQuery(query: String?){
+        if(query==null) return;
+        val service = KakaoRetroFit.kakaoKeyWordService
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = service.get(BuildConfig.KAKAO_API_KEY, query)
 
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
