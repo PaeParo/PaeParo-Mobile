@@ -5,20 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<!--    아이템 스크롤 constraintHeight_percent, app:umanoAnchorPoint, android:paddingBottom="100dp 확인하기 -->
-<!--    키보드 layout 안움직이도록-->
-<!--  slide_layout, 관련 색설정  -->
+    <!--    아이템 스크롤 constraintHeight_percent, app:umanoAnchorPoint, android:paddingBottom="100dp 확인하기 -->
+    <!--    키보드 layout 안움직이도록-->
+    <!--  slide_layout, 관련 색설정  -->
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         android:id="@+id/plan_location_main_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
+        app:umanoAnchorPoint="0.75"
         app:umanoDragView="@id/slide_layout"
         app:umanoOverlay="true"
         app:umanoPanelHeight="125dp"
         app:umanoShadowHeight="0dp"
-        tools:context=".fragment.PlanLocationFragment"
-        app:umanoAnchorPoint="0.75">
+        tools:context=".fragment.PlanLocationFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/back_layout"
@@ -35,15 +35,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:subtitle="지역을 선택해주세요"
                 app:title="위치 및 지역 선택" />
-<!--latitude longitude-->
+            <!--latitude longitude-->
 
             <FrameLayout
                 android:id="@+id/plan_location_map"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="24dp"
-                app:navermap_latitude="35.1798159"
-                app:navermap_longitude="129.0750222"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/plan_location_header" />
 
@@ -79,13 +77,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="20dp"
+                android:isScrollContainer="true"
+                android:nestedScrollingEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.85"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/sv_plan_location"
-                app:layout_constraintHeight_percent="0.85"
-                tools:listitem="@layout/item_add_location"
-                android:isScrollContainer="true"
-                android:nestedScrollingEnabled="true"/>
+                tools:listitem="@layout/item_add_location" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
