@@ -51,7 +51,7 @@ class PaeParo : Application() {
 
         // NaverMapSDK 클라이언트 ID 지정
         NaverMapSdk.getInstance(this).client =  NaverMapSdk.NaverCloudPlatformClient(BuildConfig.NAVER_CLIENT_ID)
-
+//        NaverMapSdk.getInstance(this).client =  NaverMapSdk.NaverCloudPlatformClient(BuildConfig.NAVER_CLIENT_KEY)
     }
 
     fun clearUserInfo() {

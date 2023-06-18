@@ -35,13 +35,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:subtitle="지역을 선택해주세요"
                 app:title="위치 및 지역 선택" />
+<!--latitude longitude-->
 
-            <androidx.fragment.app.FragmentContainerView
+            <FrameLayout
                 android:id="@+id/plan_location_map"
-                android:name="com.naver.maps.map.MapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="24dp"
+                app:navermap_latitude="35.1798159"
+                app:navermap_longitude="129.0750222"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/plan_location_header" />
 
@@ -71,7 +73,6 @@
                 app:queryHint="시, 도, 군을 입력해주세요"
                 app:searchIcon="@drawable/ic_search"
                 tools:layout_editor_absoluteY="98dp" />
-
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/locationRecyclerView"
