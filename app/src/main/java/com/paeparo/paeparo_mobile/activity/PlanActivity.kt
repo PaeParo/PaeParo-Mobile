@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanAdapter
+import com.paeparo.paeparo_mobile.callback.MapResultCallBack
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanBinding
 import com.paeparo.paeparo_mobile.fragment.PlanInfoFragment
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
@@ -176,24 +177,6 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
         )
     }
 
-    inner class MapResultCallBack : ActivityResultCallback<ActivityResult> {
-        override fun onActivityResult(result: ActivityResult) {
-
-            val str = when (result.resultCode) {
-                RESULT_OK -> "RESULT_OK"
-                RESULT_CANCELED -> "RESULT_CANCELED"
-                else -> "RESULT_ELSE"
-            }
-            val str2 = result.data!!.getStringExtra("ResultData")
-
-            Toast.makeText(
-                this@PlanActivity,
-                "result Code : $str\t result Data : str2 ",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-    }
 }
 
 

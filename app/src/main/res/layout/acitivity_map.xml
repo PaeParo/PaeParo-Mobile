@@ -1,37 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fl_map"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- Map -->
 
     <FrameLayout
-        android:visibility="invisible"
-        android:id="@+id/cl_map"
+        android:id="@+id/map_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/btn_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button"
-            />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/map_map"
-            android:name="com.naver.maps.map.MapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-    </FrameLayout>
-
-    <!-- SearchView -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_map_search"
         android:layout_width="match_parent"
@@ -39,32 +23,51 @@
         android:visibility="visible">
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/sv_map"
+            android:id="@+id/sv_map_dummy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/bg_round_border_white"
             android:textColor="@color/white"
             android:textColorHint="@color/gray_dark"
+            android:visibility="invisible"
             app:closeIcon="@drawable/ic_close"
-            app:iconifiedByDefault="false"
-            app:layout_constraintBottom_toTopOf="@+id/rv_plan_companion"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-
-            app:layout_constraintTop_toBottomOf="@+id/rv_plan_companion_invited"
-            app:queryHint="검색어를 입력해주세요."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:iconifiedByDefault="false"
+            tools:queryHint="공간을 위해 넣은 사용하지 않을 SearchView"
             app:searchIcon="@drawable/ic_search" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_map"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sv_map" />
+            app:layout_constraintTop_toBottomOf="@+id/sv_map_dummy"
+            tools:listitem="@layout/item_map" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/sv_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_round_border_white_fill"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray_dark"
+        app:closeIcon="@drawable/ic_close"
+        app:iconifiedByDefault="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/rv_plan_companion_invited"
+        app:queryHint="검색어를 입력해주세요."
+        app:searchIcon="@drawable/ic_search" />
 </FrameLayout>
