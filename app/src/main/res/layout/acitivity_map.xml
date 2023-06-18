@@ -14,7 +14,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_map_search"
@@ -70,4 +72,70 @@
         app:layout_constraintTop_toBottomOf="@+id/rv_plan_companion_invited"
         app:queryHint="검색어를 입력해주세요."
         app:searchIcon="@drawable/ic_search" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_map_local_info"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:background="@color/brand_color"
+        android:layout_width="match_parent"
+        android:padding="10dp"
+
+
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/tv_marker_info_place_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/noto_sans"
+                    android:textColor="@color/app_personal_red"
+                    android:textSize="20sp"
+                    tools:text="테스트테크" />
+
+                <TextView
+                    android:id="@+id/tv_marker_info_category_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="#a0a0a0"
+                    tools:text="전기자재,부품" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_marker_info_address_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="#bcbcbc"
+                tools:text="충북 청주시 청원구 오창읍 양청리 806" />
+
+
+        </LinearLayout>
+
+        <Button
+            android:text="장소\n 추가하기"
+            android:id="@+id/btn_marker_info_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
+
 </FrameLayout>
