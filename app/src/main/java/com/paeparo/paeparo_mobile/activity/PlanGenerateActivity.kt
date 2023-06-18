@@ -41,6 +41,7 @@ class PlanGenerateActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if(viewPager.currentItem==0) finish()
         viewPager.currentItem--

@@ -3,8 +3,11 @@ package com.paeparo.paeparo_mobile.manager
 import com.paeparo.paeparo_mobile.BuildConfig
 import com.paeparo.paeparo_mobile.model.KakaoMapModel.KaKaoResponse
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -32,8 +35,8 @@ interface KakaoKeyWordService {
      * @return Test
      */
     suspend fun get(
-        @Header("Authorization") key : String = BuildConfig.KAKAO_API_KEY,
-        @Query("query") query : String,
+        @Header("Authorization") key: String = BuildConfig.KAKAO_API_KEY,
+        @Query("query") query: String,
     ): Response<KaKaoResponse>
 }
 
@@ -52,7 +55,7 @@ object KakaoRetroFit {
     // LOGGING
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().apply{
+            .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }).build()
     }
@@ -68,7 +71,8 @@ object KakaoRetroFit {
     val kakaoKeyWordService: KakaoKeyWordService by lazy {
         retrofit.create(KakaoKeyWordService::class.java)
     }
-    private fun testRetrofit() {
+
+    public fun testRetrofit() {
         val service = KakaoRetroFit.kakaoKeyWordService
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -81,5 +85,20 @@ object KakaoRetroFit {
                 }
             }
         }
+    }
+
+    public fun searchWithQuery(query: String?): KaKaoResponse? {
+        if (query == null) return null
+        val service = KakaoRetroFit.kakaoKeyWordService
+        var result: KaKaoResponse? = null
+
+        val job = CoroutineScope(Dispatchers.IO).launch {
+            result = service.get(BuildConfig.KAKAO_API_KEY, query).body()
+        }
+
+        runBlocking {
+            job.join()
+        }
+        return result
     }
 }

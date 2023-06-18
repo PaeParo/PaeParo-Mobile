@@ -12,8 +12,14 @@ import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.databinding.ItemAddLocationBinding
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanLocationBinding
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.MapFragment
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
 
-class PlanLocationFragment : Fragment() {
+class PlanLocationFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentPlanLocationBinding? = null
     private val binding get() = _binding!!
 
@@ -27,6 +33,42 @@ class PlanLocationFragment : Fragment() {
 
         val slidePanel = binding.planLocationMainFrame
         slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+
+        val fm = childFragmentManager
+        val mapFragment = fm.findFragmentById(binding.planLocationMap.id) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                fm.beginTransaction().add(binding.planLocationMap.id, it).commit()
+            }
+        mapFragment.getMapAsync(this)
+
+        binding.svPlanLocation.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                filterLocation(newText)
+                return true
+            }
+        })
+
+        binding.svPlanLocation.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val state = binding.planLocationMainFrame.panelState
+
+                if (state == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                    binding.planLocationMainFrame.panelState =
+                        SlidingUpPanelLayout.PanelState.ANCHORED
+                }
+            } else {
+                binding.planLocationMainFrame.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+            }
+        }
+
+        locationAdapter = LocationAdapter(locationList, binding.planLocationMainFrame)
+        binding.locationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.locationRecyclerView.adapter = locationAdapter
+
 
         return binding.root
     }
@@ -73,40 +115,6 @@ class PlanLocationFragment : Fragment() {
         "강원도3"
     )
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val parentActivity = activity as PlanGenerateActivity
-        bind(parentActivity)
-
-        binding.svPlanLocation.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                filterLocation(newText)
-                return true
-            }
-        })
-
-        binding.svPlanLocation.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                val state = binding.planLocationMainFrame.panelState
-
-                if (state == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    binding.planLocationMainFrame.panelState = SlidingUpPanelLayout.PanelState.ANCHORED
-                }
-            } else {
-                binding.planLocationMainFrame.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-            }
-        }
-
-        locationAdapter = LocationAdapter(locationList, binding.planLocationMainFrame)
-        binding.locationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.locationRecyclerView.adapter = locationAdapter
-    }
-
     private fun filterLocation(query: String) {
         val filteredList = locationList.filter { location ->
             location.contains(query, ignoreCase = true)
@@ -114,9 +122,10 @@ class PlanLocationFragment : Fragment() {
         locationAdapter.updateData(filteredList)
     }
 
-    class LocationAdapter(private var locationList: List<String>,
-                          private val slidePanel: SlidingUpPanelLayout
-                          ) :
+    class LocationAdapter(
+        private var locationList: List<String>,
+        private val slidePanel: SlidingUpPanelLayout
+    ) :
         RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
 
         inner class LocationViewHolder(private val binding: ItemAddLocationBinding) :
@@ -124,12 +133,13 @@ class PlanLocationFragment : Fragment() {
             init {
                 binding.btnAddLocation.setOnClickListener {
                     slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-
                     //지역 api에 넘겨서 위도,경도 겸색
                     // 해당 위도,경도 통해서 plan_location_map 업데이트하기
-//키보드관련 수정
+                    //키보드관련 수정
+
                 }
             }
+
             fun bind(location: String) {
                 binding.tvAddLocation.text = location
             }
@@ -154,7 +164,23 @@ class PlanLocationFragment : Fragment() {
         override fun getItemCount(): Int {
             return locationList.size
         }
+
+
     }
 
+    override fun onMapReady(naverMap: NaverMap) {
+        // 지도 설정
+        naverMap.minZoom = 6.0
+        naverMap.maxZoom = 18.0
+
+        // 마커 추가
+        val marker = Marker()
+        marker.position = LatLng(37.5665, 126.9780)
+        marker.map = naverMap
+
+        // 카메라 이동
+        val cameraUpdate = CameraUpdate.scrollTo(LatLng(37.5665, 126.9780))
+        naverMap.moveCamera(cameraUpdate)
+    }
 
 }

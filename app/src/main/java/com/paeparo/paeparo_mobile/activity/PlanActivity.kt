@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanAdapter
+import com.paeparo.paeparo_mobile.callback.MapResultCallBack
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanBinding
 import com.paeparo.paeparo_mobile.fragment.PlanInfoFragment
 import com.paeparo.paeparo_mobile.manager.FirebaseManager
@@ -33,17 +34,18 @@ import java.time.LocalDate
 
 interface EditModeable {
 
-    var state : PlanActivity.MODE
+    var state: PlanActivity.MODE
     fun changeMode(state: PlanActivity.MODE)
 }
 
 class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(), EditModeable {
     enum class MODE {
-        DISPLAY, EDIT
+        DISPLAY, EDIT,
     }
+
     private lateinit var eventsByDate: Map<LocalDate, MutableList<Event>>
     private val planAdapter by lazy {
-        PlanAdapter(this@PlanActivity, eventsByDate,state)
+        PlanAdapter(this@PlanActivity, eventsByDate, state)
     }
     private val binding: ActivityPlanBinding by lazy {
         ActivityPlanBinding.inflate(layoutInflater) //viewbinding
@@ -54,13 +56,17 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
     private lateinit var launcher: ActivityResultLauncher<Intent>
 
 
-        override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         val trip = getTripFromIntent()
+
         if (trip == null) finish()
         eventsByDate = groupEventsByDay(trip!!)
-        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(),MapResultCallBack())
+        launcher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            MapResultCallBack()
+        )
 
 
         bind(trip)
@@ -80,12 +86,12 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
 
             btnPlanFab.setOnClickListener {
                 //createEvent()
-                val mIntent = Intent(this@PlanActivity,MapActivity::class.java)
+                val mIntent = Intent(this@PlanActivity, MapActivity::class.java)
                 launcher.launch(mIntent)
             }
 
             btnPlanEdit.setOnClickListener {
-                state = if(state == MODE.DISPLAY) MODE.EDIT else MODE.DISPLAY
+                state = if (state == MODE.DISPLAY) MODE.EDIT else MODE.DISPLAY
                 changeMode(state)
             }
         }
@@ -156,7 +162,8 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
         binding.vpPlan.isUserInputEnabled = isUserInputEnabled
         currentFragent.changeMode(state)
     }
-    fun createEvent(){
+
+    fun createEvent() {
         // getting List
         val eventList =
             currentFragent.planInfoAdapter.currentList
@@ -169,21 +176,7 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
             newList
         )
     }
-    inner class MapResultCallBack : ActivityResultCallback<ActivityResult>
-    {
-        override fun onActivityResult(result: ActivityResult) {
 
-            val str = when(result.resultCode){
-                RESULT_OK -> "RESULT_OK"
-                RESULT_CANCELED -> "RESULT_CANCELED"
-                else -> "RESULT_ELSE"
-            }
-            val str2 = result.data!!.getStringExtra("ResultData")
-
-            Toast.makeText(this@PlanActivity,"result Code : $str\t result Data : str2 ",Toast.LENGTH_SHORT).show()
-        }
-
-    }
 }
 
 

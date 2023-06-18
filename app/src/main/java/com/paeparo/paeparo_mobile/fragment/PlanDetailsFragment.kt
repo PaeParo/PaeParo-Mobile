@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanCalenderBinding
@@ -15,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.Exception
 
 class PlanDetailsFragment : Fragment() {
     private var _binding: FragmentPlanDetailsBinding? = null
@@ -40,8 +43,20 @@ class PlanDetailsFragment : Fragment() {
 
             btnPlanDetails.setOnClickListener{
                 with(parentActivity.trip) {
-                    name = etTvPlanDetailTitle.text.toString()
-                    budget = etPlanDetailBudget.text.toString().toInt()
+
+                    try {
+                        name = etTvPlanDetailTitle.text.toString()
+                        // 여행 제목이 없을 경우,
+                        if(name.replace("\\s".toRegex(), "") == "") name = "나만의 여행"
+                        budget = etPlanDetailBudget.text.toString().toInt()
+                    }catch (e2 : NumberFormatException){
+                        Snackbar.make(it, "예산의 값이 올바르지 않습니다.", Snackbar.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }catch (e : Exception){
+                        Toast.makeText(context, "입력값이 올바르지 않습니다.", Toast.LENGTH_SHORT).show()
+                        Timber.e(e);
+                        return@setOnClickListener
+                    }
                     // 임시값
                     region = "테스트 용 : PlanDetailFragment에서 생성됨."
                     status = Trip.TripStatus.PLANNING
