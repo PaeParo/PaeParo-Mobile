@@ -9,6 +9,7 @@
     <!--    키보드 layout 안움직이도록-->
     <!--  slide_layout, 관련 색설정  -->
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
+
         android:id="@+id/plan_location_main_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,7 +25,7 @@
             android:id="@+id/back_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toTopOf="@id/btn_plan_location">
+            app:layout_constraintBottom_toTopOf="parent">
 
             <com.paeparo.paeparo_mobile.customView.CustomHeader
                 android:id="@+id/plan_location_header"
@@ -92,6 +93,7 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
+        android:visibility="gone"
         android:id="@+id/btn_plan_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

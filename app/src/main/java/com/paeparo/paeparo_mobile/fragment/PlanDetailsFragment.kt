@@ -58,7 +58,7 @@ class PlanDetailsFragment : Fragment() {
                         return@setOnClickListener
                     }
                     // 임시값
-                    region = "테스트 용 : PlanDetailFragment에서 생성됨."
+//                    region = "테스트 용 : PlanDetailFragment에서 생성됨."
                     status = Trip.TripStatus.PLANNING
                 }
 

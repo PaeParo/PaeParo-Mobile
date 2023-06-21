@@ -110,9 +110,9 @@ class PlanLocationFragment : Fragment(), SearchView.OnQueryTextListener, OnMapRe
                 }
             }
             svPlanLocation.setOnQueryTextListener(this@PlanLocationFragment)
-            btnPlanLocation.setOnClickListener {
-                parentActivity.binding.vpPlanGenerate.currentItem++
-            }
+//            btnPlanLocation.setOnClickListener {
+//                parentActivity.binding.vpPlanGenerate.currentItem++
+//            }
 
             val fm = childFragmentManager
             val mapFragment = fm.findFragmentById(binding.planLocationMap.id) as MapFragment?
