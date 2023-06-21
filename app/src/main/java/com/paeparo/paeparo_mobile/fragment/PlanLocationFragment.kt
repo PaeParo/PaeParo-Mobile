@@ -24,6 +24,7 @@ import com.paeparo.paeparo_mobile.adapter.LocationAdapter
 import com.paeparo.paeparo_mobile.model.GeocodeModel
 import com.paeparo.paeparo_mobile.model.NaverResponse
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PlanLocationFragment : Fragment(), SearchView.OnQueryTextListener, OnMapReadyCallback {
     private var _binding: FragmentPlanLocationBinding? = null
@@ -35,8 +36,7 @@ class PlanLocationFragment : Fragment(), SearchView.OnQueryTextListener, OnMapRe
 
     lateinit var locationAdapter: LocationAdapter
     lateinit var naverMap: NaverMap
-    private val slidePanel = binding.planLocationMainFrame
-
+    private lateinit var slidePanel: SlidingUpPanelLayout
     private val currentMarkerList = mutableListOf<Marker>()
 
     override fun onCreateView(
@@ -46,8 +46,6 @@ class PlanLocationFragment : Fragment(), SearchView.OnQueryTextListener, OnMapRe
         _binding = FragmentPlanLocationBinding.inflate(inflater, container, false) //set binding
         val parentActivity = activity as PlanGenerateActivity
         bind(parentActivity)
-
-        slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
 
         lifecycleScope.launch {
             mapViewModel.NaverResponseList.collect {
@@ -96,6 +94,8 @@ class PlanLocationFragment : Fragment(), SearchView.OnQueryTextListener, OnMapRe
     private fun bind(parentActivity: PlanGenerateActivity) {
         with(binding) {
             locationAdapter= LocationAdapter()
+            slidePanel = binding.planLocationMainFrame
+            slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
 
             binding.svPlanLocation.setOnQueryTextFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
