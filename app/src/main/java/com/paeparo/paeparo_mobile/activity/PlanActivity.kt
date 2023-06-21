@@ -16,6 +16,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.paeparo.paeparo_mobile.adapter.PlanAdapter
 import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanBinding
+import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.Event
 import com.paeparo.paeparo_mobile.model.PlanViewModel
 import com.paeparo.paeparo_mobile.model.Trip
@@ -151,6 +152,8 @@ class PlanActivity : AppCompatActivity() {
                 //TODO 시작 Date받아야됨.
                 //FirebaseManager.cloneTrip(trip,this@PlanActivity.getPaeParo().userId().toString(), )
                 Toast.makeText(this@PlanActivity, "일정에 추가되었습니다.", Toast.LENGTH_SHORT).show()
+
+
             }
 
             // 포스트 작성 버튼

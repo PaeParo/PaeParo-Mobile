@@ -66,7 +66,7 @@ class PlanInfoFragment(private val localDate: LocalDate) : Fragment() {
                             PlanViewModel.MODE.VIEW -> itemTouchHelperCallback.attachToRecyclerView(null) // 슬라이드 방지
                             PlanViewModel.MODE.EDIT -> itemTouchHelperCallback.attachToRecyclerView(recyclerView) // 슬라이드 가능
                             else -> {
-                                Toast.makeText(context, "PlanInfoActivity -> viewModeChanged() : $it", Toast.LENGTH_SHORT).show()
+//                                Toast.makeText(context, "PlanInfoActivity -> viewModeChanged() : $it", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
