@@ -109,7 +109,7 @@ class PlanLocationFragment : Fragment(), SearchView.OnQueryTextListener, OnMapRe
                     binding.planLocationMainFrame.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
                 }
             }
-
+            svPlanLocation.setOnQueryTextListener(this@PlanLocationFragment)
             btnPlanLocation.setOnClickListener {
                 parentActivity.binding.vpPlanGenerate.currentItem++
             }
@@ -154,6 +154,7 @@ class PlanLocationFragment : Fragment(), SearchView.OnQueryTextListener, OnMapRe
     }
 
     override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
 //        // 지도 설정
 //        naverMap.minZoom = 6.0
 //        naverMap.maxZoom = 18.0

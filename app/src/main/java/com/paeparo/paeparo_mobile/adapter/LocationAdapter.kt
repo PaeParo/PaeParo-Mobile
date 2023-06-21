@@ -21,15 +21,15 @@ class LocationAdapter :
                 false
             )
         ).also { holder ->
-            if (currentFragment == null) {
-                //init currentActivity
-                currentFragment = parent.context as PlanLocationFragment
-            }
+//            if (currentFragment == null) {
+//                //init currentActivity
+//                currentFragment = parent.context as PlanLocationFragment
+//            }
             //context가 null 이 아닐 경우, onClickLisnter 적용
-            holder.binding.btnAddLocation.setOnClickListener {
-                //각 장소 항목이 눌러졌을 경우,
-                currentFragment!!.showMarkerInfo(getItem(holder.adapterPosition))
-            }
+//            holder.binding.btnAddLocation.setOnClickListener {
+//                //각 장소 항목이 눌러졌을 경우,
+//                currentFragment!!.showMarkerInfo(getItem(holder.adapterPosition))
+//            }
         }
 
     }

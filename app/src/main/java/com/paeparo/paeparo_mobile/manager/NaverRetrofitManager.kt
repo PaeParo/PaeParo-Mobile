@@ -4,6 +4,7 @@ import com.paeparo.paeparo_mobile.BuildConfig
 import com.paeparo.paeparo_mobile.model.NaverResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -14,6 +15,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
+import timber.log.Timber
 
 /**
  * 네이버 geocode를 이용한 지역 및 위도,경도 검색
@@ -60,13 +62,16 @@ object NaverRetroFit {
         val service = NaverRetroFit.naverGeocode
         var result: NaverResponse? = null
 
-        val job = CoroutineScope(Dispatchers.IO).launch {
-            result =
-                service.get(query, BuildConfig.NAVER_CLIENT_ID, BuildConfig.NAVER_CLIENT_KEY).body()
+        val job = CoroutineScope(Dispatchers.IO).async {
+            Timber.d("NaverRetrofitManager -> searchWithQuery() -> search start From IO")
+
+            service.get(query, BuildConfig.NAVER_CLIENT_ID, BuildConfig.NAVER_CLIENT_KEY).body()
         }
 
         runBlocking {
-            job.join()
+            result = job.await()
+            Timber.d("NaverRetrofitManager -> searchWithQuery() -> seach end with ${result?.status}")
+
         }
         return result
     }
