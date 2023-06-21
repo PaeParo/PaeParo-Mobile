@@ -1,17 +1,15 @@
 package com.paeparo.paeparo_mobile.activity
 
 import android.content.DialogInterface
-import androidx.appcompat.widget.SearchView
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
@@ -31,8 +29,6 @@ import com.paeparo.paeparo_mobile.model.Event
 import com.paeparo.paeparo_mobile.model.KakaoMapModel.KaKaoResponse
 import com.paeparo.paeparo_mobile.model.MapViewModel
 import com.paeparo.paeparo_mobile.model.PlaceEvent
-import com.paeparo.paeparo_mobile.model.Trip
-import com.paeparo.paeparo_mobile.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,7 +37,7 @@ import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneOffset
+import java.time.ZoneId
 
 class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapReadyCallback {
 
@@ -248,14 +244,14 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
         val dateTime = getCreateDateFromIntent()
 
         val layout = View.inflate(this, R.layout.item_create_event, null)
-        layout.findViewById<TimePicker>(R.id.tp_map_create_event).setOnTimeChangedListener { view, hourOfDay, minute ->
-            val locaTime = LocalTime.of(hourOfDay, minute)
-            val localDate = dateTime
-            val dateTime = LocalDateTime.of(localDate, locaTime)
-            var timestamp = Timestamp(dateTime.toEpochSecond(ZoneOffset.UTC), 0)
-            event.startTime = timestamp
-        }
-
+        layout.findViewById<TimePicker>(R.id.tp_map_create_event)
+            .setOnTimeChangedListener { _, hourOfDay, minute ->
+                val timestamp = Timestamp(
+                    LocalDateTime.of(dateTime, LocalTime.of(hourOfDay, minute))
+                        .atZone(ZoneId.of("Asia/Seoul")).toEpochSecond(), 0
+                )
+                event.startTime = timestamp
+            }
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("일정을 언제 추가할까요?")
@@ -265,16 +261,16 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
                 event.name = "${document.placeName}"
                 event.budget = 0
                 event.place.name = "${document.addressName}"
-                event.place.location = GeoPoint(document.y!!.toDouble(),document.x!!.toDouble())
+                event.place.location = GeoPoint(document.y!!.toDouble(), document.x!!.toDouble())
 
-                val job = CoroutineScope(Dispatchers.IO).launch{
-                FirebaseManager.createEvent(
-                    this@MapActivity.getPaeParo().userId.toString(),
-                    tripId = trip_id,
-                    event
-                ).data.also{
-                    Timber.d("MapActivity -> createEvent() -> Event : $it \t trip_id : $trip_id")
-                }
+                val job = CoroutineScope(Dispatchers.IO).launch {
+                    FirebaseManager.createEvent(
+                        this@MapActivity.getPaeParo().userId.toString(),
+                        tripId = trip_id,
+                        event
+                    ).data.also {
+                        Timber.d("MapActivity -> createEvent() -> Event : $it \t trip_id : $trip_id")
+                    }
                 }
                 runBlocking {
                     job.join()
@@ -286,8 +282,6 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
                 finish()
             })
             .show()
-
-
     }
 
     override fun onMapReady(p0: NaverMap) {
