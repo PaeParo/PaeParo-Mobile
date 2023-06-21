@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
     android:layout_width="match_parent"
     android:layout_height="80dp">
 
@@ -11,53 +16,31 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="6dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tv_time"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         tools:srcCompat="@drawable/ic_weather_sun" />
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
+        android:layout_marginStart="7dp"
         tools:text="09:00"
         android:textColor="#FFFFFF"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_weather_icon"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="12sp"/>
 
-    <ImageView
-        android:id="@+id/iv_location_thumbnail"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_time"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/location_image_example" />
 
     <ImageView
         android:id="@+id/iv_location_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="7dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_location_thumbnail"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/ic_nav_home" />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="17dp"
+        app:srcCompat="@drawable/ic_place_store" />
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_location_icon"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_location_title"
@@ -76,4 +59,4 @@
             android:textSize="12sp" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

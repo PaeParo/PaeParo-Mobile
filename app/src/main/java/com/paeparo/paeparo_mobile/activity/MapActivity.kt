@@ -1,15 +1,20 @@
 package com.paeparo.paeparo_mobile.activity
 
+import android.content.DialogInterface
 import androidx.appcompat.widget.SearchView
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.GeoPoint
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
@@ -19,11 +24,24 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.MapListAdpater
+import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.AcitivityMapBinding
+import com.paeparo.paeparo_mobile.manager.FirebaseManager
+import com.paeparo.paeparo_mobile.model.Event
 import com.paeparo.paeparo_mobile.model.KakaoMapModel.KaKaoResponse
 import com.paeparo.paeparo_mobile.model.MapViewModel
+import com.paeparo.paeparo_mobile.model.PlaceEvent
+import com.paeparo.paeparo_mobile.model.Trip
+import com.paeparo.paeparo_mobile.util.DateUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneOffset
 
 class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapReadyCallback {
 
@@ -38,7 +56,7 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
     val mapViewModel: MapViewModel by lazy {
         ViewModelProvider(this)[MapViewModel::class.java]
     }
-
+    private lateinit var trip_id: String
     private var currentViewMode = ViewMode.Map //맵 or 검색창인지 확인하는 변수
     lateinit var mapListAdpater: MapListAdpater
     lateinit var naverMap: NaverMap
@@ -47,8 +65,11 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = AcitivityMapBinding.inflate(layoutInflater)
+        trip_id = intent.getStringExtra("trip_id")!!
         setContentView(binding.root)
-        bind();
+        bind()
+
+        //추가할 LocalDate
 
         lifecycleScope.launch {
             mapViewModel.kaKaoResponseList.collect {
@@ -57,14 +78,6 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
                 showMarkers(it.documents)
             }
         }
-
-
-        val mIntent = Intent(this@MapActivity, PlanActivity::class.java).apply {
-            putExtra("ResultData", "DONE!")
-        }
-        setResult(RESULT_OK, mIntent)
-
-
     }
 
     private fun showMarkers(documents: List<KaKaoResponse.Document?>?) {
@@ -77,7 +90,7 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
             val marker = Marker()
             marker.position = LatLng(it.y!!.toDouble(), it.x!!.toDouble())
             marker.map = naverMap
-            marker.setOnClickListener { o->
+            marker.setOnClickListener { o ->
                 showMarkerInfo(it)
                 true
             }
@@ -120,6 +133,7 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
                 ?: MapFragment.newInstance().also {
                     fm.beginTransaction().add(R.id.map_fragment, it).commit()
                 }
+
             //NaverMap 객체 얻어오기
             mapFragment.getMapAsync(this@MapActivity)
 
@@ -140,8 +154,8 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
         if (currentViewMode == ViewMode.Map) {
             switchView(ViewMode.Search)
         }
-        binding.svMap.clearFocus()
-        return true;
+        //binding.svMap.clearFocus()
+        return false
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
@@ -156,7 +170,7 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
         if (currentViewMode == ViewMode.Search) {
             // 검색화면 일 경우,
             switchView(ViewMode.Map)
-            return;
+            return
         } else if (currentViewMode == ViewMode.Map) {
             // 맵 화면 일 경우, 종료
             super.onBackPressed()
@@ -192,7 +206,7 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
      * 화면을 Map 화면으로 전환한 후, 해당 장소에 대한 정보를 보여주는 LinearLayout을 보여줌
      * @param item
      */
-    public fun showMarkerInfo(item: KaKaoResponse.Document) {
+    fun showMarkerInfo(item: KaKaoResponse.Document) {
 
         switchView(ViewMode.Map)
         // 카메라 이동
@@ -210,8 +224,9 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
             // 서비스,산업 \u003e 제조업 \u003e 전기,전자 \u003e 전기자재,부품의 경우 -> "전기자재,부품" 만 추출
             var category: String? = null
             try {
-                category = Regex("(?<=\\u003e\\s)[^\\u003e]+(?=\\z)").find(item.categoryName!!)!!.value
-            }catch (e : Exception){
+                category =
+                    Regex("(?<=\\u003e\\s)[^\\u003e]+(?=\\z)").find(item.categoryName!!)!!.value
+            } catch (e: Exception) {
                 // 자
                 Timber.e("카테고리가 NULL 임")
             }
@@ -219,8 +234,8 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
             tvMarkerInfoCategoryName.text = category
 
             tvMarkerInfoPlaceName.text = item.placeName
-            btnMarkerInfoAdd.setOnClickListener{
-                createEvents()
+            btnMarkerInfoAdd.setOnClickListener {
+                createEvents(item)
             }
         }
     }
@@ -228,17 +243,69 @@ class MapActivity : AppCompatActivity(), SearchView.OnQueryTextListener, OnMapRe
     /*
 
      */
-    private fun createEvents(){
+    private fun createEvents(document: KaKaoResponse.Document) {
+        val event = PlaceEvent()
+        val dateTime = getCreateDateFromIntent()
+
+        val layout = View.inflate(this, R.layout.item_create_event, null)
+        layout.findViewById<TimePicker>(R.id.tp_map_create_event).setOnTimeChangedListener { view, hourOfDay, minute ->
+            val locaTime = LocalTime.of(hourOfDay, minute)
+            val localDate = dateTime
+            val dateTime = LocalDateTime.of(localDate, locaTime)
+            var timestamp = Timestamp(dateTime.toEpochSecond(ZoneOffset.UTC), 0)
+            event.startTime = timestamp
+        }
+
+
         val builder = AlertDialog.Builder(this)
         builder.setTitle("일정을 언제 추가할까요?")
-            .setView(View.inflate(this,R.layout.item_create_event,null))
-        builder.setPositiveButton("확인",null)
-        builder.setNegativeButton("취소",null)
-        builder.show()
+            .setView(layout)
+            .setPositiveButton("확인") { dialog, which ->
+                event.type = Event.EventType.PLACE
+                event.name = "${document.placeName}"
+                event.budget = 0
+                event.place.name = "${document.addressName}"
+                event.place.location = GeoPoint(document.y!!.toDouble(),document.x!!.toDouble())
+
+                val job = CoroutineScope(Dispatchers.IO).launch{
+                FirebaseManager.createEvent(
+                    this@MapActivity.getPaeParo().userId.toString(),
+                    tripId = trip_id,
+                    event
+                ).data.also{
+                    Timber.d("MapActivity -> createEvent() -> Event : $it \t trip_id : $trip_id")
+                }
+                }
+                runBlocking {
+                    job.join()
+                }
+                setResult(RESULT_OK)
+                finish()
+            }
+            .setNegativeButton("취소", DialogInterface.OnClickListener { dialog, which ->
+                finish()
+            })
+            .show()
+
+
     }
 
     override fun onMapReady(p0: NaverMap) {
-        naverMap = p0;
+        naverMap = p0
     }
 
+    private fun getCreateDateFromIntent(): LocalDate? {
+        // Android 13
+        val localDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra<LocalDate>(
+                "create_date",
+                LocalDate::class.java
+            )
+        }
+        // Android 13 보다 낮은 버전
+        else {
+            intent.getSerializableExtra("create_date") as LocalDate
+        }
+        return localDate
+    }
 }

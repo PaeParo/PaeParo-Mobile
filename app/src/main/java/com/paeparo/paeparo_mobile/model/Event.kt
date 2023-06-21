@@ -1,5 +1,6 @@
 package com.paeparo.paeparo_mobile.model
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.GeoPoint
@@ -7,8 +8,10 @@ import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 import com.paeparo.paeparo_mobile.util.FirestoreNamingUtil
+import kotlinx.parcelize.Parcelize
 
 @IgnoreExtraProperties
+@Parcelize
 open class Event(
     @get:Exclude @SerializedName("event_id") var eventId: String = "",
     @set:PropertyName("name") @get:PropertyName("name") @SerializedName("name") var name: String = "",
@@ -16,7 +19,7 @@ open class Event(
     @set:PropertyName("start_time") @get:PropertyName("start_time") @SerializedName("start_time") var startTime: Timestamp = Timestamp.now(),
     @set:PropertyName("end_time") @get:PropertyName("end_time") @SerializedName("end_time") var endTime: Timestamp = Timestamp.now(),
     @set:PropertyName("budget") @get:PropertyName("budget") @SerializedName("budget") var budget: Int = 0
-) {
+):Parcelable {
     enum class EventType {
         NONE,
         PLACE,

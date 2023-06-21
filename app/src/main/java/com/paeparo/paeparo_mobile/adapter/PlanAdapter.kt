@@ -2,36 +2,27 @@ package com.paeparo.paeparo_mobile.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.paeparo.paeparo_mobile.activity.EditModeable
-import com.paeparo.paeparo_mobile.activity.PlanActivity
 import com.paeparo.paeparo_mobile.fragment.PlanInfoFragment
-import com.paeparo.paeparo_mobile.model.Event
+import com.paeparo.paeparo_mobile.model.PlanViewModel
 import java.time.LocalDate
 
 /*
 PlanActivity의 ViewPager용 어뎁터
  */
-class PlanAdapter(fa: FragmentActivity, private val map: Map<LocalDate, MutableList<Event>>,
-                  override var state: PlanActivity.MODE
-) : FragmentStateAdapter(fa),EditModeable{
-    var planInfoFragments = mutableListOf<PlanInfoFragment>()
-    override fun getItemCount(): Int = map.keys.size
+class PlanAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa){
+    private lateinit var model : PlanViewModel
+    private lateinit var keySet: Set<LocalDate>
+    init{
+        model = ViewModelProvider(fa).get(PlanViewModel::class.java)
+    }
+
+    override fun getItemCount(): Int = model.localDateList.size
 
     override fun createFragment(position: Int): Fragment {
-        val list = map.values.toList()
-        return PlanInfoFragment(list[position],state).also{
-            planInfoFragments.add(it)
-        }
+        return PlanInfoFragment(model.localDateList[position])
     }
-
-    override fun changeMode(state: PlanActivity.MODE) {
-        this.state = state
-        for(activity in planInfoFragments){
-            activity.changeMode(state)
-        }
-    }
-
-
 }
 

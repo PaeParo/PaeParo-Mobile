@@ -4,99 +4,188 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.viewpager2.widget.ViewPager2
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
-import com.paeparo.paeparo_mobile.R
 import com.paeparo.paeparo_mobile.adapter.PlanAdapter
-import com.paeparo.paeparo_mobile.callback.MapResultCallBack
+import com.paeparo.paeparo_mobile.application.getPaeParo
 import com.paeparo.paeparo_mobile.databinding.ActivityPlanBinding
-import com.paeparo.paeparo_mobile.fragment.PlanInfoFragment
-import com.paeparo.paeparo_mobile.manager.FirebaseManager
 import com.paeparo.paeparo_mobile.model.Event
+import com.paeparo.paeparo_mobile.model.PlanViewModel
 import com.paeparo.paeparo_mobile.model.Trip
-import com.paeparo.paeparo_mobile.util.DateUtil.calPeriod
-import com.paeparo.paeparo_mobile.util.DateUtil.toLocalDate
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
 import java.time.LocalDate
 
 /*
     일정 세부정보를 일자별로(Day1,Day2) 보는 Activiy
  */
 
+class PlanActivity : AppCompatActivity() {
 
-interface EditModeable {
+    private lateinit var getResult: ActivityResultLauncher<Intent> // Event 생성용
 
-    var state: PlanActivity.MODE
-    fun changeMode(state: PlanActivity.MODE)
-}
-
-class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(), EditModeable {
-    enum class MODE {
-        DISPLAY, EDIT,
-    }
-
-    private lateinit var eventsByDate: Map<LocalDate, MutableList<Event>>
-    private val planAdapter by lazy {
-        PlanAdapter(this@PlanActivity, eventsByDate, state)
-    }
+    private lateinit var planAdapter: PlanAdapter
     private val binding: ActivityPlanBinding by lazy {
-        ActivityPlanBinding.inflate(layoutInflater) //viewbinding
+        ActivityPlanBinding.inflate(layoutInflater)
     }
-    private val currentFragent: PlanInfoFragment
-        get() = planAdapter.planInfoFragments[binding.vpPlan.currentItem]
-
-    private lateinit var launcher: ActivityResultLauncher<Intent>
+    private val model: PlanViewModel by lazy {
+        ViewModelProvider(this)[PlanViewModel::class.java]
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val trip = getTripFromIntent()
 
-        if (trip == null) finish()
-        eventsByDate = groupEventsByDay(trip!!)
-        launcher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult(),
-            MapResultCallBack()
-        )
+        initalizeLocalProperty()
+        binding.ciPlanLoading.visibility = View.GONE
 
+        bind()
 
-        bind(trip)
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                model.viewMode.collect {
+                    with(binding) {
+                        // inivisible all Btn
+                        btnStartEditMode.visibility = View.GONE
+                        btnEndEditMode.visibility = View.GONE
+                        btnAddToMyPlan.visibility = View.GONE
+                        btnAddPost.visibility = View.GONE
+
+                        when (it) {
+                            PlanViewModel.MODE.VIEW -> {
+                                btnStartEditMode.visibility = View.VISIBLE
+                                btnPlanFab.visibility = View.INVISIBLE
+                            }
+                            PlanViewModel.MODE.EDIT -> {
+                                Toast.makeText(this@PlanActivity, "일정을 삭제하려면 왼쪽으로 슬라이드 해주세요.", Toast.LENGTH_SHORT).show()
+                                btnEndEditMode.visibility = View.VISIBLE
+                                btnPlanFab.visibility = View.VISIBLE
+                            }
+                            PlanViewModel.MODE.CLONE -> btnAddToMyPlan.visibility = View.VISIBLE
+                            PlanViewModel.MODE.POST -> btnAddPost.visibility = View.VISIBLE
+                        }
+                    }
+                }
+                }
+                launch {
+                    model.eventMap.collect{
+                        planAdapter.notifyDataSetChanged()
+                }
+            }
+
+            }
+        }
+
 
     }
 
-    private fun bind(trip: Trip) {
-        with(binding) {
-            tvPlanTitle.text = trip.name
-            tvPlanSubtitle.text = trip.region
-            vpPlan.adapter = planAdapter
-            vpPlan.offscreenPageLimit = 15
-
-            TabLayoutMediator(tlPlan, vpPlan) { tab, position ->
-                tab.text = "DAY ${position + 1}"
-            }.attach()
-
-            btnPlanFab.setOnClickListener {
-                //createEvent()
-                val mIntent = Intent(this@PlanActivity, MapActivity::class.java)
-                launcher.launch(mIntent)
-            }
-
-            btnPlanEdit.setOnClickListener {
-                state = if (state == MODE.DISPLAY) MODE.EDIT else MODE.DISPLAY
-                changeMode(state)
+    private fun initalizeLocalProperty() {
+        // initaize Trip, ViewModel
+        val trip = getTripFromIntent()
+        if (trip == null) {
+            Toast.makeText(this, "여행 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+        model.initViewModelByTrip(trip!!)
+        initViewMode()
+        planAdapter = PlanAdapter(this@PlanActivity)
+        // 이벤트 생성 결과 콜백
+        getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode == RESULT_OK){
+                model.initViewModelByTrip(trip)
             }
         }
     }
 
+
+    private fun bind() {
+        with(binding) {
+            tvPlanTitle.text = model.trip.name
+            tvPlanSubtitle.text = model.trip.region
+            vpPlan.adapter = planAdapter
+//            vpPlan.offscreenPageLimit = 15
+
+            // TabBar
+            TabLayoutMediator(tlPlan, vpPlan) { tab, position ->
+                tab.text = "DAY ${position + 1}"
+            }.attach()
+
+            // add Event
+            btnPlanFab.setOnClickListener {
+                val mIntent = Intent(this@PlanActivity, MapActivity::class.java)
+                mIntent.putExtra("create_date",model.localDateList[vpPlan.currentItem])
+                mIntent.putExtra("trip_id",model.trip.tripId.toString())
+                getResult.launch(mIntent)
+            }
+
+            // 뒤로가기 버튼
+            btnPlanBack.setOnClickListener {
+                finish()
+            }
+
+
+            // 수정 버튼 (누를시 수정모드로 바뀜 현재상태 : 보기모드)
+            btnStartEditMode.setOnClickListener {
+                model.changeViewMode(PlanViewModel.MODE.EDIT)
+            }
+
+
+            // 보기 버튼 (누를시 보기모드로 바뀜, 현재상태 : 수정모드)
+            btnEndEditMode.setOnClickListener {
+                model.changeViewMode(PlanViewModel.MODE.VIEW)
+
+            }
+
+            // 일정에 추가 버튼
+            btnAddToMyPlan.setOnClickListener {
+                //TODO 시작 Date받아야됨.
+                //FirebaseManager.cloneTrip(trip,this@PlanActivity.getPaeParo().userId().toString(), )
+                Toast.makeText(this@PlanActivity, "일정에 추가되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+
+            // 포스트 작성 버튼
+            btnAddPost.setOnClickListener {
+                model.changeViewMode(PlanViewModel.MODE.POST)
+
+                val intent = Intent(this@PlanActivity, CommunityWriteActivity::class.java)
+                finish()
+                startActivity(intent)
+            }
+
+        }
+    }
+
+    /**
+     * Check view mode
+     * ViewMode를 체크한 후, 초기화
+     */
+    private fun initViewMode() {
+        val userId = this.getPaeParo().userId.toString()
+
+        // 여행 맴버가 아닌 경우,
+        if (!model.trip.members.contains(userId)) {
+            // 일정 복사 버튼 활성화
+            model.changeViewMode(PlanViewModel.MODE.CLONE)
+        } else {                // 일정 맴버에 추가되어 있을 경우,
+            // 일정이 종료 되었을 경우,
+            if (model.trip.status == Trip.TripStatus.FINISHED) {
+                model.changeViewMode(PlanViewModel.MODE.POST) // 글 작성 버튼 활성화
+            } else {// 진행중인 or 예정된 일정일 경우,
+                model.changeViewMode(PlanViewModel.MODE.VIEW) // 읽기 모드로 시작
+            }
+        }
+
+    }
 
     /**
      * Trip 객체를 Intent에서 가져오는 함수
@@ -117,64 +206,6 @@ class PlanActivity(override var state: MODE = MODE.DISPLAY) : AppCompatActivity(
             bundle.getParcelable<Trip>("trip")
         }
         return trip
-    }
-
-    /**
-     * Trip 객체를 받아서 날짜별 이벤트 목록의 맵으로 반환하는 함수
-     * @param trip
-     * @return List<Event> :  / null : 이벤트가 존재하지 않는 리스트
-     */
-    private fun groupEventsByDay(trip: Trip): Map<LocalDate, MutableList<Event>> {
-        val map: MutableMap<LocalDate, MutableList<Event>> = mutableMapOf()
-        var tripEvents: List<Event> = listOf()
-
-        val startDate = trip.startDate.toLocalDate()
-        val EndDate = trip.endDate.toLocalDate()
-
-        // map 초기화 (날짜별 List생성)
-        repeat(EndDate.calPeriod(startDate)) {
-            map[startDate.plusDays(it.toLong())] = mutableListOf()
-        }
-
-        //getting Events
-        CoroutineScope(Dispatchers.IO).launch {
-            val result = FirebaseManager.getTripEvents(trip.tripId)
-            withContext(Dispatchers.Main) {
-                tripEvents = result.data!!
-            }
-        }
-
-        tripEvents.forEach { event ->
-            val eventStartDate = event.startTime.toLocalDate()
-            map.computeIfAbsent(eventStartDate) { mutableListOf() }.add(event)
-        }
-
-        return map
-    }
-
-    override fun changeMode(state: PlanActivity.MODE) {
-        val (imageResource, isUserInputEnabled) = when (state) {
-            MODE.DISPLAY -> R.drawable.ic_edit to true
-            MODE.EDIT -> R.drawable.ic_close to false
-        }
-
-        binding.btnPlanEdit.setImageResource(imageResource)
-        binding.vpPlan.isUserInputEnabled = isUserInputEnabled
-        currentFragent.changeMode(state)
-    }
-
-    fun createEvent() {
-        // getting List
-        val eventList =
-            currentFragent.planInfoAdapter.currentList
-        // update List
-        val newList = eventList.toMutableList()
-        newList.add(Event(name = "앙기모띠"))
-
-        // update PlanInfoViewPager
-        currentFragent.planInfoAdapter.applyListUpdate(
-            newList
-        )
     }
 
 }
