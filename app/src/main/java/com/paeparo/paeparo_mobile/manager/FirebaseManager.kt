@@ -941,7 +941,19 @@ object FirebaseManager {
                     firestoreEventsRef.document(tripId).collection("trip_events").get().await()
 
                 eventListRef.documents.forEach {
-                    val event = it.toObject(Event::class.java)!!
+                    val event = when (it.toObject(Event::class.java)!!.type) {
+                        Event.EventType.PLACE -> {
+                            it.toObject(PlaceEvent::class.java)!!
+                        }
+
+                        Event.EventType.MOVE -> {
+                            it.toObject(MoveEvent::class.java)!!
+                        }
+
+                        else -> {
+                            it.toObject(Event::class.java)!!
+                        }
+                    }
                     event.eventId = it.id
                     eventList.add(event)
                 }
