@@ -6,22 +6,38 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.paeparo.paeparo_mobile.activity.PlanGenerateActivity
-import com.paeparo.paeparo_mobile.databinding.ItemAddLocationBinding
 import com.paeparo.paeparo_mobile.databinding.FragmentPlanLocationBinding
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
+import com.paeparo.paeparo_mobile.activity.MapActivity
+import com.paeparo.paeparo_mobile.adapter.LocationAdapter
+import com.paeparo.paeparo_mobile.model.GeocodeModel
+import com.paeparo.paeparo_mobile.model.NaverResponse
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class PlanLocationFragment : Fragment(), OnMapReadyCallback {
+class PlanLocationFragment : Fragment(), SearchView.OnQueryTextListener, OnMapReadyCallback {
     private var _binding: FragmentPlanLocationBinding? = null
     private val binding get() = _binding!!
+
+    val mapViewModel: GeocodeModel by lazy {
+        ViewModelProvider(this)[GeocodeModel::class.java]
+    }
+
+    lateinit var locationAdapter: LocationAdapter
+    lateinit var naverMap: NaverMap
+    private lateinit var slidePanel: SlidingUpPanelLayout
+    private val currentMarkerList = mutableListOf<Marker>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,54 +47,15 @@ class PlanLocationFragment : Fragment(), OnMapReadyCallback {
         val parentActivity = activity as PlanGenerateActivity
         bind(parentActivity)
 
-        val slidePanel = binding.planLocationMainFrame
-        slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-
-        val fm = childFragmentManager
-        val mapFragment = fm.findFragmentById(binding.planLocationMap.id) as MapFragment?
-            ?: MapFragment.newInstance().also {
-                fm.beginTransaction().add(binding.planLocationMap.id, it).commit()
-            }
-        mapFragment.getMapAsync(this)
-
-        binding.svPlanLocation.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                filterLocation(newText)
-                return true
-            }
-        })
-
-        binding.svPlanLocation.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                val state = binding.planLocationMainFrame.panelState
-
-                if (state == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    binding.planLocationMainFrame.panelState =
-                        SlidingUpPanelLayout.PanelState.ANCHORED
-                }
-            } else {
-                binding.planLocationMainFrame.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+        lifecycleScope.launch {
+            mapViewModel.NaverResponseList.collect {
+                locationAdapter.submitList(it.addresses)
+                removeAllMarks(it.addresses)
+                showMarkers(it.addresses)
             }
         }
-
-        locationAdapter = LocationAdapter(locationList, binding.planLocationMainFrame)
-        binding.locationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.locationRecyclerView.adapter = locationAdapter
-
 
         return binding.root
-    }
-
-    private fun bind(parentActivity: PlanGenerateActivity) {
-        with(binding) {
-            btnPlanLocation.setOnClickListener {
-                parentActivity.binding.vpPlanGenerate.currentItem++
-            }
-        }
     }
 
     override fun onDestroyView() {
@@ -86,101 +63,109 @@ class PlanLocationFragment : Fragment(), OnMapReadyCallback {
         _binding = null
     }
 
-    /*
-        TODO(석민재)
-        //지역 api에 넘겨서 위도,경도 겸색 retrofit2
-        // 해당 위도,경도 통해서 plan_location_map 업데이트하기
-        //키보드관련 수정
-     */
+    private fun showMarkers(documents: List<NaverResponse.Addresse?>?) {
+        if (documents == null) return
 
+        documents.forEach {
+            if (it == null) return@forEach
 
-    private lateinit var locationAdapter: LocationAdapter
+            // 마커 생성
+            val marker = Marker()
+            marker.position = LatLng(it.y!!.toDouble(), it.x!!.toDouble())
+            marker.map = naverMap
+            marker.setOnClickListener { o ->
+                showMarkerInfo(it)
+                true
+            }
 
-    private var locationList: MutableList<String> = mutableListOf(
-        "서울특별시",
-        "부산광역시",
-        "경기도",
-        "강원도",
-        "서울특별시1",
-        "부산광역시1",
-        "경기도1",
-        "강원도1",
-        "서울특별시2",
-        "부산광역시2",
-        "경기도2",
-        "강원도2",
-        "서울특별시3",
-        "부산광역시3",
-        "경기도3",
-        "강원도3"
-    )
-
-    private fun filterLocation(query: String) {
-        val filteredList = locationList.filter { location ->
-            location.contains(query, ignoreCase = true)
+            currentMarkerList.add(marker)
         }
-        locationAdapter.updateData(filteredList)
+
+
     }
 
-    class LocationAdapter(
-        private var locationList: List<String>,
-        private val slidePanel: SlidingUpPanelLayout
-    ) :
-        RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
+    private fun removeAllMarks(documents: List<NaverResponse.Addresse?>?) {
+        currentMarkerList.forEach {
+            it.map = null //마커 삭제
+        }
+        currentMarkerList.clear() // 마커 리스트 비우기
+    }
 
-        inner class LocationViewHolder(private val binding: ItemAddLocationBinding) :
-            RecyclerView.ViewHolder(binding.root) {
-            init {
-                binding.btnAddLocation.setOnClickListener {
-                    slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-                    //지역 api에 넘겨서 위도,경도 겸색
-                    // 해당 위도,경도 통해서 plan_location_map 업데이트하기
-                    //키보드관련 수정
+    private fun bind(parentActivity: PlanGenerateActivity) {
+        with(binding) {
+            locationAdapter= LocationAdapter()
+            slidePanel = binding.planLocationMainFrame
+            slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
 
+            binding.svPlanLocation.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    val state = binding.planLocationMainFrame.panelState
+
+                    if (state == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                        binding.planLocationMainFrame.panelState =
+                            SlidingUpPanelLayout.PanelState.ANCHORED
+                    }
+                } else {
+                    binding.planLocationMainFrame.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
                 }
             }
 
-            fun bind(location: String) {
-                binding.tvAddLocation.text = location
+            btnPlanLocation.setOnClickListener {
+                parentActivity.binding.vpPlanGenerate.currentItem++
             }
-        }
 
-        fun updateData(newLocationList: List<String>) {
-            locationList = newLocationList
-            notifyDataSetChanged()
-        }
+            val fm = childFragmentManager
+            val mapFragment = fm.findFragmentById(binding.planLocationMap.id) as MapFragment?
+                ?: MapFragment.newInstance().also {
+                    fm.beginTransaction().add(binding.planLocationMap.id, it).commit()
+                }
+            mapFragment.getMapAsync(this@PlanLocationFragment)
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
-            val inflater = LayoutInflater.from(parent.context)
-            val binding = ItemAddLocationBinding.inflate(inflater, parent, false)
-            return LocationViewHolder(binding)
-        }
+            locationRecyclerView.adapter = locationAdapter
+            locationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
-            val location = locationList.get(position)
-            holder.bind(location)
-        }
+            slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
 
-        override fun getItemCount(): Int {
-            return locationList.size
         }
+    }
 
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (query == null) return false
+        mapViewModel.searchQuery(query)
+
+        return true;
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+
+        return true
+    }
+
+    public fun showMarkerInfo(item: NaverResponse.Addresse) {
+
+        //지역선택시 slidepanel 내려가도록
+        slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+
+        val cameraUpdate = CameraUpdate.scrollTo(LatLng(item.y!!.toDouble(), item.x!!.toDouble()))
+            .animate(CameraAnimation.Easing) // 부드럽게 이동
+        naverMap.moveCamera(cameraUpdate)
 
     }
 
     override fun onMapReady(naverMap: NaverMap) {
-        // 지도 설정
-        naverMap.minZoom = 6.0
-        naverMap.maxZoom = 18.0
-
-        // 마커 추가
-        val marker = Marker()
-        marker.position = LatLng(37.5665, 126.9780)
-        marker.map = naverMap
-
-        // 카메라 이동
-        val cameraUpdate = CameraUpdate.scrollTo(LatLng(37.5665, 126.9780))
-        naverMap.moveCamera(cameraUpdate)
+//        // 지도 설정
+//        naverMap.minZoom = 6.0
+//        naverMap.maxZoom = 18.0
+//
+//        // 마커 추가
+//        val marker = Marker()
+//        marker.position = LatLng(37.5665, 126.9780)
+//        marker.map = naverMap
+//
+//        // 카메라 이동
+//        val cameraUpdate = CameraUpdate.scrollTo(LatLng(37.5665, 126.9780))
+//        naverMap.moveCamera(cameraUpdate)
     }
 
 }

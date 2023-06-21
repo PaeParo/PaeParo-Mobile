@@ -50,17 +50,12 @@ class PlanInfoDiffCallback : DiffUtil.ItemCallback<Event>() {
 
     override fun areItemsTheSame(oldItem: Event, newItem: Event): Boolean {
         val b = oldItem.hashCode() == newItem.hashCode()
-        return b.also{
-            Timber.d("areItemsTheSame 비교중\n oldItem.hashCode() = ${oldItem.hashCode()}\n newItem.hashCode() = ${newItem.hashCode()}\n result : $b")
-        } //data 클래스의 경우 hashcode == 이 자동적용됨.
+        return b
     }
 
     override fun areContentsTheSame(oldItem: Event, newItem: Event): Boolean {
         val b = oldItem == newItem
-        return b.also {
-            Timber.d("areContentsTheSame 비교중\n oldItem = ${oldItem}\n newItem = ${newItem}\n result : $b")
-
-        }
+        return b
     }
 
 }
