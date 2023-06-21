@@ -16,7 +16,7 @@ object DateUtil {
         seconds ( 1초)                      | 1000 sec
      */
     val yyyyMdFormat = SimpleDateFormat("yyyy.M.d", Locale.KOREA)
-    val HHmmFormat = SimpleDateFormat("hh:mm",Locale.KOREA)
+    val HHmmFormat = SimpleDateFormat("HH:mm",Locale.KOREA)
     fun getDateFromTimestamp(timestamp: Timestamp, format: SimpleDateFormat): String {
         return format.format(Date(timestamp.toMillis()))
     }
