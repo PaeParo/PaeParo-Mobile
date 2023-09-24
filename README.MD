@@ -54,7 +54,7 @@ PaeParo는 여행 일정을 더 쉽고, 편리하게 구성할 수 있도록 도
 <tbody>
     <tr>
         <td width="100" align="center">서윤오<br>(팀장)</td>
-        <td width="200">Frontend<br>메인화면 및 일정생성(동행자 추가, 여행 기간 선택 등) 화면</td>
+        <td width="200">Frontend<br>메인화면 및 일정생성(동행자 추가, 여행 기간 선택 등) 화면, API 연동</td>
         <td width="100" align="center">
           <a href="https://github.com/seo0jjjjj">
             <img src="http://img.shields.io/badge/seo0jjjjj-655ced?style=social&logo=github"/>
@@ -66,7 +66,7 @@ PaeParo는 여행 일정을 더 쉽고, 편리하게 구성할 수 있도록 도
     </tr>
     <tr>
         <td width="100" align="center">손영진</td>
-        <td width="200">Backend(Firebase 관련 서비스)<br>스플래쉬, 로그인 화면</td>
+        <td width="200">Backend(Firebase 관련 서비스)<br>스플래쉬, 로그인 화면, 커뮤니티, Database 설계</td>
         <td width="100" align="center">
           <a href="https://github.com/ILoveGameCoding">
             <img src="http://img.shields.io/badge/ILoveGameCoding-655ced?style=social&logo=github"/>
@@ -78,7 +78,7 @@ PaeParo는 여행 일정을 더 쉽고, 편리하게 구성할 수 있도록 도
     </tr>
     <tr>
         <td width="100" align="center">손형식</td>
-        <td width="200">Frontend<br>마이페이지 및 설정화면</td>
+        <td width="200">Frontend<br>마이페이지 및 설정화면, 게시물 업로드 화면</td>
         <td width="100" align="center">
           <a href="https://github.com/Blenbre777">
             <img src="http://img.shields.io/badge/Blenbre777-655ced?style=social&logo=github"/>
