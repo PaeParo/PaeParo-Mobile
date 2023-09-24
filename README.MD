@@ -54,7 +54,7 @@ PaeParo는 여행 일정을 더 쉽고, 편리하게 구성할 수 있도록 도
 <tbody>
     <tr>
         <td width="100" align="center">서윤오<br>(팀장)</td>
-        <td width="200">Frontend<br>Frontend: 일정생성, 진행중인 여행<br>Backend: Naver/Kakao API 연동</td>
+        <td width="200">Frontend: 일정생성, 진행중인 여행<br>Backend: Naver/Kakao API 연동</td>
         <td width="100" align="center">
           <a href="https://github.com/seo0jjjjj">
             <img src="http://img.shields.io/badge/seo0jjjjj-655ced?style=social&logo=github"/>
